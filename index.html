@@ -44,7 +44,7 @@ a{color:var(--blue)}
 .login-card h1{font-size:21px;margin:18px 0 2px}
 .login-card .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
 .role-tabs{display:flex;gap:8px;margin-bottom:16px}
-.role-tabs button{flex:1;padding:11px 8px;border:1.5px solid var(--line);border-radius:12px;font-weight:600;font-size:14px;color:var(--muted);background:#fafbfc;transition:.15s}
+.role-tabs button{flex:1;padding:10px 4px;border:1.5px solid var(--line);border-radius:12px;font-weight:600;font-size:12px;color:var(--muted);background:#fafbfc;transition:.15s;line-height:1.15}
 .role-tabs button.active{border-color:var(--navy);color:var(--navy);background:#fff;box-shadow:var(--shadow)}
 .role-tabs button .em{display:block;font-size:18px;margin-bottom:2px}
 label.fld{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:0 0 6px}
@@ -224,6 +224,30 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .pcard img{width:100%;height:100%;object-fit:cover}
 .pcard .emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px}
 .pcard .pc-cap{position:absolute;left:0;right:0;bottom:0;padding:18px 9px 7px;font-size:10.5px;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.72));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* two-column layouts */
+.two-col{display:flex;gap:14px;align-items:flex-start}
+.two-col .col-main,.two-col .col60{flex:3;min-width:0}
+.two-col .col-side,.two-col .col40{flex:2;min-width:0}
+@media(max-width:680px){.two-col{flex-direction:column}.two-col>*{width:100%}}
+
+/* gantt */
+.gantt{margin-top:4px;font-size:12px;overflow-x:auto}
+.g-row{display:flex;align-items:center;min-height:26px}
+.g-head{height:22px}
+.g-lbl{flex:0 0 120px;width:120px;padding-right:8px;font-size:11px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-track{position:relative;flex:1;height:20px;border-left:1px solid var(--line)}
+.g-axis{height:18px}
+.g-bar{position:absolute;top:4px;height:12px;border-radius:6px;min-width:3px}
+.g-tick{position:absolute;top:0;bottom:0;border-left:1px dashed #e9eef4}
+.g-tick span{position:absolute;top:0;left:2px;font-size:9.5px;color:var(--muted)}
+.g-today{position:absolute;top:0;bottom:0;width:2px;background:rgba(214,73,59,.55);z-index:2}
+.g-ms{position:absolute;top:3px;width:13px;height:13px;background:var(--gold);transform:translateX(-50%) rotate(45deg);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--gold-2);z-index:3}
+.g-vo{position:absolute;top:5px;width:10px;height:10px;border-radius:50%;background:var(--blue);transform:translateX(-50%);border:1.5px solid #fff;z-index:3}
+.g-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+.g-legend span{display:inline-flex;align-items:center;gap:5px}
+.g-legend .ld{width:14px;height:8px;border-radius:3px;display:inline-block}
+.g-legend .ms-leg{width:11px;height:11px;background:var(--gold);transform:rotate(45deg);display:inline-block}
+.g-legend .vo-leg{width:10px;height:10px;border-radius:50%;background:var(--blue);display:inline-block}
 .empty{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
 .adminbar{background:var(--gold-2);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:6px}
 hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
@@ -245,7 +269,8 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
     <div class="sub">Vollsanierung · Seligenstadt</div>
     <div class="role-tabs" id="roleTabs">
       <button data-role="bauherr" class="active"><span class="em">🏠</span>Bauherr</button>
-      <button data-role="admin"><span class="em">🔑</span>Bauleitung</button>
+      <button data-role="handwerker"><span class="em">🔧</span>Handwerker</button>
+      <button data-role="energie"><span class="em">🔑</span>Energie&shy;beratung</button>
     </div>
     <label class="fld">Passwort</label>
     <input id="pw" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
@@ -253,8 +278,9 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
     <button class="btn-primary" id="loginBtn">Anmelden</button>
     <div class="hint">
       <b>Demo-Zugänge (Prototyp):</b><br>
-      Bauherr · Passwort: <b>suedring</b><br>
-      Bauleitung · Passwort: <b>baustelle50</b>
+      Bauherr · <b>suedring</b><br>
+      Handwerker · <b>handwerk</b><br>
+      Energieberatung · <b>energie</b>
     </div>
   </div>
 </div>
@@ -270,19 +296,18 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
   <div class="adminbar hidden" id="adminBar">Bearbeitungsmodus aktiv – Änderungen werden lokal gespeichert</div>
   <main id="main"></main>
   <nav class="nav" id="nav">
-    <button data-tab="status" class="active"><span class="ic">📊</span>Status</button>
-    <button data-tab="zeit"><span class="ic">📅</span>Termine</button>
-    <button data-tab="medien"><span class="ic">📷</span>Medien</button>
+    <button data-tab="status" class="active"><span class="ic">📊</span>Überblick</button>
+    <button data-tab="zeit"><span class="ic">📅</span>Zeitplan</button>
+    <button data-tab="medien"><span class="ic">📷</span>Dokumente</button>
     <button data-tab="finanzen"><span class="ic">💶</span>Finanzen</button>
-    <button data-tab="kontakte"><span class="ic">📇</span>Kontakte</button>
-    <button data-tab="kommentare"><span class="ic">💬</span>Dialog</button>
+    <button data-tab="kontakte"><span class="ic">📇</span>Kontaktdaten</button>
   </nav>
 </div>
 
 <script>
 const STORE_KEY="suedring50_data_v2", SESSION_KEY="suedring50_session";
-const PASSWORDS={bauherr:"suedring",admin:"baustelle50"};
-const ROLE_LABEL={bauherr:"Bauherr",admin:"Bauleitung"};
+const PASSWORDS={bauherr:"suedring",handwerker:"handwerk",energie:"energie"};
+const ROLE_LABEL={bauherr:"Bauherr",handwerker:"Handwerker",energie:"Energieberatung"};
 
 function seedData(){
   return {
@@ -299,10 +324,13 @@ function seedData(){
       {name:"Endmontage Bad/Küche & Abnahme",planStart:"2026-09-21",planEnd:"2026-10-30",actEnd:"",status:"up"}
     ],
     meetings:[
-      {title:"Baubesprechung – Trockenbau & Elektro-Abnahme",date:"2026-06-16T10:00",place:"Baustelle Südring 50, vor Ort",who:"Bauleitung, Elektro Vogt, Bauherr"},
-      {title:"Bemusterung Fliesen & Bodenbeläge",date:"2026-06-25T14:30",place:"Showroom Fliesen Süd, Hanau",who:"Bauherr, Bauleitung"},
-      {title:"Aufmaß Küche",date:"2026-07-08T09:00",place:"Baustelle Südring 50, vor Ort",who:"Küchenstudio Meyer, Bauherr"},
-      {title:"Zwischenabnahme Estrich",date:"2026-08-10T11:00",place:"Baustelle Südring 50, vor Ort",who:"Bauleitung, Estrich-Team"}
+      {title:"Baubesprechung – Trockenbau & Elektro-Abnahme",type:"vorort",date:"2026-06-16T10:00",place:"Baustelle Südring 50, vor Ort",who:"Energieberatung, Elektro Vogt, Bauherr"},
+      {title:"Bemusterung Fliesen & Bodenbeläge",type:"vorort",date:"2026-06-25T14:30",place:"Showroom Fliesen Süd, Hanau",who:"Bauherr, Energieberatung"},
+      {title:"Aufmaß Küche",type:"vorort",date:"2026-07-08T09:00",place:"Baustelle Südring 50, vor Ort",who:"Küchenstudio Meyer, Bauherr"},
+      {title:"Zwischenabnahme Estrich",type:"vorort",date:"2026-08-10T11:00",place:"Baustelle Südring 50, vor Ort",who:"Energieberatung, Estrich-Team"},
+      {title:"Gebäude winterfest / Fenster dicht",type:"meilenstein",date:"2026-05-22"},
+      {title:"Rohinstallation abgenommen",type:"meilenstein",date:"2026-06-19"},
+      {title:"Bezugsfertig",type:"meilenstein",date:"2026-10-30"}
     ],
     changes:[
       {title:"Fußbodenheizung statt Heizkörper im EG",desc:"Wunsch Bauherr – Umplanung Heizkreisverteiler.",cost:4200,status:"genehmigt",date:"2026-05-12"},
@@ -329,7 +357,7 @@ function seedData(){
       {program:"KfW 458 – Zuschuss Heizungstausch",amount:6750,status:"pruefung",note:"In Prüfung durch Förderstelle.",date:"2026-06-02"}
     ],
     contacts:[
-      {name:"Jarne van Gompel",role:"Bauleitung / JJ Real Estate",phone:"+49 151 23456789",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
+      {name:"Jarne van Gompel",role:"Energieberatung / JJ Real Estate",phone:"+49 151 23456789",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
       {name:"Familie Bauherr",role:"Bauherr",phone:"+49 170 1112233",email:"bauherr@example.de",tone:"#1f9d6b"},
       {name:"Elektro Vogt",role:"Elektroinstallation",phone:"+49 6182 998877",email:"info@elektro-vogt.de",tone:"#c9912b"},
       {name:"Sanitär Keller GmbH",role:"Heizung / Sanitär",phone:"+49 6182 445566",email:"service@sanitaer-keller.de",tone:"#3a8f8f"},
@@ -350,9 +378,9 @@ function seedData(){
       {emoji:"🚿",cap:"Sanitärleitungen Bad OG · 06.06",tone:"#3a8f8f"}
     ],
     comments:[
-      {author:"Bauleitung",role:"Bauleitung",text:"Willkommen im Bauportal! Hier seht ihr jederzeit den aktuellen Stand. Fragen gern direkt hier rein.",ts:"2026-05-20T09:10",tone:"#173a5e"},
+      {author:"Energieberatung",role:"Energieberatung",text:"Willkommen im Bauportal! Hier seht ihr jederzeit den aktuellen Stand. Fragen gern direkt hier rein.",ts:"2026-05-20T09:10",tone:"#173a5e"},
       {author:"Familie Bauherr",role:"Bauherr",text:"Super, danke! Die Fenster sehen klasse aus. Wann startet der Trockenbau im OG?",ts:"2026-05-21T18:42",tone:"#1f9d6b"},
-      {author:"Bauleitung",role:"Bauleitung",text:"Trockenbau OG beginnt kommende Woche, sobald die Elektro-Rohinstallation abgenommen ist.",ts:"2026-05-22T08:05",tone:"#173a5e"}
+      {author:"Energieberatung",role:"Energieberatung",text:"Trockenbau OG beginnt kommende Woche, sobald die Elektro-Rohinstallation abgenommen ist.",ts:"2026-05-22T08:05",tone:"#173a5e"}
     ]
   };
 }
@@ -403,7 +431,8 @@ function dataURLtoBlob(dataUrl){
   for(let i=0;i<len;i++) arr[i]=bin.charCodeAt(i);
   return new Blob([arr],{type:mime});
 }
-const isAdmin=()=>ROLE==="admin";
+const isAdmin=()=>ROLE==="energie";              /* volle Bearbeitung */
+const isBoard=()=>ROLE==="energie"||ROLE==="handwerker"; /* darf Daten erfassen */
 const $=s=>document.querySelector(s);
 const euro=n=>"€"+Number(n).toLocaleString("de-DE",{maximumFractionDigits:0});
 function fdate(iso){if(!iso)return"–";const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"short",year:"numeric"});}
@@ -431,7 +460,7 @@ function doLogin(){const pw=$("#pw").value.trim();if(pw===PASSWORDS[selRole])sta
   else{$("#loginErr").textContent="Falsches Passwort für diese Rolle.";$("#pw").value="";$("#pw").focus();}}
 function startSession(role){ROLE=role;try{sessionStorage.setItem(SESSION_KEY,role);}catch(e){}
   $("#login").classList.add("hidden");$("#app").classList.remove("hidden");
-  $("#rolePill").textContent=ROLE_LABEL[role];$("#adminBar").classList.toggle("hidden",role!=="admin");
+  $("#rolePill").textContent=ROLE_LABEL[role];$("#adminBar").classList.toggle("hidden",role==="bauherr");
   render(); maybeOfferInstall();}
 $("#logoutBtn").addEventListener("click",()=>{ROLE=null;try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}
   $("#app").classList.add("hidden");$("#login").classList.remove("hidden");$("#pw").value="";$("#loginErr").textContent="";});
@@ -444,12 +473,12 @@ function go(tab){TAB=tab;document.querySelectorAll("#nav button").forEach(x=>x.c
 /* RENDER */
 function render(){
   const m=$("#main");
-  const map={status:viewStatus,zeit:viewZeit,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte,kommentare:viewKommentare};
+  const map={status:viewStatus,zeit:viewZeit,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
   m.innerHTML=(map[TAB]||viewStatus)();
   window.scrollTo({top:0});
 }
 
-function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
+function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>(!x.type||x.type==='vorort')&&x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
 function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due))[0];}
 
 /* STATUS */
@@ -461,27 +490,8 @@ function viewStatus(){
   const restDays=daysBetween(new Date().toISOString().slice(0,10),p.planEnd);
   const openChanges=DATA.changes.filter(c=>c.status==="eingereicht"||c.status==="pruefung").length;
   const nm=nextMeeting(), np=nextPayment();
-  const recent=DATA.photos.slice(0,6);
   return `<div class="view">
     ${installBanner()}
-
-    <div class="card welcome">
-      <div class="w-inner">
-        <div class="eyebrow">JJ Real Estate · Bauportal</div>
-        <h2>Südring 50</h2>
-        <div class="addr">Vollsanierung · Südring 50, 63500 Seligenstadt</div>
-        <div class="w-greet">${ROLE==='bauherr'?'Willkommen, Familie Bauherr! 👋':'Willkommen zurück! 👋'} Schön, dass Sie reinschauen – hier sehen Sie jederzeit live, wie aus Ihrem Haus ein Zuhause wird. 🏡</div>
-        <div class="w-tags"><span>📈 ${p.progress}% fertig</span><span>📅 Ziel ${fdate(p.planEnd)}</span><span>🌐 360°-Rundgang</span></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="strip-title">✨ Letzte Fortschritte <span class="c-act" onclick="go('medien')">Alle Bilder →</span></div>
-      <div class="hscroll">
-        ${recent.length?recent.map((ph,i)=>pcard(ph,i)).join(""):'<div class="empty" style="width:100%">Noch keine Bilder.</div>'}
-      </div>
-    </div>
-
     <div class="card hero">
       <h3>Gesamtfortschritt</h3>
       <div class="big">${p.progress}<small>%</small></div>
@@ -499,57 +509,25 @@ function viewStatus(){
           ${np?`<b>${euro(np.amount)}</b><span>fällig ${fdate(np.due)}</span>`:`<b>–</b><span>keine offen</span>`}</div>
       </div>
     </div>
-
-    <div class="card">
-      <h3>📍 Aktueller Stand ${isAdmin()?'<span class="c-act" onclick="editStatus()">Bearbeiten</span>':''}</h3>
-      <div style="margin-bottom:10px">${badge(p.statusBadge)}</div>
-      <p style="margin:0;font-size:14.5px">${esc(p.statusText)}</p>
-      ${cur?`<hr class="sep"><div style="font-size:13px;color:var(--muted)">Aktive Phase</div><b style="font-size:15px">${esc(cur.name)}</b>`:''}
-    </div>
-
-    <div class="card">
-      <h3>🔧 Änderungsanfragen <span class="c-act" onclick="go('zeit')">Alle ansehen</span></h3>
-      ${DATA.changes.slice(0,3).map(c=>`<div class="row"><div class="r-main"><b>${esc(c.title)}</b><p>${euro(c.cost)} · ${fdate(c.date)}</p></div><div class="r-right">${badge(c.status)}</div></div>`).join("")}
-    </div>
-
-    <div class="card">
-      <h3>💶 Finanzen kompakt <span class="c-act" onclick="go('finanzen')">Details</span></h3>
-      <div class="row"><div class="r-main"><b>Offene Rechnungen</b></div><div class="r-right amount">${euro(openInv)}</div></div>
-      <div class="row"><div class="r-main"><b>Fördermittel zugesagt</b></div><div class="r-right amount" style="color:var(--green)">${euro(DATA.funding.filter(f=>f.status==='genehmigt').reduce((s,f)=>s+f.amount,0))}</div></div>
-    </div>
   </div>`;
 }
 
-/* ZEIT / TERMINE / ÄNDERUNGEN */
+/* ZEIT / GANTT / ÄNDERUNGEN */
 function viewZeit(){
-  const upcoming=DATA.meetings.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const upcoming=DATA.meetings.slice().filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const future=upcoming.filter(m=>new Date(m.date)>=Date.now()-864e5);
   return `<div class="view">
-    <h2 class="vt">Termine & Zeitplan</h2>
-    <p class="vsub">Vor-Ort-Termine, Soll-/Ist-Bauphasen und Änderungsanfragen.</p>
+    <h2 class="vt">Zeitplan</h2>
+    <p class="vsub">Bauphasen als Gantt, anstehende Termine und Änderungsanfragen.</p>
 
-    <div class="card">
-      <h3>🤝 Vor-Ort-Termine ${isAdmin()?'<span class="c-act" onclick="addMeeting()">+ Termin</span>':''}</h3>
-      ${upcoming.length?upcoming.map((mt,i)=>{const d=new Date(mt.date);const past=d<Date.now()-36e5;
-        return `<div class="mtg" style="${past?'opacity:.5':''}">
-          <div class="date-chip"><div class="d">${d.getDate()}</div><div class="m">${d.toLocaleDateString("de-DE",{month:"short"})}</div></div>
-          <div class="m-info"><b>${esc(mt.title)}</b>
-            <p>🕒 ${fmeeting(mt.date)}</p>
-            <p>📍 ${esc(mt.place)}</p>
-            <p>👥 ${esc(mt.who)}</p>
-            ${isAdmin()?`<p><a onclick="delMeeting(${DATA.meetings.indexOf(mt)})" style="color:var(--red);font-weight:600">löschen</a></p>`:''}
-          </div></div>`;}).join(""):'<div class="empty">Keine Termine eingetragen.</div>'}
-    </div>
-
-    <div class="card">
-      <h3>📅 Bauphasen (Soll/Ist)</h3>
-      <div class="tl">
-        ${DATA.phases.map((ph,i)=>{const m=STATUS_MAP[ph.status];let delta="";
-          if(ph.status==="done"&&ph.actEnd){const d=daysBetween(ph.planEnd,ph.actEnd);
-            delta=d>0?`<span class="delta">+${d} T Verzug</span>`:(d<0?`<span class="ok">${d} T früher</span>`:`<span class="ok">pünktlich</span>`);}
-          return `<div class="tl-item"><div class="tl-dot ${m.dot}"></div>
-            <h4>${esc(ph.name)} ${badge(ph.status)}</h4>
-            <div class="tl-dates">Plan: ${fdateShort(ph.planStart)}–${fdateShort(ph.planEnd)}${ph.actEnd?` · Ist-Ende: ${fdateShort(ph.actEnd)} `:""}${delta}
-              ${isAdmin()?` · <a style="font-weight:600" onclick="editPhase(${i})">ändern</a>`:""}</div></div>`;}).join("")}
+    <div class="two-col">
+      <div class="card col-main">
+        <h3>📊 Bauphasen-Gantt <span class="c-act" onclick="addTermin()">+ Eintrag</span></h3>
+        ${ganttHTML()}
+      </div>
+      <div class="card col-side">
+        <h3>📅 Nächste Termine &amp; Meilensteine <span class="c-act" onclick="addTermin()">+ Termin</span></h3>
+        ${future.length?future.map(mt=>termRow(mt)).join(""):'<div class="empty">Keine anstehenden Termine.</div>'}
       </div>
     </div>
 
@@ -563,19 +541,59 @@ function viewZeit(){
     </div>
   </div>`;
 }
+const TTYPE={aktivitaet:{label:"Aktivität",ic:"📊"},meilenstein:{label:"Meilenstein",ic:"◆"},vorort:{label:"Vor-Ort",ic:"📍"}};
+function termRow(mt){
+  const d=new Date(mt.date); const past=d<Date.now()-864e5;
+  const ty=TTYPE[mt.type]||TTYPE.vorort; const idx=DATA.meetings.indexOf(mt);
+  const datestr = mt.type==='aktivitaet' ? (fdateShort(mt.date)+'–'+fdateShort(mt.end||mt.date))
+    : (mt.type==='meilenstein' ? fdate(mt.date) : fmeeting(mt.date));
+  return `<div class="mtg" style="${past?'opacity:.55':''}">
+    <div class="date-chip"><div class="d">${d.getDate()}</div><div class="m">${d.toLocaleDateString("de-DE",{month:"short"})}</div></div>
+    <div class="m-info"><b>${esc(mt.title)}</b> <span class="badge b-gray" style="font-size:10px">${ty.ic} ${ty.label}</span>
+      <p>🕒 ${datestr}</p>
+      ${mt.place?`<p>📍 ${esc(mt.place)}</p>`:''}
+      ${mt.who?`<p>👥 ${esc(mt.who)}</p>`:''}
+      ${isBoard()||mt.type==='vorort'?`<p><a onclick="delMeeting(${idx})" style="color:var(--red);font-weight:600">löschen</a></p>`:''}
+    </div></div>`;
+}
+function ganttHTML(){
+  const acts=DATA.phases.map(p=>({name:p.name,start:p.planStart,end:p.planEnd,status:p.status}))
+    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({name:m.title,start:m.date,end:m.end||m.date,status:'akt'})));
+  const events=DATA.meetings.filter(m=>m.type==='meilenstein'||m.type==='vorort').map(m=>({title:m.title,date:(m.date||'').slice(0,10),kind:m.type}));
+  let ds=[]; acts.forEach(a=>ds.push(a.start,a.end)); events.forEach(e=>ds.push(e.date));
+  ds=ds.filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
+  if(!ds.length) return '<div class="empty">Keine Phasen.</div>';
+  let min=new Date(Math.min.apply(null,ds.map(d=>+d))), max=new Date(Math.max.apply(null,ds.map(d=>+d)));
+  min.setDate(min.getDate()-5); max.setDate(max.getDate()+5);
+  const total=(max-min)||1; const pos=d=>((new Date(d)-min)/total*100);
+  let ticks=''; let cur=new Date(min.getFullYear(),min.getMonth(),1);
+  while(cur<=max){const l=pos(cur); if(l>=0&&l<=100) ticks+=`<div class="g-tick" style="left:${l}%"><span>${cur.toLocaleDateString('de-DE',{month:'short'})}</span></div>`; cur.setMonth(cur.getMonth()+1);}
+  const tl=pos(new Date()); const today=(tl>=0&&tl<=100)?`<div class="g-today" style="left:${tl}%"></div>`:'';
+  const col={done:'#1f9d6b',prog:'#e0a83e',up:'#cfd8e2',late:'#d6493b',akt:'#2d6fb8'};
+  const rows=acts.map(a=>{const l=pos(a.start),w=Math.max(1.5,pos(a.end)-pos(a.start));
+    return `<div class="g-row"><div class="g-lbl">${esc(a.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[a.status]||'#2d6fb8'}"></div></div></div>`;}).join('');
+  const ev=events.map(e=>{const l=pos(e.date); if(l<0||l>100)return'';
+    return e.kind==='meilenstein'?`<div class="g-ms" style="left:${l}%" title="${esc(e.title)}"></div>`:`<div class="g-vo" style="left:${l}%" title="${esc(e.title)}"></div>`;}).join('');
+  return `<div class="gantt">
+    <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
+    ${rows}
+    <div class="g-row"><div class="g-lbl">Ereignisse</div><div class="g-track">${today}${ev}</div></div>
+    <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ms-leg"></i>Meilenstein</span><span><i class="vo-leg"></i>Vor-Ort</span></div>
+  </div>`;
+}
 
 /* MEDIEN */
 function viewMedien(){
   const mp=DATA.project.matterport;
   return `<div class="view">
-    <h2 class="vt">Medien & Dokumente</h2>
-    <p class="vsub">360°-Rundgang, Baufortschritt-Fotos und Angebote.</p>
+    <h2 class="vt">Dokumente</h2>
+    <p class="vsub">360°-Rundgang, Baufortschritt-Fotos und Unterlagen.</p>
 
     <div class="card">
-      <h3>🌐 360°-Rundgang (Matterport) ${isAdmin()?'<span class="c-act" onclick="editMatterport()">Link bearbeiten</span>':''}</h3>
+      <h3>🌐 360°-Rundgang (Matterport) ${isBoard()?'<span class="c-act" onclick="editMatterport()">Link bearbeiten</span>':''}</h3>
       <div class="mp-frame">
         ${mp?`<iframe src="${esc(mp)}" allowfullscreen allow="xr-spatial-tracking"></iframe>`
-            :`<div style="padding:24px"><div style="font-size:34px">🏛️</div><div style="margin-top:8px">Noch kein Matterport-Link hinterlegt.${isAdmin()?'<br>Tippe oben auf „Link bearbeiten".':''}</div></div>`}
+            :`<div style="padding:24px"><div style="font-size:34px">🏛️</div><div style="margin-top:8px">Noch kein Matterport-Link hinterlegt.${isBoard()?'<br>Tippe oben auf „Link bearbeiten".':''}</div></div>`}
       </div>
       ${mp?`<a class="mp-cta" href="${esc(mp)}" target="_blank" rel="noopener">🔗 In Vollbild öffnen</a>`:""}
     </div>
@@ -583,18 +601,18 @@ function viewMedien(){
     <div class="card">
       <h3>📷 Baufortschritt-Galerie</h3>
       <div class="gal">
-        ${isAdmin()?`<label class="uploadtile"><span class="pl">＋</span>Foto hochladen<input type="file" accept="image/*" multiple style="display:none" onchange="uploadPhotos(event)"></label>`:""}
+        ${isBoard()?`<label class="uploadtile"><span class="pl">＋</span>Foto hochladen<input type="file" accept="image/*" multiple style="display:none" onchange="uploadPhotos(event)"></label>`:""}
         ${DATA.photos.map((ph,i)=>photoTile(ph,i)).join("")}
       </div>
-      ${!DATA.photos.length&&!isAdmin()?'<div class="empty">Noch keine Fotos hochgeladen.</div>':''}
+      ${!DATA.photos.length&&!isBoard()?'<div class="empty">Noch keine Fotos hochgeladen.</div>':''}
     </div>
 
     <div class="card">
-      <h3>📄 Angebote & Dokumente ${isAdmin()?'<span class="c-act" onclick="addDoc()">+ Hinzufügen</span>':''}</h3>
+      <h3>📄 Angebote & Unterlagen ${isBoard()?'<span class="c-act" onclick="addDoc()">+ Hinzufügen</span>':''}</h3>
       ${DATA.documents.length?DATA.documents.map((d,i)=>`<div class="doc">
         <div class="d-ic">${d.type==='Angebot'?'📑':(d.type==='Plan'?'📐':'📄')}</div>
         <div class="d-info"><b>${esc(d.name)}</b><p>${esc(d.type)} · ${fdate(d.date)}${d.note?' · '+esc(d.note):''}</p></div>
-        ${isAdmin()?`<a onclick="delDoc(${i})" style="color:var(--red);font-weight:600;font-size:12.5px">löschen</a>`:''}
+        ${isBoard()?`<a onclick="delDoc(${i})" style="color:var(--red);font-weight:600;font-size:12.5px">löschen</a>`:''}
       </div>`).join(""):'<div class="empty">Noch keine Dokumente.</div>'}
     </div>
   </div>`;
@@ -620,48 +638,44 @@ function viewFinanzen(){
   const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
   const pays=DATA.payments.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
   return `<div class="view">
-    <h2 class="vt">Finanzen & Förderung</h2>
-    <p class="vsub">Zahlungsplan, Rechnungen und Fördermittel.</p>
+    <h2 class="vt">Finanzen &amp; Förderungen</h2>
+    <p class="vsub">Rechnungen hochladen und einer Förderung zuordnen – geplante Zahlungen rechts im Blick.</p>
 
-    <div class="card">
-      <h3>📆 Nächste Zahlungen ${isAdmin()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
-      ${pays.map((pm,i)=>{const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
-        return `<div class="row">
-          <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
-          <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
-          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cyclePayment(${DATA.payments.indexOf(pm)})">Status →</button>`:""}</div>
-        </div>`;}).join("")}
-    </div>
-
-    <div class="card">
-      <h3>💶 Rechnungen <span class="c-act" onclick="submitInvoice()">📤 Rechnung einreichen</span></h3>
-      <div class="fin-sum">
-        <div class="fin-box"><b style="color:var(--green)">${euro(paid)}</b><span>Bezahlt</span></div>
-        <div class="fin-box"><b style="color:var(--amber)">${euro(open)}</b><span>Offen</span></div>
-        <div class="fin-box"><b style="color:var(--blue)">${euro(pruef)}</b><span>In Prüfung</span></div>
+    <div class="two-col fin">
+      <div class="card col60">
+        <h3>💶 Rechnungen &amp; Förderung <span class="c-act" onclick="submitInvoice()">📤 Rechnung einreichen</span></h3>
+        <div class="fin-sum">
+          <div class="fin-box"><b style="color:var(--green)">${euro(paid)}</b><span>Bezahlt</span></div>
+          <div class="fin-box"><b style="color:var(--amber)">${euro(open)}</b><span>Offen</span></div>
+          <div class="fin-box"><b style="color:var(--blue)">${euro(pruef)}</b><span>In Prüfung</span></div>
+        </div>
+        ${foerderBreakdown()}
+        ${inv.map((iv,i)=>`<div class="row">
+          <div class="r-main"><b>${esc(iv.vendor)}</b><p>${esc(iv.ref)} · ${fdate(iv.date)}</p>
+            ${iv.foerderung?`<p style="margin-top:5px"><span class="badge b-blue">🏦 ${esc(shortFoerder(iv.foerderung))}</span></p>`:''}</div>
+          <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${badge(iv.status)}</div>
+          ${isBoard()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button>`:''}
+          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button>`:""}</div>
+        </div>`).join("")}
+        <hr class="sep">
+        <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
+        ${DATA.funding.map((f,i)=>`<div class="row">
+          <div class="r-main"><b>${esc(f.program)}</b><p>${esc(f.note)}</p>
+            ${(()=>{const a=DATA.invoices.filter(x=>x.foerderung===f.program).reduce((s,x)=>s+x.amount,0);return a?`<p style="margin-top:4px">📎 Zugeordnete Rechnungen: <b style="color:var(--txt)">${euro(a)}</b></p>`:'';})()}</div>
+          <div class="r-right"><div class="amount">${euro(f.amount)}</div><div style="margin-top:5px">${badge(f.status)}</div>
+          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleFunding(${i})">Status →</button>`:""}</div>
+        </div>`).join("")}
       </div>
-      ${foerderBreakdown()}
-      ${inv.map((iv,i)=>`<div class="row">
-        <div class="r-main"><b>${esc(iv.vendor)}</b><p>${esc(iv.ref)} · ${fdate(iv.date)}</p>
-          ${iv.foerderung?`<p style="margin-top:5px"><span class="badge b-blue">🏦 ${esc(shortFoerder(iv.foerderung))}</span></p>`:''}</div>
-        <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${badge(iv.status)}</div>
-        ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button><br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button>`:""}</div>
-      </div>`).join("")}
-    </div>
 
-    <div class="card">
-      <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
-      <div class="fin-sum">
-        <div class="fin-box"><b style="color:var(--green)">${euro(fundOK)}</b><span>Genehmigt</span></div>
-        <div class="fin-box"><b style="color:var(--blue)">${euro(fundPend)}</b><span>In Bearbeitung</span></div>
-        <div class="fin-box"><b>${euro(fundOK+fundPend)}</b><span>Potenzial</span></div>
+      <div class="card col40">
+        <h3>📆 Nächste Zahlungen ${isBoard()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
+        ${pays.map((pm,i)=>{const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
+          return `<div class="row">
+            <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
+            <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
+            ${isBoard()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cyclePayment(${DATA.payments.indexOf(pm)})">Status →</button>`:""}</div>
+          </div>`;}).join("")}
       </div>
-      ${DATA.funding.map((f,i)=>`<div class="row">
-        <div class="r-main"><b>${esc(f.program)}</b><p>${esc(f.note)}</p><p style="margin-top:3px">Eingereicht: ${fdate(f.date)}</p>
-          ${(()=>{const a=DATA.invoices.filter(x=>x.foerderung===f.program).reduce((s,x)=>s+x.amount,0);return a?`<p style="margin-top:4px">📎 Zugeordnete Rechnungen: <b style="color:var(--txt)">${euro(a)}</b></p>`:'';})()}</div>
-        <div class="r-right"><div class="amount">${euro(f.amount)}</div><div style="margin-top:5px">${badge(f.status)}</div>
-        ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleFunding(${i})">Status →</button>`:""}</div>
-      </div>`).join("")}
     </div>
   </div>`;
 }
@@ -669,10 +683,10 @@ function viewFinanzen(){
 /* KONTAKTE */
 function viewKontakte(){
   return `<div class="view">
-    <h2 class="vt">Kontakte</h2>
+    <h2 class="vt">Kontaktdaten</h2>
     <p class="vsub">Alle Beteiligten auf einen Blick – Anruf direkt antippen.</p>
     <div class="card">
-      <h3>📇 Beteiligte ${isAdmin()?'<span class="c-act" onclick="addContact()">+ Hinzufügen</span>':''}</h3>
+      <h3>📇 Beteiligte ${isBoard()?'<span class="c-act" onclick="addContact()">+ Hinzufügen</span>':''}</h3>
       ${DATA.contacts.map((c,i)=>`<div class="contact">
         <div class="av" style="background:${c.tone||'#173a5e'}">${esc((c.name||'?').slice(0,1).toUpperCase())}</div>
         <div class="c-info"><b>${esc(c.name)}</b><p>${esc(c.role)}</p><p>${esc(c.phone||'')}</p></div>
@@ -690,7 +704,7 @@ function viewKontakte(){
 function viewKommentare(){
   return `<div class="view">
     <h2 class="vt">Dialog</h2>
-    <p class="vsub">Fragen und Abstimmung zwischen Bauherr und Bauleitung.</p>
+    <p class="vsub">Fragen und Abstimmung zwischen Bauherr und Energieberatung.</p>
     <div class="card">
       <div id="cmtList">
         ${DATA.comments.map(c=>`<div class="cmt">
@@ -741,7 +755,7 @@ function submitInvoice(){
   const foerderung=pickFoerderung("");
   DATA.invoices.push({vendor,ref,amount,status:"eingereicht",date:new Date().toISOString().slice(0,10),foerderung});
   save();render();
-  alert("Danke! Ihre Rechnung wurde eingereicht und wird von der Bauleitung geprüft.");
+  alert("Danke! Ihre Rechnung wurde eingereicht und wird von der Energieberatung geprüft.");
 }
 function addInvoice(){const vendor=prompt("Lieferant / Gewerk:");if(!vendor)return;const ref=prompt("Rechnungsnummer:","RE-2026-")||"";
   const amount=parseInt(prompt("Betrag in €:","0"))||0;DATA.invoices.push({vendor,ref,amount,status:"offen",date:new Date().toISOString().slice(0,10)});save();render();}
@@ -757,11 +771,27 @@ function cycleFunding(i){const f=DATA.funding[i];if(f.status==="abgelehnt"){f.st
 function addFunding(){const program=prompt("Förderprogramm:");if(!program)return;const amount=parseInt(prompt("Fördersumme in €:","0"))||0;
   const note=prompt("Notiz:","Antrag eingereicht.")||"";DATA.funding.push({program,amount,status:"eingereicht",note,date:new Date().toISOString().slice(0,10)});save();render();}
 
-function addMeeting(){const title=prompt("Termin-Titel:");if(!title)return;
-  const date=prompt("Datum & Uhrzeit (JJJJ-MM-TTThh:mm), z. B. 2026-06-20T10:00:",new Date().toISOString().slice(0,16))||"";
-  const place=prompt("Ort:","Baustelle Südring 50, vor Ort")||"";const who=prompt("Teilnehmer:","Bauleitung, Bauherr")||"";
-  DATA.meetings.push({title,date,place,who});save();render();}
-function delMeeting(i){if(confirm("Termin löschen?")){DATA.meetings.splice(i,1);save();render();}}
+function addTermin(){
+  const t=prompt("Art wählen:\n1 = Aktivität (Balken im Gantt)\n2 = Meilenstein (Raute)\n3 = Vor-Ort-Termin","3");
+  if(t===null) return;
+  const title=prompt("Titel:"); if(!title) return;
+  const choice=(t||"").trim();
+  if(choice==="1"){
+    const start=prompt("Start (JJJJ-MM-TT):",new Date().toISOString().slice(0,10))||"";
+    const end=prompt("Ende (JJJJ-MM-TT):",start)||start;
+    DATA.meetings.push({title,type:"aktivitaet",date:start,end});
+  } else if(choice==="2"){
+    const date=prompt("Datum (JJJJ-MM-TT):",new Date().toISOString().slice(0,10))||"";
+    DATA.meetings.push({title,type:"meilenstein",date});
+  } else {
+    const date=prompt("Datum & Uhrzeit (JJJJ-MM-TTThh:mm), z. B. 2026-06-20T10:00:",new Date().toISOString().slice(0,16))||"";
+    const place=prompt("Ort:","Baustelle Südring 50, vor Ort")||"";
+    const who=prompt("Teilnehmer:","Energieberatung, Bauherr")||"";
+    DATA.meetings.push({title,type:"vorort",date,place,who});
+  }
+  save();render();
+}
+function delMeeting(i){if(confirm("Eintrag löschen?")){DATA.meetings.splice(i,1);save();render();}}
 
 function addContact(){const name=prompt("Name / Firma:");if(!name)return;const role=prompt("Rolle / Gewerk:")||"";
   const phone=prompt("Telefon:","+49 ")||"";const email=prompt("E-Mail:")||"";
@@ -804,7 +834,7 @@ function openPhoto(i){const ph=DATA.photos[i];const wrap=document.createElement(
   if(del)del.addEventListener("click",()=>{if(confirm("Dieses Foto löschen?")){DATA.photos.splice(i,1);save();wrap.remove();render();}});}
 
 function postComment(){const inp=$("#cmtInput");const text=inp.value.trim();if(!text)return;
-  const author=ROLE==="admin"?"Bauleitung":"Familie Bauherr";const tone=ROLE==="admin"?"#173a5e":"#1f9d6b";
+  const author=ROLE==="admin"?"Energieberatung":"Familie Bauherr";const tone=ROLE==="admin"?"#173a5e":"#1f9d6b";
   DATA.comments.push({author,role:ROLE_LABEL[ROLE],text,ts:new Date().toISOString(),tone});save();render();
   setTimeout(()=>{const l=$("#cmtList");if(l)l.lastElementChild.scrollIntoView({behavior:"smooth"});},50);}
 
