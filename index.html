@@ -57,7 +57,7 @@ label.fld{display:block;font-size:13px;font-weight:600;color:var(--muted);margin
 .hint b{color:var(--txt)}
 
 /* SHELL */
-#app{max-width:760px;margin:0 auto;min-height:100vh}
+#app{max-width:1280px;margin:0 auto;min-height:100vh}
 .topbar{position:sticky;top:0;z-index:30;background:var(--navy);color:#fff;
   padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;display:flex;align-items:center;gap:12px}
 .topbar .logo{width:38px;height:38px;font-size:14px}
@@ -176,10 +176,12 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .doc .d-info b{font-size:14px}
 .doc .d-info p{margin:2px 0 0;font-size:12px;color:var(--muted)}
 
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 2px calc(env(safe-area-inset-bottom) + 6px);max-width:760px;margin:0 auto}
-.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:9.5px;font-weight:600;padding:5px 0;border-radius:10px}
-.nav button .ic{font-size:18px;line-height:1}
-.nav button.active{color:var(--navy)}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;gap:6px;padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);max-width:1280px;margin:0 auto}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:12px;font-weight:700;padding:9px 2px;border-radius:14px;transition:.15s}
+.nav button .ic{font-size:23px;line-height:1}
+.nav button:hover{background:#f3f6fa}
+.nav button.active{color:#fff;background:var(--navy)}
+.nav button.active .ic{filter:none}
 
 .modal{position:fixed;inset:0;z-index:80;background:rgba(8,18,32,.88);display:flex;align-items:center;justify-content:center;padding:20px}
 .modal img{max-width:100%;max-height:80vh;border-radius:12px}
@@ -267,20 +269,17 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
     <div class="brand"><div class="logo">JJ</div><div><b>JJ Real Estate</b><br><small>Bauportal</small></div></div>
     <h1>Südring 50</h1>
     <div class="sub">Vollsanierung · Seligenstadt</div>
-    <div class="role-tabs" id="roleTabs">
-      <button data-role="bauherr" class="active"><span class="em">🏠</span>Bauherr</button>
-      <button data-role="handwerker"><span class="em">🔧</span>Handwerker</button>
-      <button data-role="energie"><span class="em">🔑</span>Energie&shy;beratung</button>
-    </div>
+    <label class="fld">Benutzername</label>
+    <input id="user" class="input" type="text" placeholder="z. B. herbold" autocomplete="username" autocapitalize="none" />
     <label class="fld">Passwort</label>
     <input id="pw" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
     <div class="login-err" id="loginErr"></div>
     <button class="btn-primary" id="loginBtn">Anmelden</button>
     <div class="hint">
-      <b>Demo-Zugänge (Prototyp):</b><br>
-      Bauherr · <b>suedring</b><br>
-      Handwerker · <b>handwerk</b><br>
-      Energieberatung · <b>energie</b>
+      <b>Zugänge:</b><br>
+      Bauherrin · <b>herbold</b> / herbold26<br>
+      Energieberatung · <b>jarne</b> / energie26<br>
+      Handwerker: <b>timo</b>/sinn26 · <b>fabian</b>/scholz26 · <b>visar</b>/viz26 · <b>jens</b>/gabor26 · <b>marius</b>/holz26
     </div>
   </div>
 </div>
@@ -298,6 +297,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
   <nav class="nav" id="nav">
     <button data-tab="status" class="active"><span class="ic">📊</span>Überblick</button>
     <button data-tab="zeit"><span class="ic">📅</span>Zeitplan</button>
+    <button data-tab="aenderungen"><span class="ic">🔧</span>Änderungen</button>
     <button data-tab="medien"><span class="ic">📷</span>Dokumente</button>
     <button data-tab="finanzen"><span class="ic">💶</span>Finanzen</button>
     <button data-tab="kontakte"><span class="ic">📇</span>Kontaktdaten</button>
@@ -306,82 +306,103 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 
 <script>
 const STORE_KEY="suedring50_data_v2", SESSION_KEY="suedring50_session";
-const PASSWORDS={bauherr:"suedring",handwerker:"handwerk",energie:"energie"};
 const ROLE_LABEL={bauherr:"Bauherr",handwerker:"Handwerker",energie:"Energieberatung"};
+/* Individuelle Logins (Benutzername → Passwort, Rolle, Anzeigename).
+   Passwörter hier anpassen und an die Beteiligten verteilen. */
+const USERS={
+  herbold:{pw:"herbold26",role:"bauherr",name:"Alexandra Herbold"},
+  jarne:{pw:"energie26",role:"energie",name:"Jarne van Gompel"},
+  timo:{pw:"sinn26",role:"handwerker",name:"Timo Sinn · Innovativbau"},
+  fabian:{pw:"scholz26",role:"handwerker",name:"Fabian Hatwieger · Scholz & Hatwieger"},
+  visar:{pw:"viz26",role:"handwerker",name:"Visar Jakupi · ViZ-Elektro"},
+  jens:{pw:"gabor26",role:"handwerker",name:"Jens du Maire · Gabor"},
+  marius:{pw:"holz26",role:"handwerker",name:"Marius Seyfert · HolzLand"}
+};
 
 function seedData(){
   return {
-    project:{name:"Südring 50",subtitle:"Vollsanierung · Seligenstadt",progress:58,start:"2026-03-02",planEnd:"2026-10-30",
-      statusText:"Innenausbau läuft – Elektro- und Sanitär-Rohinstallation abgeschlossen, Trockenbau in Arbeit.",statusBadge:"prog",matterport:"https://my.matterport.com/show/?m=SxQL3iGyvQk"},
+    project:{name:"Südring 50",subtitle:"Vollsanierung · Seligenstadt",progress:20,start:"2026-04-01",planEnd:"2026-10-26",
+      statusText:"Förderzuweisung läuft – Baustart 22. Juni mit Entkernung und Durchbrüchen.",statusBadge:"prog",matterport:"https://my.matterport.com/show/?m=SxQL3iGyvQk"},
     phases:[
-      {name:"Entkernung & Abbruch",planStart:"2026-03-02",planEnd:"2026-03-27",actEnd:"2026-03-25",status:"done"},
-      {name:"Rohbau / Statik & Durchbrüche",planStart:"2026-03-30",planEnd:"2026-04-24",actEnd:"2026-04-29",status:"done"},
-      {name:"Fenster & Dachsanierung",planStart:"2026-04-27",planEnd:"2026-05-22",actEnd:"2026-05-20",status:"done"},
-      {name:"Elektro & Sanitär (Rohinstallation)",planStart:"2026-05-25",planEnd:"2026-06-19",actEnd:"",status:"prog"},
-      {name:"Trockenbau & Dämmung",planStart:"2026-06-08",planEnd:"2026-07-10",actEnd:"",status:"prog"},
-      {name:"Estrich & Putzarbeiten",planStart:"2026-07-13",planEnd:"2026-08-07",actEnd:"",status:"up"},
-      {name:"Fliesen, Maler & Bodenbeläge",planStart:"2026-08-10",planEnd:"2026-09-18",actEnd:"",status:"up"},
-      {name:"Endmontage Bad/Küche & Abnahme",planStart:"2026-09-21",planEnd:"2026-10-30",actEnd:"",status:"up"}
+      {name:"Angebote Projektberatung einverstanden",planStart:"2026-04-14",planEnd:"2026-04-15",actEnd:"",status:"done"},
+      {name:"Angebote Energieberatung einverstanden",planStart:"2026-04-14",planEnd:"2026-04-15",actEnd:"",status:"done"},
+      {name:"Sanierungsfahrplan",planStart:"2026-04-16",planEnd:"2026-04-18",actEnd:"",status:"done"},
+      {name:"ArchitektenArbeit",planStart:"2026-04-17",planEnd:"2026-04-19",actEnd:"",status:"done"},
+      {name:"Zusage Angebote Timo, Fabian und Visar",planStart:"2026-05-09",planEnd:"2026-05-24",actEnd:"",status:"done"},
+      {name:"Projektmeeting und Rechnungsbesprechung",planStart:"2026-05-25",planEnd:"2026-05-26",actEnd:"",status:"done"},
+      {name:"BZA für Heizungstausch erstellen",planStart:"2026-05-27",planEnd:"2026-05-31",actEnd:"",status:"done"},
+      {name:"Heizlastberechnung erstellen",planStart:"2026-05-27",planEnd:"2026-05-31",actEnd:"",status:"done"},
+      {name:"Förderanträge Fenster",planStart:"2026-05-27",planEnd:"2026-05-31",actEnd:"",status:"done"},
+      {name:"Förderanträge Heizungsoptimierung",planStart:"2026-05-27",planEnd:"2026-05-31",actEnd:"",status:"done"},
+      {name:"Zuweisung Förderung und Wartezeit",planStart:"2026-06-01",planEnd:"2026-06-15",actEnd:"",status:"prog"},
+      {name:"Wartezeit zwischen Förderung und Loslegen",planStart:"2026-06-17",planEnd:"2026-06-18",actEnd:"",status:"up"},
+      {name:"Baustromverteiler (FI Typ B) installieren",planStart:"2026-06-18",planEnd:"2026-06-19",actEnd:"",status:"up"},
+      {name:"Entkernung",planStart:"2026-06-23",planEnd:"2026-07-02",actEnd:"",status:"up"},
+      {name:"Durchbruch 1 + 2",planStart:"2026-06-23",planEnd:"2026-06-25",actEnd:"",status:"up"},
+      {name:"Abnahme Statik",planStart:"2026-06-26",planEnd:"2026-06-27",actEnd:"",status:"up"},
+      {name:"Rohinstallation Wasser + Heizkreisverteiler",planStart:"2026-07-04",planEnd:"2026-07-15",actEnd:"",status:"up"},
+      {name:"Sanitärarbeiten Oben",planStart:"2026-07-04",planEnd:"2026-07-13",actEnd:"",status:"up"},
+      {name:"Einbau Heizung oben + Wärmepumpe",planStart:"2026-07-04",planEnd:"2026-07-24",actEnd:"",status:"up"},
+      {name:"Fundamentarbeiten Wärmepumpe",planStart:"2026-07-10",planEnd:"2026-07-12",actEnd:"",status:"up"},
+      {name:"Elektrikarbeiten",planStart:"2026-07-16",planEnd:"2026-08-02",actEnd:"",status:"up"},
+      {name:"Einbau neue Fenster Oben",planStart:"2026-07-21",planEnd:"2026-07-31",actEnd:"",status:"up"},
+      {name:"Sanitärarbeiten unten",planStart:"2026-07-25",planEnd:"2026-08-05",actEnd:"",status:"up"},
+      {name:"Neuer Estrich einbringen",planStart:"2026-07-27",planEnd:"2026-07-31",actEnd:"",status:"up"},
+      {name:"Trockenzeit Estrich",planStart:"2026-08-01",planEnd:"2026-08-21",actEnd:"",status:"up"},
+      {name:"Abnahme Energieberatung",planStart:"2026-08-04",planEnd:"2026-10-25",actEnd:"",status:"up"},
+      {name:"Ausbau Fenster",planStart:"2026-08-06",planEnd:"2026-08-08",actEnd:"",status:"up"},
+      {name:"Bäder",planStart:"2026-08-06",planEnd:"2026-08-16",actEnd:"",status:"up"},
+      {name:"Einbau neue Fenster unten",planStart:"2026-08-09",planEnd:"2026-08-13",actEnd:"",status:"up"},
+      {name:"Innenausbau Oben",planStart:"2026-08-18",planEnd:"2026-10-08",actEnd:"",status:"up"},
+      {name:"Innenausbau Unten",planStart:"2026-08-18",planEnd:"2026-10-08",actEnd:"",status:"up"},
+      {name:"Einbau neue Haustüren",planStart:"2026-10-04",planEnd:"2026-10-10",actEnd:"",status:"up"},
+      {name:"Puffer",planStart:"2026-10-08",planEnd:"2026-10-25",actEnd:"",status:"up"},
+      {name:"Auszahlung Förderung",planStart:"2026-10-26",planEnd:"2027-02-15",actEnd:"",status:"up"}
     ],
     meetings:[
-      {title:"Baubesprechung – Trockenbau & Elektro-Abnahme",type:"vorort",date:"2026-06-16T10:00",place:"Baustelle Südring 50, vor Ort",who:"Energieberatung, Elektro Vogt, Bauherr"},
-      {title:"Bemusterung Fliesen & Bodenbeläge",type:"vorort",date:"2026-06-25T14:30",place:"Showroom Fliesen Süd, Hanau",who:"Bauherr, Energieberatung"},
-      {title:"Aufmaß Küche",type:"vorort",date:"2026-07-08T09:00",place:"Baustelle Südring 50, vor Ort",who:"Küchenstudio Meyer, Bauherr"},
-      {title:"Zwischenabnahme Estrich",type:"vorort",date:"2026-08-10T11:00",place:"Baustelle Südring 50, vor Ort",who:"Energieberatung, Estrich-Team"},
-      {title:"Gebäude winterfest / Fenster dicht",type:"meilenstein",date:"2026-05-22"},
-      {title:"Rohinstallation abgenommen",type:"meilenstein",date:"2026-06-19"},
-      {title:"Bezugsfertig",type:"meilenstein",date:"2026-10-30"}
+      {title:"Project Kickoff Meeting",type:"vorort",date:"2026-04-01"},
+      {title:"Termin vor Ort zur Abstimmung",type:"vorort",date:"2026-04-16"},
+      {title:"Statiker – Sichtung und Arbeit",type:"meilenstein",date:"2026-04-16"},
+      {title:"Genehmigung 2. Wohneinheit",type:"meilenstein",date:"2026-04-20"},
+      {title:"Abschlussgespräch Kanalbauer",type:"vorort",date:"2026-06-09"},
+      {title:"Abschaltung Wasser/Heizung EG",type:"meilenstein",date:"2026-06-10"},
+      {title:"Förderung genehmigt",type:"meilenstein",date:"2026-06-16"},
+      {title:"Loslegen Bauarbeiten",type:"meilenstein",date:"2026-06-22"},
+      {title:"Anfang Sanitär",type:"meilenstein",date:"2026-07-03"},
+      {title:"Anfang Elektrik",type:"meilenstein",date:"2026-07-15"},
+      {title:"Elektrik fertig Phase 1",type:"meilenstein",date:"2026-08-03"},
+      {title:"Sanitär fertig",type:"meilenstein",date:"2026-08-17"},
+      {title:"Elektrik Phase 2",type:"meilenstein",date:"2026-08-18"},
+      {title:"Fertigstellung Bauarbeiten – Einzugsbereit",type:"meilenstein",date:"2026-10-26"},
+      {title:"Fertigstellung Gesamtprojekt",type:"meilenstein",date:"2027-02-16"}
     ],
-    changes:[
-      {title:"Fußbodenheizung statt Heizkörper im EG",desc:"Wunsch Bauherr – Umplanung Heizkreisverteiler.",cost:4200,status:"genehmigt",date:"2026-05-12"},
-      {title:"Bodentiefe Dusche im Bad OG",desc:"Statt Badewanne, barrierearm.",cost:1850,status:"genehmigt",date:"2026-05-28"},
-      {title:"Zusätzliche Steckdosen Arbeitszimmer",desc:"6 Doppelsteckdosen + 2 Netzwerkdosen.",cost:540,status:"pruefung",date:"2026-06-05"},
-      {title:"Echtholzparkett statt Vinyl im Wohnbereich",desc:"Materialupgrade, Preisdifferenz wird geprüft.",cost:3100,status:"eingereicht",date:"2026-06-09"}
-    ],
-    invoices:[
-      {vendor:"Abbruch Wagner GmbH",ref:"RE-2026-0312",amount:8900,status:"bezahlt",date:"2026-03-28",foerderung:""},
-      {vendor:"Rohbau Hartmann & Sohn",ref:"RE-2026-0419",amount:22400,status:"bezahlt",date:"2026-04-30",foerderung:""},
-      {vendor:"Fenster Bauer (Süd)",ref:"RE-2026-0508",amount:17650,status:"bezahlt",date:"2026-05-23",foerderung:"§35c EStG (Steuerbonus)"},
-      {vendor:"Elektro Vogt",ref:"RE-2026-0611",amount:9450,status:"offen",date:"2026-06-11",foerderung:"KfW 261 – Wohngebäude-Kredit (EH 70 EE)"},
-      {vendor:"Sanitär Keller GmbH",ref:"RE-2026-0613",amount:11200,status:"offen",date:"2026-06-13",foerderung:"BAFA – Heizungsförderung (Wärmepumpe)"}
-    ],
-    payments:[
-      {label:"Abschlag Elektro Vogt (RE-0611)",amount:9450,due:"2026-06-18",status:"offen"},
-      {label:"Abschlag Sanitär Keller (RE-0613)",amount:11200,due:"2026-06-20",status:"offen"},
-      {label:"Abschlagszahlung Trockenbau (geplant)",amount:14500,due:"2026-07-15",status:"geplant"},
-      {label:"Estrich & Putz (geplant)",amount:9800,due:"2026-08-12",status:"geplant"}
-    ],
-    funding:[
-      {program:"KfW 261 – Wohngebäude-Kredit (EH 70 EE)",amount:120000,status:"genehmigt",note:"Zusage liegt vor, Auszahlung nach Baufortschritt.",date:"2026-02-18"},
-      {program:"BAFA – Heizungsförderung (Wärmepumpe)",amount:9000,status:"eingereicht",note:"Antrag eingereicht, Bestätigung ausstehend.",date:"2026-05-30"},
-      {program:"KfW 458 – Zuschuss Heizungstausch",amount:6750,status:"pruefung",note:"In Prüfung durch Förderstelle.",date:"2026-06-02"}
-    ],
+    changes:[],
+    invoices:[],
+    payments:[],
+    funding:[],
     contacts:[
-      {name:"Jarne van Gompel",role:"Energieberatung / JJ Real Estate",phone:"+49 151 23456789",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
-      {name:"Familie Bauherr",role:"Bauherr",phone:"+49 170 1112233",email:"bauherr@example.de",tone:"#1f9d6b"},
-      {name:"Elektro Vogt",role:"Elektroinstallation",phone:"+49 6182 998877",email:"info@elektro-vogt.de",tone:"#c9912b"},
-      {name:"Sanitär Keller GmbH",role:"Heizung / Sanitär",phone:"+49 6182 445566",email:"service@sanitaer-keller.de",tone:"#3a8f8f"},
-      {name:"Trockenbau Brandt",role:"Trockenbau & Dämmung",phone:"+49 6051 778899",email:"buero@trockenbau-brandt.de",tone:"#7d5ba6"},
-      {name:"Fliesen Süd",role:"Fliesen & Bäder",phone:"+49 6181 334455",email:"kontakt@fliesen-sued.de",tone:"#b9784a"},
-      {name:"Küchenstudio Meyer",role:"Küchenplanung",phone:"+49 6181 667788",email:"planung@kuechen-meyer.de",tone:"#2d6fb8"}
+      {name:"Jarne van Gompel",role:"Energieberatung · JJ Real Estate",phone:"",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
+      {name:"Alexandra Herbold",role:"Bauherrin",phone:"+49 151 14944542",email:"alexandra-nikolaidis@gmx.de",tone:"#1f9d6b"},
+      {name:"Innovativbau Sinn GmbH",role:"Bau, Abbruch & Rohbau · Timo Sinn",phone:"+49 173 7548219",email:"info@innovativbau-sinn.de",tone:"#c9912b"},
+      {name:"Scholz & Hatwieger GmbH",role:"Heizung, Sanitär & Wärmepumpe · Fabian Hatwieger",phone:"+49 179 4220849",email:"info@scholz-hatwieger-gmbh.de",tone:"#3a8f8f"},
+      {name:"ViZ-Elektrotechnik",role:"Elektroinstallation · Visar Jakupi",phone:"+49 157 53650498",email:"info@viz-elektro.de",tone:"#7d5ba6"},
+      {name:"Gabor Fenster-Technik",role:"Fenster & Haustüren · Jens du Maire",phone:"+49 6055 90734-0",email:"info@gabor-ft.de",tone:"#b9784a"},
+      {name:"HolzLand Becker GmbH",role:"Bodenbelag / Parkett · Marius Seyfert",phone:"+49 6104 9504-566",email:"seyfert@holzlandbecker.de",tone:"#2d6fb8"}
     ],
     documents:[
-      {name:"Angebot Trockenbau Brandt",type:"Angebot",date:"2026-05-18",note:"Trockenbau & Dämmung OG"},
-      {name:"Angebot Fliesen Süd",type:"Angebot",date:"2026-05-22",note:"Bad OG & Gäste-WC"},
-      {name:"Bauzeitenplan v3",type:"Plan",date:"2026-05-02",note:"Aktualisierte Terminplanung"}
+      {name:"Innovativbau Sinn – Bau & Abbruch (ANG-174)",type:"Angebot",date:"2026-03-10",note:"Baustelleneinrichtung, Abbruch, Rohbau – unterzeichnet · Timo Sinn",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/01-innovativbau-sinn-ANG174.pdf"},
+      {name:"Scholz & Hatwieger – Wärmepumpe (AN260097)",type:"Angebot",date:"2026-06-03",note:"Vaillant Luft/Wasser-Wärmepumpe inkl. Komponenten · 40.303,74 €",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/02-scholz-hatwieger-waermepumpe-AN260097.pdf"},
+      {name:"Scholz & Hatwieger – Fußbodenheizung (AN260098)",type:"Angebot",date:"2026-06-03",note:"Heizkreisverteiler & FBH-Aufbau",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/03-scholz-hatwieger-fussbodenheizung-AN260098.pdf"},
+      {name:"Scholz & Hatwieger – Rückstau & Bodenablauf (AN260099)",type:"Angebot",date:"2026-06-03",note:"Rückstauverschluss, Kellerablauf · 3.934,49 €",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/04-scholz-hatwieger-rueckstau-AN260099.pdf"},
+      {name:"Scholz & Hatwieger – Abschlag (Storno 260165)",type:"Rechnung",date:"2026-06-03",note:"Stornorechnung zur RE 260150 · 14.675,03 €",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/05-scholz-hatwieger-storno-260165.pdf"},
+      {name:"ViZ-Elektrotechnik – Elektroinstallation (V2600528)",type:"Angebot",date:"2026-05-02",note:"Komplett-Erneuerung Elektro – unterzeichnet · Visar Jakupi",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/06-viz-elektro-V2600528.pdf"},
+      {name:"Gabor – Kunststoff-Fenster & -Türen (1137757.1)",type:"Angebot",date:"2026-05-13",note:"Fenster & Türen · Jens du Maire",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/07-gabor-fenster-tueren-1137757.pdf"},
+      {name:"Gabor – Aluminium-Haustür (2600249)",type:"Angebot",date:"2026-04-28",note:"Köster Edition 2026 ADVANCE 88, KfW-förderfähig",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/08-gabor-haustuer-2600249.pdf"},
+      {name:"HolzLand Becker – Parkett Eiche (AB26158441)",type:"Auftrag",date:"2026-06-09",note:"Eiche-Mehrschichtparkett, Kleber, Sockelleisten · 6.603,18 €",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/09-holzland-becker-parkett-AB26158441.pdf"},
+      {name:"Fensterbänke & Sitzbank (26VG0090)",type:"Angebot",date:"2026-06-03",note:"Eichemassiv, lackiert, inkl. Einbau · 3.719,35 €",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/10-fensterbank-sitzbank-26VG0090.pdf"}
     ],
-    photos:[
-      {emoji:"🧱",cap:"Entkernung EG · 14.03",tone:"#b9784a"},
-      {emoji:"🏗️",cap:"Durchbruch tragende Wand · 18.04",tone:"#7d8794"},
-      {emoji:"🪟",cap:"Neue Fenster montiert · 19.05",tone:"#5d8bb0"},
-      {emoji:"🔌",cap:"Elektro Rohinstallation · 02.06",tone:"#c9912b"},
-      {emoji:"🚿",cap:"Sanitärleitungen Bad OG · 06.06",tone:"#3a8f8f"}
-    ],
-    comments:[
-      {author:"Energieberatung",role:"Energieberatung",text:"Willkommen im Bauportal! Hier seht ihr jederzeit den aktuellen Stand. Fragen gern direkt hier rein.",ts:"2026-05-20T09:10",tone:"#173a5e"},
-      {author:"Familie Bauherr",role:"Bauherr",text:"Super, danke! Die Fenster sehen klasse aus. Wann startet der Trockenbau im OG?",ts:"2026-05-21T18:42",tone:"#1f9d6b"},
-      {author:"Energieberatung",role:"Energieberatung",text:"Trockenbau OG beginnt kommende Woche, sobald die Elektro-Rohinstallation abgenommen ist.",ts:"2026-05-22T08:05",tone:"#173a5e"}
-    ]
+    photos:[],
+    comments:[]
   };
 }
 
@@ -394,7 +415,7 @@ const SUPA_BUCKET = "suedring50-fotos";
 const SUPA = !!(SUPA_URL && SUPA_KEY);
 const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content-Type":"application/json"};
 
-let DATA=load(), ROLE=null, TAB="status", selRole="bauherr", deferredInstall=null, saveTimer=null;
+let DATA=load(), ROLE=null, USERNAME="", TAB="status", deferredInstall=null, saveTimer=null;
 
 function load(){
   if(SUPA) return seedData(); // Platzhalter bis Server-Daten geladen sind
@@ -452,18 +473,22 @@ const STATUS_MAP={
 function badge(k){const m=STATUS_MAP[k]||{cls:"b-gray",txt:k};return `<span class="badge ${m.cls}">${m.txt}</span>`;}
 
 /* LOGIN */
-$("#roleTabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;selRole=b.dataset.role;
-  document.querySelectorAll("#roleTabs button").forEach(x=>x.classList.toggle("active",x===b));$("#loginErr").textContent="";});
 $("#loginBtn").addEventListener("click",doLogin);
+$("#user").addEventListener("keydown",e=>{if(e.key==="Enter")$("#pw").focus();});
 $("#pw").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
-function doLogin(){const pw=$("#pw").value.trim();if(pw===PASSWORDS[selRole])startSession(selRole);
-  else{$("#loginErr").textContent="Falsches Passwort für diese Rolle.";$("#pw").value="";$("#pw").focus();}}
-function startSession(role){ROLE=role;try{sessionStorage.setItem(SESSION_KEY,role);}catch(e){}
+function doLogin(){
+  const u=$("#user").value.trim().toLowerCase(); const pw=$("#pw").value;
+  const U=USERS[u];
+  if(U && U.pw===pw) startSession(u);
+  else{$("#loginErr").textContent="Benutzername oder Passwort falsch.";$("#pw").value="";$("#pw").focus();}
+}
+function startSession(username){const U=USERS[username]; if(!U) return; ROLE=U.role; USERNAME=U.name;
+  try{sessionStorage.setItem(SESSION_KEY,username);}catch(e){}
   $("#login").classList.add("hidden");$("#app").classList.remove("hidden");
-  $("#rolePill").textContent=ROLE_LABEL[role];$("#adminBar").classList.toggle("hidden",role==="bauherr");
+  $("#rolePill").textContent=ROLE_LABEL[U.role];$("#adminBar").classList.toggle("hidden",U.role==="bauherr");
   render(); maybeOfferInstall();}
-$("#logoutBtn").addEventListener("click",()=>{ROLE=null;try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}
-  $("#app").classList.add("hidden");$("#login").classList.remove("hidden");$("#pw").value="";$("#loginErr").textContent="";});
+$("#logoutBtn").addEventListener("click",()=>{ROLE=null;USERNAME="";try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}
+  $("#app").classList.add("hidden");$("#login").classList.remove("hidden");$("#user").value="";$("#pw").value="";$("#loginErr").textContent="";});
 
 /* NAV */
 $("#nav").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;TAB=b.dataset.tab;
@@ -473,12 +498,12 @@ function go(tab){TAB=tab;document.querySelectorAll("#nav button").forEach(x=>x.c
 /* RENDER */
 function render(){
   const m=$("#main");
-  const map={status:viewStatus,zeit:viewZeit,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
+  const map={status:viewStatus,zeit:viewZeit,aenderungen:viewAenderungen,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
   m.innerHTML=(map[TAB]||viewStatus)();
   window.scrollTo({top:0});
 }
 
-function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>(!x.type||x.type==='vorort')&&x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
+function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
 function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due))[0];}
 
 /* STATUS */
@@ -503,7 +528,7 @@ function viewStatus(){
         <div class="kpi"><b>${openChanges}</b><span>offene Änderungen</span></div>
       </div>
       <div class="next-strip">
-        <div class="ns" onclick="go('zeit')" style="cursor:pointer"><div class="lbl">📅 Nächster Vor-Ort-Termin</div>
+        <div class="ns" onclick="go('zeit')" style="cursor:pointer"><div class="lbl">📅 Nächster Termin / Meilenstein</div>
           ${nm?`<b>${esc(nm.title)}</b><span>${fmeeting(nm.date)}</span>`:`<b>–</b><span>kein Termin</span>`}</div>
         <div class="ns" onclick="go('finanzen')" style="cursor:pointer"><div class="lbl">💶 Nächste Zahlung</div>
           ${np?`<b>${euro(np.amount)}</b><span>fällig ${fdate(np.due)}</span>`:`<b>–</b><span>keine offen</span>`}</div>
@@ -518,7 +543,7 @@ function viewZeit(){
   const future=upcoming.filter(m=>new Date(m.date)>=Date.now()-864e5);
   return `<div class="view">
     <h2 class="vt">Zeitplan</h2>
-    <p class="vsub">Bauphasen als Gantt, anstehende Termine und Änderungsanfragen.</p>
+    <p class="vsub">Bauphasen als Gantt und anstehende Termine.</p>
 
     <div class="two-col">
       <div class="card col-main">
@@ -530,9 +555,14 @@ function viewZeit(){
         ${future.length?future.map(mt=>termRow(mt)).join(""):'<div class="empty">Keine anstehenden Termine.</div>'}
       </div>
     </div>
-
+  </div>`;
+}
+function viewAenderungen(){
+  return `<div class="view">
+    <h2 class="vt">Änderungsanfragen</h2>
+    <p class="vsub">Wünsche und Änderungen am Bauvorhaben – Freigabe durch die Energieberatung.</p>
     <div class="card">
-      <h3>🔧 Änderungsanfragen <span class="c-act" onclick="addChange()">+ Neue Anfrage</span></h3>
+      <h3>🔧 Alle Anfragen <span class="c-act" onclick="addChange()">+ Neue Anfrage</span></h3>
       ${DATA.changes.length?DATA.changes.map((c,i)=>`<div class="row">
         <div class="r-main"><b>${esc(c.title)}</b><p>${esc(c.desc)}</p>
           <p style="margin-top:4px"><b style="color:var(--txt)">${euro(c.cost)}</b> · eingereicht ${fdate(c.date)}</p></div>
@@ -608,11 +638,12 @@ function viewMedien(){
     </div>
 
     <div class="card">
-      <h3>📄 Angebote & Unterlagen ${isBoard()?'<span class="c-act" onclick="addDoc()">+ Hinzufügen</span>':''}</h3>
+      <h3>📄 Angebote & Unterlagen <label class="c-act" style="cursor:pointer">📤 Dokument hochladen<input type="file" multiple style="display:none" onchange="uploadDocs(event)"></label></h3>
       ${DATA.documents.length?DATA.documents.map((d,i)=>`<div class="doc">
-        <div class="d-ic">${d.type==='Angebot'?'📑':(d.type==='Plan'?'📐':'📄')}</div>
-        <div class="d-info"><b>${esc(d.name)}</b><p>${esc(d.type)} · ${fdate(d.date)}${d.note?' · '+esc(d.note):''}</p></div>
-        ${isBoard()?`<a onclick="delDoc(${i})" style="color:var(--red);font-weight:600;font-size:12.5px">löschen</a>`:''}
+        <div class="d-ic">${d.type==='Angebot'?'📑':(d.type==='Plan'?'📐':(d.type==='Rechnung'?'🧾':(d.type==='Auftrag'?'📋':'📄')))}</div>
+        <div class="d-info"><b>${esc(d.name)}</b><p>${esc(d.type)} · ${fdate(d.date)}${d.note?' · '+esc(d.note):''}${d.by?` · ⬆ ${esc(d.by)}`:''}</p></div>
+        ${d.url?`<a href="${esc(d.url)}" target="_blank" rel="noopener" class="btn-sm btn-ghost" style="text-decoration:none;flex-shrink:0">öffnen</a>`:''}
+        ${isBoard()?`<a onclick="delDoc(${i})" style="color:var(--red);font-weight:600;font-size:12px;margin-left:10px;flex-shrink:0">löschen</a>`:''}
       </div>`).join(""):'<div class="empty">Noch keine Dokumente.</div>'}
     </div>
   </div>`;
@@ -801,6 +832,29 @@ function addContact(){const name=prompt("Name / Firma:");if(!name)return;const r
 function addDoc(){const name=prompt("Dokument-Name:");if(!name)return;const type=prompt("Typ (Angebot / Plan / Dokument):","Angebot")||"Dokument";
   const note=prompt("Notiz:")||"";DATA.documents.unshift({name,type,note,date:new Date().toISOString().slice(0,10)});save();render();}
 function delDoc(i){if(confirm("Dokument löschen?")){DATA.documents.splice(i,1);save();render();}}
+function docType(n){const e=(n.split('.').pop()||'').toLowerCase();if(['jpg','jpeg','png','gif','webp','heic'].includes(e))return 'Bild';return 'Dokument';}
+function uploadDocs(ev){
+  const files=[...ev.target.files]; if(!files.length) return;
+  const who=(typeof USERNAME!=='undefined'&&USERNAME)?USERNAME:(ROLE_LABEL[ROLE]||"");
+  files.forEach(file=>{
+    if(SUPA){
+      const safe=Date.now()+"-"+file.name.replace(/[^\w.\-]+/g,"_");
+      fetch(SUPA_URL+"/storage/v1/object/app/docs/"+encodeURIComponent(safe),{
+        method:"POST",
+        headers:{apikey:SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"x-upsert":"true","Content-Type":file.type||"application/octet-stream"},
+        body:file
+      }).then(r=>{ if(!r.ok) throw new Error("Status "+r.status);
+        const url=SUPA_URL+"/storage/v1/object/public/app/docs/"+encodeURIComponent(safe);
+        DATA.documents.unshift({name:file.name.replace(/\.[^.]+$/,""),type:docType(file.name),date:new Date().toISOString().slice(0,10),note:"",url,by:who});
+        save();render();
+      }).catch(err=>alert("Upload fehlgeschlagen: "+(err&&err.message||err)));
+    } else {
+      DATA.documents.unshift({name:file.name.replace(/\.[^.]+$/,""),type:docType(file.name),date:new Date().toISOString().slice(0,10),note:"",by:who});
+      save();render();
+    }
+  });
+  ev.target.value="";
+}
 
 function editMatterport(){const url=prompt("Matterport Einbettungs-Link (https://my.matterport.com/show/?m=...):",DATA.project.matterport||"");
   if(url===null)return;DATA.project.matterport=url.trim();save();render();}
@@ -915,7 +969,7 @@ function showInstallSheet(){
 }catch(e){}})();
 
 /* Auto-Login innerhalb der Session + Server-Daten laden */
-(function init(){let s=null;try{s=sessionStorage.getItem(SESSION_KEY);}catch(e){}if(s&&PASSWORDS[s])startSession(s);bootstrapServer();})();
+(function init(){let s=null;try{s=sessionStorage.getItem(SESSION_KEY);}catch(e){}if(s&&USERS[s])startSession(s);bootstrapServer();})();
 </script>
 </body>
 </html>
