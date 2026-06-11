@@ -158,6 +158,9 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .callbtns a{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none}
 .callbtns .call{background:var(--green-bg);color:var(--green)}
 .callbtns .mail{background:var(--blue-bg);color:var(--blue)}
+.callbtns .edit{background:#eef1f5;color:var(--muted);cursor:pointer;font-size:15px}
+.callbtns .del{background:var(--red-bg);color:var(--red);cursor:pointer;font-size:15px}
+.g-msrow .g-track{height:16px}
 
 /* meetings */
 .mtg{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
@@ -251,6 +254,16 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .g-legend .ms-leg{width:11px;height:11px;background:var(--gold);transform:rotate(45deg);display:inline-block}
 .g-legend .vo-leg{width:10px;height:10px;border-radius:50%;background:var(--blue);display:inline-block}
 .empty{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
+/* Eingabemaske (Form-Modal) */
+.fm-sheet{max-height:86vh;overflow-y:auto}
+.fm-sheet h3{text-align:left;margin:0 0 14px;font-size:18px}
+.fm-body{margin:0 0 14px}
+.fm-row{margin-bottom:13px;text-align:left}
+.fm-row label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.fm-in{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;background:#fafbfc;font-size:15px;font-family:inherit}
+.fm-in:focus{outline:none;border-color:var(--navy);background:#fff}
+textarea.fm-in{resize:vertical;min-height:66px}
+.fm-hide{display:none}
 .adminbar{background:var(--gold-2);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:6px}
 hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 .next-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
@@ -503,7 +516,7 @@ function render(){
   window.scrollTo({top:0});
 }
 
-function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
+function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>(x.type==='vorort'||x.type==='online')&&x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
 function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due))[0];}
 
 /* STATUS */
@@ -528,7 +541,7 @@ function viewStatus(){
         <div class="kpi"><b>${openChanges}</b><span>offene Änderungen</span></div>
       </div>
       <div class="next-strip">
-        <div class="ns" onclick="go('zeit')" style="cursor:pointer"><div class="lbl">📅 Nächster Termin / Meilenstein</div>
+        <div class="ns" onclick="go('zeit')" style="cursor:pointer"><div class="lbl">📅 Nächster Termin (Vor-Ort/Online)</div>
           ${nm?`<b>${esc(nm.title)}</b><span>${fmeeting(nm.date)}</span>`:`<b>–</b><span>kein Termin</span>`}</div>
         <div class="ns" onclick="go('finanzen')" style="cursor:pointer"><div class="lbl">💶 Nächste Zahlung</div>
           ${np?`<b>${euro(np.amount)}</b><span>fällig ${fdate(np.due)}</span>`:`<b>–</b><span>keine offen</span>`}</div>
@@ -539,7 +552,7 @@ function viewStatus(){
 
 /* ZEIT / GANTT / ÄNDERUNGEN */
 function viewZeit(){
-  const upcoming=DATA.meetings.slice().filter(m=>m.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const upcoming=DATA.meetings.slice().filter(m=>m.date&&(m.type==='vorort'||m.type==='online')).sort((a,b)=>new Date(a.date)-new Date(b.date));
   const future=upcoming.filter(m=>new Date(m.date)>=Date.now()-864e5);
   return `<div class="view">
     <h2 class="vt">Zeitplan</h2>
@@ -551,8 +564,8 @@ function viewZeit(){
         ${ganttHTML()}
       </div>
       <div class="card col-side">
-        <h3>📅 Nächste Termine &amp; Meilensteine <span class="c-act" onclick="addTermin()">+ Termin</span></h3>
-        ${future.length?future.map(mt=>termRow(mt)).join(""):'<div class="empty">Keine anstehenden Termine.</div>'}
+        <h3>📅 Nächste Termine <span class="vsub" style="font-weight:400;font-size:11px;color:var(--muted)">Vor-Ort &amp; Online</span> <span class="c-act" onclick="addTermin()">+ Termin</span></h3>
+        ${future.length?future.map(mt=>termRow(mt)).join(""):'<div class="empty">Keine anstehenden Vor-Ort-/Online-Termine.</div>'}
       </div>
     </div>
   </div>`;
@@ -571,7 +584,7 @@ function viewAenderungen(){
     </div>
   </div>`;
 }
-const TTYPE={aktivitaet:{label:"Aktivität",ic:"📊"},meilenstein:{label:"Meilenstein",ic:"◆"},vorort:{label:"Vor-Ort",ic:"📍"}};
+const TTYPE={aktivitaet:{label:"Aktivität",ic:"📊"},meilenstein:{label:"Meilenstein",ic:"◆"},vorort:{label:"Vor-Ort",ic:"📍"},online:{label:"Online / Zoom",ic:"💻"}};
 function termRow(mt){
   const d=new Date(mt.date); const past=d<Date.now()-864e5;
   const ty=TTYPE[mt.type]||TTYPE.vorort; const idx=DATA.meetings.indexOf(mt);
@@ -587,28 +600,30 @@ function termRow(mt){
     </div></div>`;
 }
 function ganttHTML(){
-  const acts=DATA.phases.map(p=>({name:p.name,start:p.planStart,end:p.planEnd,status:p.status}))
-    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({name:m.title,start:m.date,end:m.end||m.date,status:'akt'})));
-  const events=DATA.meetings.filter(m=>m.type==='meilenstein'||m.type==='vorort').map(m=>({title:m.title,date:(m.date||'').slice(0,10),kind:m.type}));
-  let ds=[]; acts.forEach(a=>ds.push(a.start,a.end)); events.forEach(e=>ds.push(e.date));
+  const items=DATA.phases.map(p=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,sort:p.planStart}))
+    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:'akt',sort:m.date})))
+    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),sort:m.date})));
+  let ds=[]; items.forEach(it=>{ if(it.kind==='act'){ds.push(it.start,it.end);} else ds.push(it.date); });
   ds=ds.filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
   if(!ds.length) return '<div class="empty">Keine Phasen.</div>';
   let min=new Date(Math.min.apply(null,ds.map(d=>+d))), max=new Date(Math.max.apply(null,ds.map(d=>+d)));
   min.setDate(min.getDate()-5); max.setDate(max.getDate()+5);
   const total=(max-min)||1; const pos=d=>((new Date(d)-min)/total*100);
+  items.sort((a,b)=>new Date(a.sort)-new Date(b.sort));
   let ticks=''; let cur=new Date(min.getFullYear(),min.getMonth(),1);
   while(cur<=max){const l=pos(cur); if(l>=0&&l<=100) ticks+=`<div class="g-tick" style="left:${l}%"><span>${cur.toLocaleDateString('de-DE',{month:'short'})}</span></div>`; cur.setMonth(cur.getMonth()+1);}
   const tl=pos(new Date()); const today=(tl>=0&&tl<=100)?`<div class="g-today" style="left:${tl}%"></div>`:'';
   const col={done:'#1f9d6b',prog:'#e0a83e',up:'#cfd8e2',late:'#d6493b',akt:'#2d6fb8'};
-  const rows=acts.map(a=>{const l=pos(a.start),w=Math.max(1.5,pos(a.end)-pos(a.start));
-    return `<div class="g-row"><div class="g-lbl">${esc(a.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[a.status]||'#2d6fb8'}"></div></div></div>`;}).join('');
-  const ev=events.map(e=>{const l=pos(e.date); if(l<0||l>100)return'';
-    return e.kind==='meilenstein'?`<div class="g-ms" style="left:${l}%" title="${esc(e.title)}"></div>`:`<div class="g-vo" style="left:${l}%" title="${esc(e.title)}"></div>`;}).join('');
+  const rows=items.map(it=>{
+    if(it.kind==='ms'){const l=pos(it.date);
+      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:var(--gold-2);font-weight:700" title="${esc(it.name)}">◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%" title="${esc(it.name)}"></div></div></div>`;}
+    const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
+    return `<div class="g-row"><div class="g-lbl" title="${esc(it.name)}">${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
+  }).join('');
   return `<div class="gantt">
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
     ${rows}
-    <div class="g-row"><div class="g-lbl">Ereignisse</div><div class="g-track">${today}${ev}</div></div>
-    <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ms-leg"></i>Meilenstein</span><span><i class="vo-leg"></i>Vor-Ort</span></div>
+    <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ms-leg"></i>Meilenstein</span></div>
   </div>`;
 }
 
@@ -674,7 +689,7 @@ function viewFinanzen(){
 
     <div class="two-col fin">
       <div class="card col60">
-        <h3>💶 Rechnungen &amp; Förderung <span class="c-act" onclick="submitInvoice()">📤 Rechnung einreichen</span></h3>
+        <h3>💶 Rechnungen für Förderungen <span class="c-act" onclick="submitInvoice()">📤 Rechnung hochladen</span></h3>
         <div class="fin-sum">
           <div class="fin-box"><b style="color:var(--green)">${euro(paid)}</b><span>Bezahlt</span></div>
           <div class="fin-box"><b style="color:var(--amber)">${euro(open)}</b><span>Offen</span></div>
@@ -682,11 +697,11 @@ function viewFinanzen(){
         </div>
         ${foerderBreakdown()}
         ${inv.map((iv,i)=>`<div class="row">
-          <div class="r-main"><b>${esc(iv.vendor)}</b><p>${esc(iv.ref)} · ${fdate(iv.date)}</p>
-            ${iv.foerderung?`<p style="margin-top:5px"><span class="badge b-blue">🏦 ${esc(shortFoerder(iv.foerderung))}</span></p>`:''}</div>
+          <div class="r-main"><b>${esc(iv.vendor)}</b><p>${esc(iv.ref||'')}${iv.ref?' · ':''}${fdate(iv.date)}${iv.by?' · ⬆ '+esc(iv.by):''}</p>
+            ${iv.purpose?`<p style="margin-top:3px">📌 ${esc(iv.purpose)}</p>`:''}
+            <p style="margin-top:5px">${iv.foerderung?`<span class="badge b-blue">🏦 ${esc(shortFoerder(iv.foerderung))}</span> `:'<span class="badge b-gray">Förderung offen</span> '}${iv.url?`<a href="${esc(iv.url)}" target="_blank" rel="noopener" style="font-size:12px">📄 öffnen</a>`:''}</p></div>
           <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${badge(iv.status)}</div>
-          ${isBoard()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button>`:''}
-          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button>`:""}</div>
+          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button><br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button>`:''}</div>
         </div>`).join("")}
         <hr class="sep">
         <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
@@ -699,7 +714,7 @@ function viewFinanzen(){
       </div>
 
       <div class="card col40">
-        <h3>📆 Nächste Zahlungen ${isBoard()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
+        <h3>📆 Anstehende Zahlungen <span style="font-weight:400;font-size:11px;color:var(--muted)">Liquiditätsplanung</span> ${isBoard()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
         ${pays.map((pm,i)=>{const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
           return `<div class="row">
             <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
@@ -724,9 +739,9 @@ function viewKontakte(){
         <div class="callbtns">
           ${c.phone?`<a class="call" href="tel:${esc(c.phone.replace(/\s/g,''))}">📞</a>`:''}
           ${c.email?`<a class="mail" href="mailto:${esc(c.email)}">✉️</a>`:''}
+          ${isBoard()?`<a class="edit" onclick="editContact(${i})" title="Bearbeiten">✏️</a><a class="del" onclick="delContact(${i})" title="Löschen">🗑️</a>`:''}
         </div>
       </div>`).join("")}
-      ${isAdmin()?'':''}
     </div>
   </div>`;
 }
@@ -749,85 +764,166 @@ function viewKommentare(){
 }
 
 /* ACTIONS */
-function editStatus(){const t=prompt("Aktueller Stand:",DATA.project.statusText);if(t===null)return;DATA.project.statusText=t;
-  const pr=prompt("Fortschritt in % (0–100):",DATA.project.progress);if(pr!==null&&!isNaN(parseInt(pr)))DATA.project.progress=Math.max(0,Math.min(100,parseInt(pr)));save();render();}
-function editPhase(i){const ph=DATA.phases[i];const s=prompt("Status: done / prog / up / late",ph.status);if(s===null)return;
-  if(["done","prog","up","late"].includes(s.trim()))ph.status=s.trim();
-  if(ph.status==="done"){const a=prompt("Ist-Enddatum (JJJJ-MM-TT):",ph.actEnd||ph.planEnd);if(a!==null)ph.actEnd=a.trim();}save();render();}
+/* ===== Eingabemaske (Form-Modal) ===== */
+function showForm(title, fields, onSubmit){
+  const wrap=document.createElement('div'); wrap.className='sheet-bg';
+  const fieldHtml=f=>{
+    if(f.type==='textarea') return `<textarea class="fm-in" data-k="${f.key}" rows="3" placeholder="${esc(f.placeholder||'')}">${esc(f.value||'')}</textarea>`;
+    if(f.type==='select') return `<select class="fm-in" data-k="${f.key}">${(f.options||[]).map(o=>`<option value="${esc(o.value)}"${String(o.value)===String(f.value||'')?' selected':''}>${esc(o.label)}</option>`).join('')}</select>`;
+    if(f.type==='file') return `<input class="fm-in" data-k="${f.key}" type="file"${f.accept?` accept="${f.accept}"`:''}>`;
+    const t=f.type==='datetime'?'datetime-local':(f.type||'text');
+    return `<input class="fm-in" data-k="${f.key}" type="${t}" value="${esc(f.value==null?'':String(f.value))}" placeholder="${esc(f.placeholder||'')}">`;
+  };
+  const body=fields.map(f=>`<div class="fm-row" data-row="${f.key}"><label>${esc(f.label)}</label>${fieldHtml(f)}</div>`).join('');
+  wrap.innerHTML=`<div class="sheet fm-sheet"><h3>${esc(title)}</h3><div class="fm-body">${body}</div>
+    <button class="btn-primary" id="fmSave">Speichern</button><button class="dismiss" id="fmCancel">Abbrechen</button></div>`;
+  wrap.addEventListener('click',e=>{if(e.target===wrap)wrap.remove();});
+  document.body.appendChild(wrap);
+  const setRowShow=(k,show)=>{const r=wrap.querySelector(`.fm-row[data-row="${k}"]`);if(r)r.style.display=show?'':'none';};
+  const collect=()=>{const v={};wrap.querySelectorAll('.fm-in').forEach(el=>v[el.dataset.k]=el.value);return v;};
+  wrap.querySelector('#fmCancel').addEventListener('click',()=>wrap.remove());
+  wrap.querySelector('#fmSave').addEventListener('click',()=>{
+    const vals={};const files={};
+    wrap.querySelectorAll('.fm-in').forEach(el=>{if(el.type==='file'){files[el.dataset.k]=(el.files&&el.files[0])||null;}else{vals[el.dataset.k]=el.value.trim();}});
+    if(onSubmit(vals,{files})!==false) wrap.remove();
+  });
+  if(typeof fields.__onChange==='function'){
+    const run=()=>fields.__onChange(collect(),{setRowShow});
+    wrap.querySelectorAll('.fm-in').forEach(el=>el.addEventListener('change',run)); run();
+  }
+  const first=wrap.querySelector('.fm-in'); if(first) setTimeout(()=>first.focus(),60);
+}
+const TODAY=()=>new Date().toISOString().slice(0,10);
+function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,''));return isNaN(n)?0:n;}
+function foerderSelect(){return [{value:"",label:"— Keine —"}].concat(foerderOptions().map(o=>({value:o,label:o})));}
+const TONES=["#173a5e","#1f9d6b","#c9912b","#3a8f8f","#7d5ba6","#b9784a","#2d6fb8","#d6493b"];
+
+function editStatus(){
+  showForm("Aktueller Stand bearbeiten",[
+    {key:"statusText",label:"Status-Text",type:"textarea",value:DATA.project.statusText},
+    {key:"progress",label:"Gesamtfortschritt in %",type:"number",value:DATA.project.progress}
+  ],v=>{DATA.project.statusText=v.statusText;DATA.project.progress=Math.max(0,Math.min(100,num(v.progress)));save();render();});
+}
+function editPhase(i){const ph=DATA.phases[i];
+  showForm("Phase: "+ph.name,[
+    {key:"status",label:"Status",type:"select",value:ph.status,options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Abgeschlossen"},{value:"late",label:"Verzug"}]},
+    {key:"actEnd",label:"Ist-Enddatum (bei abgeschlossen)",type:"date",value:ph.actEnd}
+  ],v=>{ph.status=v.status;ph.actEnd=v.actEnd||"";save();render();});
+}
 const CHANGE_FLOW=["eingereicht","pruefung","genehmigt"];
 function cycleChange(i){const c=DATA.changes[i];if(c.status==="abgelehnt"){c.status="eingereicht";save();render();return;}
   const idx=CHANGE_FLOW.indexOf(c.status);c.status=idx<CHANGE_FLOW.length-1?CHANGE_FLOW[idx+1]:"abgelehnt";save();render();}
-function addChange(){const title=prompt("Titel der Änderungsanfrage:");if(!title)return;const desc=prompt("Beschreibung:")||"";
-  const cost=parseInt(prompt("Geschätzte Mehrkosten in € (0 wenn offen):","0"))||0;
-  DATA.changes.unshift({title,desc,cost,status:"eingereicht",date:new Date().toISOString().slice(0,10)});save();render();}
+function addChange(){
+  showForm("Neue Änderungsanfrage",[
+    {key:"title",label:"Titel",type:"text",placeholder:"z. B. Fußbodenheizung statt Heizkörper"},
+    {key:"desc",label:"Beschreibung",type:"textarea"},
+    {key:"cost",label:"Geschätzte Mehrkosten (€)",type:"number",value:0}
+  ],v=>{if(!v.title)return false;DATA.changes.unshift({title:v.title,desc:v.desc,cost:num(v.cost),status:"eingereicht",date:TODAY(),by:USERNAME});save();render();});
+}
 
 function cycleInvoice(i){const iv=DATA.invoices[i];
   iv.status = iv.status==="eingereicht"?"offen":(iv.status==="offen"?"bezahlt":"offen");save();render();}
 function foerderOptions(){return ["§35c EStG (Steuerbonus)"].concat(DATA.funding.map(f=>f.program));}
 function shortFoerder(s){if(!s)return"";if(/35c/.test(s))return"§35c";const m=s.match(/KfW\s?\d+|BAFA/i);return m?m[0]:s.split(/[ –-]/)[0];}
-function pickFoerderung(current){
-  const opts=foerderOptions();let msg="Welcher Förderung zuordnen?\n0 = Keine";
-  opts.forEach((o,i)=>{msg+="\n"+(i+1)+" = "+o;});
-  const ans=prompt(msg, current?String(opts.indexOf(current)+1):"0");
-  if(ans===null) return current||"";
-  const n=parseInt(ans);if(isNaN(n)||n<=0) return "";return opts[n-1]||"";
+function setInvoiceFoerderung(i){const iv=DATA.invoices[i];
+  showForm("Förderung zuordnen",[
+    {key:"foerderung",label:"Passende Förderung",type:"select",value:iv.foerderung||"",options:foerderSelect()}
+  ],v=>{iv.foerderung=v.foerderung;save();render();});
 }
-function setInvoiceFoerderung(i){DATA.invoices[i].foerderung=pickFoerderung(DATA.invoices[i].foerderung);save();render();}
 function foerderBreakdown(){
   const opts=foerderOptions();
   const rows=opts.map(o=>({o,sum:DATA.invoices.filter(x=>x.foerderung===o).reduce((s,x)=>s+x.amount,0)})).filter(r=>r.sum>0);
   if(!rows.length) return "";
   return `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 12px">${rows.map(r=>`<span class="badge b-blue">🏦 ${esc(shortFoerder(r.o))}: ${euro(r.sum)}</span>`).join("")}</div>`;
 }
+function supaUpload(file){return new Promise((res,rej)=>{
+  if(!SUPA){rej(new Error("kein Server"));return;}
+  const safe=Date.now()+"-"+file.name.replace(/[^\w.\-]+/g,"_");
+  fetch(SUPA_URL+"/storage/v1/object/app/docs/"+encodeURIComponent(safe),{method:"POST",
+    headers:{apikey:SUPA_KEY,"Authorization":"Bearer "+SUPA_KEY,"x-upsert":"true","Content-Type":file.type||"application/octet-stream"},body:file})
+    .then(r=>{if(!r.ok)throw new Error("Status "+r.status);res(SUPA_URL+"/storage/v1/object/public/app/docs/"+encodeURIComponent(safe));}).catch(rej);
+});}
 function submitInvoice(){
-  const vendor=prompt("Ihr Name / Firma (Gewerk):");if(!vendor)return;
-  const ref=prompt("Rechnungsnummer:","RE-2026-")||"";
-  const amount=parseInt(prompt("Rechnungsbetrag in €:","0"))||0;
-  const foerderung=pickFoerderung("");
-  DATA.invoices.push({vendor,ref,amount,status:"eingereicht",date:new Date().toISOString().slice(0,10),foerderung});
-  save();render();
-  alert("Danke! Ihre Rechnung wurde eingereicht und wird von der Energieberatung geprüft.");
+  showForm("Rechnung einreichen",[
+    {key:"vendor",label:"Ihr Name / Firma (Gewerk)",type:"text"},
+    {key:"ref",label:"Rechnungsnummer",type:"text",placeholder:"RE-…"},
+    {key:"amount",label:"Rechnungsbetrag (€)",type:"number",value:0},
+    {key:"purpose",label:"Wofür ist die Rechnung?",type:"text",placeholder:"z. B. Wärmepumpe, Fenster, Elektro …"},
+    {key:"file",label:"Rechnung als PDF / Foto (optional)",type:"file",accept:"application/pdf,image/*"}
+  ],(v,ctx)=>{
+    if(!v.vendor)return false;
+    const inv={vendor:v.vendor,ref:v.ref,amount:num(v.amount),status:"eingereicht",date:TODAY(),foerderung:"",purpose:v.purpose,by:USERNAME};
+    DATA.invoices.push(inv);save();render();
+    const f=ctx.files.file; if(f) supaUpload(f).then(url=>{inv.url=url;save();render();}).catch(()=>{});
+  });
 }
-function addInvoice(){const vendor=prompt("Lieferant / Gewerk:");if(!vendor)return;const ref=prompt("Rechnungsnummer:","RE-2026-")||"";
-  const amount=parseInt(prompt("Betrag in €:","0"))||0;DATA.invoices.push({vendor,ref,amount,status:"offen",date:new Date().toISOString().slice(0,10)});save();render();}
 
 const PAY_FLOW=["geplant","offen","bezahlt"];
 function cyclePayment(i){const p=DATA.payments[i];const idx=PAY_FLOW.indexOf(p.status);p.status=PAY_FLOW[(idx+1)%PAY_FLOW.length];save();render();}
-function addPayment(){const label=prompt("Bezeichnung der Zahlung:");if(!label)return;const amount=parseInt(prompt("Betrag in €:","0"))||0;
-  const due=prompt("Fällig am (JJJJ-MM-TT):",new Date().toISOString().slice(0,10))||"";DATA.payments.push({label,amount,due,status:"geplant"});save();render();}
+function addPayment(){
+  showForm("Zahlung (Liquiditätsplanung)",[
+    {key:"label",label:"Bezeichnung",type:"text",placeholder:"z. B. Abschlag Wärmepumpe"},
+    {key:"amount",label:"Betrag (€)",type:"number",value:0},
+    {key:"due",label:"Fällig am",type:"date",value:TODAY()},
+    {key:"status",label:"Status",type:"select",value:"geplant",options:[{value:"geplant",label:"Geplant"},{value:"offen",label:"Offen"},{value:"bezahlt",label:"Bezahlt"}]}
+  ],v=>{if(!v.label)return false;DATA.payments.push({label:v.label,amount:num(v.amount),due:v.due,status:v.status});save();render();});
+}
 
 const FUND_FLOW=["eingereicht","pruefung","genehmigt"];
 function cycleFunding(i){const f=DATA.funding[i];if(f.status==="abgelehnt"){f.status="eingereicht";save();render();return;}
   const idx=FUND_FLOW.indexOf(f.status);f.status=idx<FUND_FLOW.length-1?FUND_FLOW[idx+1]:"abgelehnt";save();render();}
-function addFunding(){const program=prompt("Förderprogramm:");if(!program)return;const amount=parseInt(prompt("Fördersumme in €:","0"))||0;
-  const note=prompt("Notiz:","Antrag eingereicht.")||"";DATA.funding.push({program,amount,status:"eingereicht",note,date:new Date().toISOString().slice(0,10)});save();render();}
+function addFunding(){
+  showForm("Neue Förderung",[
+    {key:"program",label:"Förderprogramm",type:"text",placeholder:"z. B. BAFA Heizungsförderung (Wärmepumpe)"},
+    {key:"amount",label:"Fördersumme (€)",type:"number",value:0},
+    {key:"status",label:"Status",type:"select",value:"eingereicht",options:[{value:"eingereicht",label:"Eingereicht"},{value:"pruefung",label:"In Prüfung"},{value:"genehmigt",label:"Genehmigt"}]},
+    {key:"note",label:"Notiz",type:"textarea"}
+  ],v=>{if(!v.program)return false;DATA.funding.push({program:v.program,amount:num(v.amount),status:v.status,note:v.note,date:TODAY()});save();render();});
+}
 
 function addTermin(){
-  const t=prompt("Art wählen:\n1 = Aktivität (Balken im Gantt)\n2 = Meilenstein (Raute)\n3 = Vor-Ort-Termin","3");
-  if(t===null) return;
-  const title=prompt("Titel:"); if(!title) return;
-  const choice=(t||"").trim();
-  if(choice==="1"){
-    const start=prompt("Start (JJJJ-MM-TT):",new Date().toISOString().slice(0,10))||"";
-    const end=prompt("Ende (JJJJ-MM-TT):",start)||start;
-    DATA.meetings.push({title,type:"aktivitaet",date:start,end});
-  } else if(choice==="2"){
-    const date=prompt("Datum (JJJJ-MM-TT):",new Date().toISOString().slice(0,10))||"";
-    DATA.meetings.push({title,type:"meilenstein",date});
-  } else {
-    const date=prompt("Datum & Uhrzeit (JJJJ-MM-TTThh:mm), z. B. 2026-06-20T10:00:",new Date().toISOString().slice(0,16))||"";
-    const place=prompt("Ort:","Baustelle Südring 50, vor Ort")||"";
-    const who=prompt("Teilnehmer:","Energieberatung, Bauherr")||"";
-    DATA.meetings.push({title,type:"vorort",date,place,who});
-  }
-  save();render();
+  const fields=[
+    {key:"typ",label:"Art",type:"select",value:"vorort",options:[
+      {value:"vorort",label:"📍 Vor-Ort-Termin"},
+      {value:"online",label:"💻 Online-Besprechung (Zoom)"},
+      {value:"aktivitaet",label:"📊 Aktivität (Balken im Gantt)"},
+      {value:"meilenstein",label:"◆ Meilenstein"}]},
+    {key:"title",label:"Titel",type:"text"},
+    {key:"date",label:"Datum",type:"date",value:TODAY()},
+    {key:"time",label:"Uhrzeit",type:"time",value:"10:00"},
+    {key:"end",label:"Ende (bei Aktivität)",type:"date",value:TODAY()},
+    {key:"place",label:"Ort / Link",type:"text",value:"Baustelle Südring 50, vor Ort"},
+    {key:"who",label:"Teilnehmer",type:"text"}
+  ];
+  fields.__onChange=(v,{setRowShow})=>{const meet=v.typ==='vorort'||v.typ==='online';
+    setRowShow('time',meet);setRowShow('place',meet);setRowShow('who',meet);setRowShow('end',v.typ==='aktivitaet');};
+  showForm("Neuer Eintrag",fields,v=>{
+    if(!v.title)return false;
+    if(v.typ==='aktivitaet')DATA.meetings.push({title:v.title,type:"aktivitaet",date:v.date,end:v.end||v.date});
+    else if(v.typ==='meilenstein')DATA.meetings.push({title:v.title,type:"meilenstein",date:v.date});
+    else DATA.meetings.push({title:v.title,type:v.typ,date:v.date+(v.time?("T"+v.time):""),place:v.place,who:v.who});
+    save();render();
+  });
 }
 function delMeeting(i){if(confirm("Eintrag löschen?")){DATA.meetings.splice(i,1);save();render();}}
 
-function addContact(){const name=prompt("Name / Firma:");if(!name)return;const role=prompt("Rolle / Gewerk:")||"";
-  const phone=prompt("Telefon:","+49 ")||"";const email=prompt("E-Mail:")||"";
-  const tones=["#173a5e","#1f9d6b","#c9912b","#3a8f8f","#7d5ba6","#b9784a","#2d6fb8"];
-  DATA.contacts.push({name,role,phone,email,tone:tones[DATA.contacts.length%tones.length]});save();render();}
+function addContact(){
+  showForm("Beteiligten hinzufügen",[
+    {key:"name",label:"Name / Firma",type:"text"},
+    {key:"role",label:"Rolle / Gewerk",type:"text"},
+    {key:"phone",label:"Telefon",type:"text",placeholder:"+49 …"},
+    {key:"email",label:"E-Mail",type:"text"}
+  ],v=>{if(!v.name)return false;DATA.contacts.push({name:v.name,role:v.role,phone:v.phone,email:v.email,tone:TONES[DATA.contacts.length%TONES.length]});save();render();});
+}
+function editContact(i){const c=DATA.contacts[i];
+  showForm("Beteiligten bearbeiten",[
+    {key:"name",label:"Name / Firma",type:"text",value:c.name},
+    {key:"role",label:"Rolle / Gewerk",type:"text",value:c.role},
+    {key:"phone",label:"Telefon",type:"text",value:c.phone},
+    {key:"email",label:"E-Mail",type:"text",value:c.email}
+  ],v=>{if(!v.name)return false;c.name=v.name;c.role=v.role;c.phone=v.phone;c.email=v.email;save();render();});
+}
+function delContact(i){if(confirm("Kontakt löschen?")){DATA.contacts.splice(i,1);save();render();}}
 
 function addDoc(){const name=prompt("Dokument-Name:");if(!name)return;const type=prompt("Typ (Angebot / Plan / Dokument):","Angebot")||"Dokument";
   const note=prompt("Notiz:")||"";DATA.documents.unshift({name,type,note,date:new Date().toISOString().slice(0,10)});save();render();}
@@ -861,7 +957,7 @@ function editMatterport(){const url=prompt("Matterport Einbettungs-Link (https:/
 
 function uploadPhotos(ev){const files=[...ev.target.files];if(!files.length)return;let pending=files.length;
   files.forEach(file=>{const reader=new FileReader();reader.onload=e=>{compressImage(e.target.result,1100,0.7).then(src=>{
-    const cap=prompt("Bildunterschrift:",file.name.replace(/\.[^.]+$/,""))||"Foto";
+    const cap=file.name.replace(/\.[^.]+$/,"")+" · "+new Date().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});
     if(SUPA){
       const path = Date.now()+"_"+Math.random().toString(36).slice(2,8)+".jpg";
       fetch(SUPA_URL+"/storage/v1/object/"+SUPA_BUCKET+"/"+path,{
