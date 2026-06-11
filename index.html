@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Südring 50 · Bauportal</title>
+<meta name="description" content="Bauportal Vollsanierung Südring 50, Seligenstadt – Fortschritt, Medien, Finanzen, Termine & Kommunikation." />
+
+<!-- PWA / Homescreen -->
+<meta name="theme-color" content="#0f2742" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Südring 50" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230f2742'/%3E%3Ctext x='90' y='120' font-size='80' font-family='Arial,sans-serif' font-weight='700' fill='%23e0a83e' text-anchor='middle'%3ES50%3C/text%3E%3C/svg%3E" />
+
+<style>
+:root{
+  --navy:#0f2742; --navy-2:#173a5e; --gold:#e0a83e; --gold-2:#c9912b;
+  --bg:#f4f6f9; --card:#ffffff; --line:#e4e9f0; --txt:#1c2733; --muted:#697787;
+  --green:#1f9d6b; --green-bg:#e6f6ef; --amber:#e0972a; --amber-bg:#fdf2dd;
+  --red:#d6493b; --red-bg:#fbe7e4; --blue:#2d6fb8; --blue-bg:#e6f0fa;
+  --shadow:0 1px 3px rgba(16,38,66,.06),0 6px 20px rgba(16,38,66,.06);
+  --radius:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--txt);line-height:1.5;padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;font-size:16px}
+.hidden{display:none!important}
+img{max-width:100%}
+a{color:var(--blue)}
+
+/* LOGIN */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 60%,#214c78 100%)}
+.login-card{width:100%;max-width:380px;background:var(--card);border-radius:22px;padding:30px 26px 26px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+.logo{width:46px;height:46px;border-radius:12px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex-shrink:0}
+.brand small{color:var(--muted);font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+.brand b{font-size:16px}
+.login-card h1{font-size:21px;margin:18px 0 2px}
+.login-card .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+.role-tabs{display:flex;gap:8px;margin-bottom:16px}
+.role-tabs button{flex:1;padding:11px 8px;border:1.5px solid var(--line);border-radius:12px;font-weight:600;font-size:14px;color:var(--muted);background:#fafbfc;transition:.15s}
+.role-tabs button.active{border-color:var(--navy);color:var(--navy);background:#fff;box-shadow:var(--shadow)}
+.role-tabs button .em{display:block;font-size:18px;margin-bottom:2px}
+label.fld{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:0 0 6px}
+.input{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fafbfc;margin-bottom:14px}
+.input:focus{outline:none;border-color:var(--navy);background:#fff}
+.btn-primary{width:100%;padding:14px;background:var(--navy);color:#fff;border-radius:12px;font-weight:700;font-size:15px;transition:.15s}
+.btn-primary:hover{background:var(--navy-2)}
+.login-err{color:var(--red);font-size:13.5px;margin:-4px 0 12px;min-height:18px}
+.hint{margin-top:18px;padding:12px 14px;background:#f3f6fa;border-radius:12px;font-size:12.5px;color:var(--muted);line-height:1.55}
+.hint b{color:var(--txt)}
+
+/* SHELL */
+#app{max-width:760px;margin:0 auto;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:30;background:var(--navy);color:#fff;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;display:flex;align-items:center;gap:12px}
+.topbar .logo{width:38px;height:38px;font-size:14px}
+.topbar .t-meta{flex:1;min-width:0}
+.topbar .t-meta b{display:block;font-size:15px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .t-meta span{font-size:12px;color:#a9c0db}
+.rolepill{font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,.14);color:#fff;white-space:nowrap}
+.icon-btn{color:#cdddef;font-size:13px;font-weight:600;padding:6px 8px;border-radius:8px}
+.icon-btn:hover{background:rgba(255,255,255,.1)}
+main{padding:16px 16px 94px}
+.view{animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2.vt{font-size:20px;margin:4px 0 2px}
+.vsub{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 12px;font-size:15px;display:flex;align-items:center;gap:8px}
+.card h3 .c-act{margin-left:auto;font-size:12.5px;color:var(--blue);font-weight:600;cursor:pointer}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap}
+.b-green{background:var(--green-bg);color:var(--green)}
+.b-amber{background:var(--amber-bg);color:var(--amber)}
+.b-red{background:var(--red-bg);color:var(--red)}
+.b-blue{background:var(--blue-bg);color:var(--blue)}
+.b-gray{background:#eef1f5;color:var(--muted)}
+
+.hero{background:linear-gradient(150deg,var(--navy),#21507f);color:#fff;border:none}
+.hero h3{color:#fff}
+.hero .big{font-size:40px;font-weight:800;line-height:1}
+.hero .big small{font-size:16px;font-weight:600;color:#bcd2ea}
+.pbar{height:10px;border-radius:8px;background:rgba(255,255,255,.18);overflow:hidden;margin:14px 0 6px}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#f0c46a);border-radius:8px;transition:width .6s}
+.hero .meta{display:flex;justify-content:space-between;font-size:12.5px;color:#bcd2ea;margin-top:2px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.1);border-radius:12px;padding:11px 10px;text-align:center}
+.kpi b{display:block;font-size:18px}
+.kpi span{font-size:11px;color:#bcd2ea}
+
+.tl{position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl-item{position:relative;padding:0 0 18px}
+.tl-item:last-child{padding-bottom:2px}
+.tl-dot{position:absolute;left:-26px;top:2px;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
+.dot-done{background:var(--green)} .dot-prog{background:var(--gold)} .dot-up{background:#cfd8e2} .dot-late{background:var(--red)}
+.tl-item h4{margin:0;font-size:14.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tl-dates{font-size:12.5px;color:var(--muted);margin-top:3px}
+.tl-dates .delta{color:var(--red);font-weight:600}
+.tl-dates .ok{color:var(--green);font-weight:600}
+
+.row{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row .r-main{flex:1;min-width:0}
+.row .r-main b{font-size:14.5px}
+.row .r-main p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+.row .r-right{text-align:right;flex-shrink:0}
+.amount{font-weight:700;font-size:14.5px;white-space:nowrap}
+
+.fin-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.fin-box{background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.fin-box b{display:block;font-size:18px} .fin-box span{font-size:11.5px;color:var(--muted)}
+
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gal .ph{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#e8edf3;cursor:pointer}
+.gal .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.gal .ph .cap{position:absolute;left:0;right:0;bottom:0;padding:14px 6px 4px;font-size:10px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.65));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uploadtile{aspect-ratio:1;border:2px dashed #c4d0dd;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:12px;gap:4px;background:#fafcff;cursor:pointer}
+.uploadtile:hover{border-color:var(--navy);color:var(--navy)}
+.uploadtile .pl{font-size:24px;line-height:1}
+
+.cmt{display:flex;gap:11px;padding:13px 0;border-bottom:1px solid var(--line)}
+.cmt:last-child{border-bottom:none}
+.av{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+.cmt .c-body{flex:1;min-width:0}
+.cmt .c-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.cmt .c-head b{font-size:14px}
+.cmt .c-head .role{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:20px;background:#eef1f5;color:var(--muted)}
+.cmt .c-head time{font-size:11.5px;color:var(--muted)}
+.cmt p{margin:4px 0 0;font-size:14px}
+.composer{display:flex;gap:8px;margin-top:14px}
+.composer textarea{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px;resize:none;background:#fafbfc;min-height:44px}
+.composer textarea:focus{outline:none;border-color:var(--navy);background:#fff}
+.send{background:var(--navy);color:#fff;border-radius:12px;padding:0 18px;font-weight:700;flex-shrink:0}
+
+.mp-frame{border-radius:14px;overflow:hidden;border:1px solid var(--line);aspect-ratio:16/10;background:#0c1722;display:flex;align-items:center;justify-content:center;text-align:center;color:#9fb4cb}
+.mp-frame iframe{width:100%;height:100%;border:0;display:block}
+.mp-cta{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:var(--gold);color:#3a2c08;padding:11px 18px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none}
+
+.btn-sm{font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:10px;background:var(--navy);color:#fff}
+.btn-ghost{background:#eef2f7;color:var(--navy)}
+
+/* contacts */
+.contact{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.contact:last-child{border-bottom:none}
+.contact .c-info{flex:1;min-width:0}
+.contact .c-info b{font-size:14.5px}
+.contact .c-info p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.callbtns{display:flex;gap:8px;flex-shrink:0}
+.callbtns a{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none}
+.callbtns .call{background:var(--green-bg);color:var(--green)}
+.callbtns .mail{background:var(--blue-bg);color:var(--blue)}
+
+/* meetings */
+.mtg{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
+.mtg:last-child{border-bottom:none}
+.mtg .date-chip{width:54px;flex-shrink:0;text-align:center;background:#f3f6fa;border:1px solid var(--line);border-radius:12px;padding:7px 2px}
+.mtg .date-chip .d{font-size:20px;font-weight:800;line-height:1}
+.mtg .date-chip .m{font-size:11px;color:var(--muted);text-transform:uppercase}
+.mtg .m-info b{font-size:14.5px}
+.mtg .m-info p{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
+
+/* documents */
+.doc{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.doc:last-child{border-bottom:none}
+.doc .d-ic{width:40px;height:40px;border-radius:10px;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.doc .d-info{flex:1;min-width:0}
+.doc .d-info b{font-size:14px}
+.doc .d-info p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 2px calc(env(safe-area-inset-bottom) + 6px);max-width:760px;margin:0 auto}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:9.5px;font-weight:600;padding:5px 0;border-radius:10px}
+.nav button .ic{font-size:18px;line-height:1}
+.nav button.active{color:var(--navy)}
+
+.modal{position:fixed;inset:0;z-index:80;background:rgba(8,18,32,.88);display:flex;align-items:center;justify-content:center;padding:20px}
+.modal img{max-width:100%;max-height:80vh;border-radius:12px}
+.modal .x{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:18px;color:#fff;font-size:30px;width:40px;height:40px}
+.modal .mcap{position:absolute;bottom:30px;left:0;right:0;text-align:center;color:#cdddef;font-size:13px;padding:0 20px}
+
+/* install sheet */
+.sheet-bg{position:fixed;inset:0;z-index:90;background:rgba(8,18,32,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:22px 22px calc(env(safe-area-inset-bottom) + 22px);box-shadow:0 -10px 40px rgba(0,0,0,.3);animation:up .3s ease}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.sheet .s-ico{width:58px;height:58px;border-radius:15px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin:0 auto 12px}
+.sheet h3{text-align:center;margin:0 0 6px;font-size:18px}
+.sheet p{text-align:center;color:var(--muted);font-size:14px;margin:0 0 16px}
+.steps{background:#f5f8fc;border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.steps .st{display:flex;gap:11px;align-items:flex-start;padding:7px 0;font-size:14px}
+.steps .st b{width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.steps .st . share-ic{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#007aff;color:#fff;border-radius:6px;font-size:13px;vertical-align:middle}
+.sheet .btn-primary{margin-bottom:8px}
+.sheet .dismiss{width:100%;text-align:center;color:var(--muted);font-size:14px;font-weight:600;padding:10px}
+
+/* install banner */
+.installbar{display:flex;align-items:center;gap:12px;background:linear-gradient(120deg,var(--gold),#f0c46a);color:#3a2c08;padding:12px 14px;border-radius:14px;margin-bottom:14px;box-shadow:var(--shadow)}
+.installbar .ib-txt{flex:1;font-size:13.5px;font-weight:600;line-height:1.35}
+.installbar button{background:var(--navy);color:#fff;font-weight:700;font-size:13px;padding:9px 14px;border-radius:10px;flex-shrink:0}
+.installbar .ib-close{background:transparent;color:#6b541a;font-size:18px;padding:4px 6px}
+
+/* welcome / marketing */
+.welcome{position:relative;border:none;color:#fff;overflow:hidden;padding:0;background:linear-gradient(135deg,#0f2742,#21507f 58%,#2d6fb8)}
+.welcome .w-inner{position:relative;z-index:2;padding:24px 20px 22px}
+.welcome::after{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(circle at 82% 18%,rgba(224,168,62,.28),transparent 55%)}
+.welcome .eyebrow{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:800}
+.welcome h2{margin:8px 0 3px;font-size:30px;font-weight:800;letter-spacing:-.6px}
+.welcome .addr{color:#cfe0f2;font-size:13.5px}
+.welcome .w-greet{margin-top:14px;font-size:14.5px;color:#eaf2fb;line-height:1.5}
+.welcome .w-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.welcome .w-tags span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:20px}
+.strip-title{font-size:12.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:0 0 11px;display:flex;align-items:center;gap:7px}
+.strip-title .c-act{margin-left:auto;color:var(--blue);font-size:12px;cursor:pointer;text-transform:none;letter-spacing:0}
+.hscroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.hscroll::-webkit-scrollbar{display:none}
+.pcard{flex:0 0 150px;scroll-snap-align:start;border-radius:14px;overflow:hidden;background:#e8edf3;position:relative;height:115px;cursor:pointer;box-shadow:var(--shadow)}
+.pcard img{width:100%;height:100%;object-fit:cover}
+.pcard .emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px}
+.pcard .pc-cap{position:absolute;left:0;right:0;bottom:0;padding:18px 9px 7px;font-size:10.5px;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.72));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
+.adminbar{background:var(--gold-2);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:6px}
+hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
+.next-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.next-strip .ns{background:rgba(255,255,255,.1);border-radius:12px;padding:11px 12px}
+.next-strip .ns .lbl{font-size:10.5px;color:#bcd2ea;text-transform:uppercase;letter-spacing:.4px}
+.next-strip .ns b{display:block;font-size:14px;margin-top:3px;line-height:1.25}
+.next-strip .ns span{font-size:12px;color:#dceaf7}
+@media(min-width:560px){.gal,.kpis{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <div class="brand"><div class="logo">JJ</div><div><b>JJ Real Estate</b><br><small>Bauportal</small></div></div>
+    <h1>Südring 50</h1>
+    <div class="sub">Vollsanierung · Seligenstadt</div>
+    <div class="role-tabs" id="roleTabs">
+      <button data-role="bauherr" class="active"><span class="em">🏠</span>Bauherr</button>
+      <button data-role="admin"><span class="em">🔑</span>Bauleitung</button>
+    </div>
+    <label class="fld">Passwort</label>
+    <input id="pw" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
+    <div class="login-err" id="loginErr"></div>
+    <button class="btn-primary" id="loginBtn">Anmelden</button>
+    <div class="hint">
+      <b>Demo-Zugänge (Prototyp):</b><br>
+      Bauherr · Passwort: <b>suedring</b><br>
+      Bauleitung · Passwort: <b>baustelle50</b>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <div class="topbar">
+    <div class="logo">JJ</div>
+    <div class="t-meta"><b>Südring 50 · Vollsanierung</b><span>Seligenstadt</span></div>
+    <span class="rolepill" id="rolePill">Bauherr</span>
+    <button class="icon-btn" id="logoutBtn">Logout</button>
+  </div>
+  <div class="adminbar hidden" id="adminBar">Bearbeitungsmodus aktiv – Änderungen werden lokal gespeichert</div>
+  <main id="main"></main>
+  <nav class="nav" id="nav">
+    <button data-tab="status" class="active"><span class="ic">📊</span>Status</button>
+    <button data-tab="zeit"><span class="ic">📅</span>Termine</button>
+    <button data-tab="medien"><span class="ic">📷</span>Medien</button>
+    <button data-tab="finanzen"><span class="ic">💶</span>Finanzen</button>
+    <button data-tab="kontakte"><span class="ic">📇</span>Kontakte</button>
+    <button data-tab="kommentare"><span class="ic">💬</span>Dialog</button>
+  </nav>
+</div>
+
+<script>
+const STORE_KEY="suedring50_data_v2", SESSION_KEY="suedring50_session";
+const PASSWORDS={bauherr:"suedring",admin:"baustelle50"};
+const ROLE_LABEL={bauherr:"Bauherr",admin:"Bauleitung"};
+
+function seedData(){
+  return {
+    project:{name:"Südring 50",subtitle:"Vollsanierung · Seligenstadt",progress:58,start:"2026-03-02",planEnd:"2026-10-30",
+      statusText:"Innenausbau läuft – Elektro- und Sanitär-Rohinstallation abgeschlossen, Trockenbau in Arbeit.",statusBadge:"prog",matterport:"https://my.matterport.com/show/?m=SxQL3iGyvQk"},
+    phases:[
+      {name:"Entkernung & Abbruch",planStart:"2026-03-02",planEnd:"2026-03-27",actEnd:"2026-03-25",status:"done"},
+      {name:"Rohbau / Statik & Durchbrüche",planStart:"2026-03-30",planEnd:"2026-04-24",actEnd:"2026-04-29",status:"done"},
+      {name:"Fenster & Dachsanierung",planStart:"2026-04-27",planEnd:"2026-05-22",actEnd:"2026-05-20",status:"done"},
+      {name:"Elektro & Sanitär (Rohinstallation)",planStart:"2026-05-25",planEnd:"2026-06-19",actEnd:"",status:"prog"},
+      {name:"Trockenbau & Dämmung",planStart:"2026-06-08",planEnd:"2026-07-10",actEnd:"",status:"prog"},
+      {name:"Estrich & Putzarbeiten",planStart:"2026-07-13",planEnd:"2026-08-07",actEnd:"",status:"up"},
+      {name:"Fliesen, Maler & Bodenbeläge",planStart:"2026-08-10",planEnd:"2026-09-18",actEnd:"",status:"up"},
+      {name:"Endmontage Bad/Küche & Abnahme",planStart:"2026-09-21",planEnd:"2026-10-30",actEnd:"",status:"up"}
+    ],
+    meetings:[
+      {title:"Baubesprechung – Trockenbau & Elektro-Abnahme",date:"2026-06-16T10:00",place:"Baustelle Südring 50, vor Ort",who:"Bauleitung, Elektro Vogt, Bauherr"},
+      {title:"Bemusterung Fliesen & Bodenbeläge",date:"2026-06-25T14:30",place:"Showroom Fliesen Süd, Hanau",who:"Bauherr, Bauleitung"},
+      {title:"Aufmaß Küche",date:"2026-07-08T09:00",place:"Baustelle Südring 50, vor Ort",who:"Küchenstudio Meyer, Bauherr"},
+      {title:"Zwischenabnahme Estrich",date:"2026-08-10T11:00",place:"Baustelle Südring 50, vor Ort",who:"Bauleitung, Estrich-Team"}
+    ],
+    changes:[
+      {title:"Fußbodenheizung statt Heizkörper im EG",desc:"Wunsch Bauherr – Umplanung Heizkreisverteiler.",cost:4200,status:"genehmigt",date:"2026-05-12"},
+      {title:"Bodentiefe Dusche im Bad OG",desc:"Statt Badewanne, barrierearm.",cost:1850,status:"genehmigt",date:"2026-05-28"},
+      {title:"Zusätzliche Steckdosen Arbeitszimmer",desc:"6 Doppelsteckdosen + 2 Netzwerkdosen.",cost:540,status:"pruefung",date:"2026-06-05"},
+      {title:"Echtholzparkett statt Vinyl im Wohnbereich",desc:"Materialupgrade, Preisdifferenz wird geprüft.",cost:3100,status:"eingereicht",date:"2026-06-09"}
+    ],
+    invoices:[
+      {vendor:"Abbruch Wagner GmbH",ref:"RE-2026-0312",amount:8900,status:"bezahlt",date:"2026-03-28",foerderung:""},
+      {vendor:"Rohbau Hartmann & Sohn",ref:"RE-2026-0419",amount:22400,status:"bezahlt",date:"2026-04-30",foerderung:""},
+      {vendor:"Fenster Bauer (Süd)",ref:"RE-2026-0508",amount:17650,status:"bezahlt",date:"2026-05-23",foerderung:"§35c EStG (Steuerbonus)"},
+      {vendor:"Elektro Vogt",ref:"RE-2026-0611",amount:9450,status:"offen",date:"2026-06-11",foerderung:"KfW 261 – Wohngebäude-Kredit (EH 70 EE)"},
+      {vendor:"Sanitär Keller GmbH",ref:"RE-2026-0613",amount:11200,status:"offen",date:"2026-06-13",foerderung:"BAFA – Heizungsförderung (Wärmepumpe)"}
+    ],
+    payments:[
+      {label:"Abschlag Elektro Vogt (RE-0611)",amount:9450,due:"2026-06-18",status:"offen"},
+      {label:"Abschlag Sanitär Keller (RE-0613)",amount:11200,due:"2026-06-20",status:"offen"},
+      {label:"Abschlagszahlung Trockenbau (geplant)",amount:14500,due:"2026-07-15",status:"geplant"},
+      {label:"Estrich & Putz (geplant)",amount:9800,due:"2026-08-12",status:"geplant"}
+    ],
+    funding:[
+      {program:"KfW 261 – Wohngebäude-Kredit (EH 70 EE)",amount:120000,status:"genehmigt",note:"Zusage liegt vor, Auszahlung nach Baufortschritt.",date:"2026-02-18"},
+      {program:"BAFA – Heizungsförderung (Wärmepumpe)",amount:9000,status:"eingereicht",note:"Antrag eingereicht, Bestätigung ausstehend.",date:"2026-05-30"},
+      {program:"KfW 458 – Zuschuss Heizungstausch",amount:6750,status:"pruefung",note:"In Prüfung durch Förderstelle.",date:"2026-06-02"}
+    ],
+    contacts:[
+      {name:"Jarne van Gompel",role:"Bauleitung / JJ Real Estate",phone:"+49 151 23456789",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
+      {name:"Familie Bauherr",role:"Bauherr",phone:"+49 170 1112233",email:"bauherr@example.de",tone:"#1f9d6b"},
+      {name:"Elektro Vogt",role:"Elektroinstallation",phone:"+49 6182 998877",email:"info@elektro-vogt.de",tone:"#c9912b"},
+      {name:"Sanitär Keller GmbH",role:"Heizung / Sanitär",phone:"+49 6182 445566",email:"service@sanitaer-keller.de",tone:"#3a8f8f"},
+      {name:"Trockenbau Brandt",role:"Trockenbau & Dämmung",phone:"+49 6051 778899",email:"buero@trockenbau-brandt.de",tone:"#7d5ba6"},
+      {name:"Fliesen Süd",role:"Fliesen & Bäder",phone:"+49 6181 334455",email:"kontakt@fliesen-sued.de",tone:"#b9784a"},
+      {name:"Küchenstudio Meyer",role:"Küchenplanung",phone:"+49 6181 667788",email:"planung@kuechen-meyer.de",tone:"#2d6fb8"}
+    ],
+    documents:[
+      {name:"Angebot Trockenbau Brandt",type:"Angebot",date:"2026-05-18",note:"Trockenbau & Dämmung OG"},
+      {name:"Angebot Fliesen Süd",type:"Angebot",date:"2026-05-22",note:"Bad OG & Gäste-WC"},
+      {name:"Bauzeitenplan v3",type:"Plan",date:"2026-05-02",note:"Aktualisierte Terminplanung"}
+    ],
+    photos:[
+      {emoji:"🧱",cap:"Entkernung EG · 14.03",tone:"#b9784a"},
+      {emoji:"🏗️",cap:"Durchbruch tragende Wand · 18.04",tone:"#7d8794"},
+      {emoji:"🪟",cap:"Neue Fenster montiert · 19.05",tone:"#5d8bb0"},
+      {emoji:"🔌",cap:"Elektro Rohinstallation · 02.06",tone:"#c9912b"},
+      {emoji:"🚿",cap:"Sanitärleitungen Bad OG · 06.06",tone:"#3a8f8f"}
+    ],
+    comments:[
+      {author:"Bauleitung",role:"Bauleitung",text:"Willkommen im Bauportal! Hier seht ihr jederzeit den aktuellen Stand. Fragen gern direkt hier rein.",ts:"2026-05-20T09:10",tone:"#173a5e"},
+      {author:"Familie Bauherr",role:"Bauherr",text:"Super, danke! Die Fenster sehen klasse aus. Wann startet der Trockenbau im OG?",ts:"2026-05-21T18:42",tone:"#1f9d6b"},
+      {author:"Bauleitung",role:"Bauleitung",text:"Trockenbau OG beginnt kommende Woche, sobald die Elektro-Rohinstallation abgenommen ist.",ts:"2026-05-22T08:05",tone:"#173a5e"}
+    ]
+  };
+}
+
+/* ===== Supabase-Backend: geteilte Daten + Foto-Storage =====
+   Alle Geräte teilen sich eine Zeile (id=1) mit einem JSON-Blob.
+   Fällt Supabase aus, greift lokaler Browser-Speicher als Fallback. */
+const SUPA_URL = "https://uovhhhzrsaggjfklaaov.supabase.co";
+const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvdmhoaHpyc2FnZ2pma2xhYW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExODM5MzAsImV4cCI6MjA5Njc1OTkzMH0.wuQSFmKFYS3fMlHlHFh5ojmoyxUcShLCTbdjqAe91zw";
+const SUPA_BUCKET = "suedring50-fotos";
+const SUPA = !!(SUPA_URL && SUPA_KEY);
+const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content-Type":"application/json"};
+
+let DATA=load(), ROLE=null, TAB="status", selRole="bauherr", deferredInstall=null, saveTimer=null;
+
+function load(){
+  if(SUPA) return seedData(); // Platzhalter bis Server-Daten geladen sind
+  try{const r=localStorage.getItem(STORE_KEY);return r?JSON.parse(r):seedData();}catch(e){return seedData();}
+}
+function save(){
+  if(SUPA){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      fetch(SUPA_URL+"/rest/v1/suedring50_portal?id=eq.1",{
+        method:"PATCH",
+        headers:Object.assign({}, SUPA_HEAD, {Prefer:"return=minimal"}),
+        body:JSON.stringify({data:DATA, updated_at:new Date().toISOString()})
+      }).catch(e=>console.warn("save",e));
+    },600);
+    return;
+  }
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(DATA));}catch(e){alert("Speichern fehlgeschlagen (Speicher voll?).");}
+}
+function bootstrapServer(){
+  if(!SUPA) return;
+  fetch(SUPA_URL+"/rest/v1/suedring50_portal?id=eq.1&select=data",{headers:SUPA_HEAD})
+    .then(r=>r.json())
+    .then(rows=>{
+      const d = rows && rows[0] && rows[0].data;
+      if(d && Object.keys(d).length){ DATA=d; if(ROLE) render(); }
+      else { DATA=seedData(); save(); if(ROLE) render(); } // erste Befüllung der Datenbank
+    })
+    .catch(e=>console.warn("getData",e));
+}
+function dataURLtoBlob(dataUrl){
+  const parts=dataUrl.split(','); const mime=(parts[0].match(/:(.*?);/)||[])[1]||'image/jpeg';
+  const bin=atob(parts[1]); const len=bin.length; const arr=new Uint8Array(len);
+  for(let i=0;i<len;i++) arr[i]=bin.charCodeAt(i);
+  return new Blob([arr],{type:mime});
+}
+const isAdmin=()=>ROLE==="admin";
+const $=s=>document.querySelector(s);
+const euro=n=>"€"+Number(n).toLocaleString("de-DE",{maximumFractionDigits:0});
+function fdate(iso){if(!iso)return"–";const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"short",year:"numeric"});}
+function fdateShort(iso){if(!iso)return"–";const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});}
+function ftime(iso){const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"short"})+" · "+d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
+function fmeeting(iso){const d=new Date(iso);return d.toLocaleDateString("de-DE",{weekday:"short",day:"2-digit",month:"long"})+" · "+d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})+" Uhr";}
+function esc(s){return(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/864e5);}
+
+const STATUS_MAP={
+  done:{cls:"b-green",txt:"Abgeschlossen",dot:"dot-done"},prog:{cls:"b-amber",txt:"In Arbeit",dot:"dot-prog"},
+  up:{cls:"b-gray",txt:"Geplant",dot:"dot-up"},late:{cls:"b-red",txt:"Verzug",dot:"dot-late"},
+  genehmigt:{cls:"b-green",txt:"Genehmigt"},bezahlt:{cls:"b-green",txt:"Bezahlt"},
+  pruefung:{cls:"b-blue",txt:"In Prüfung"},eingereicht:{cls:"b-amber",txt:"Eingereicht"},
+  offen:{cls:"b-amber",txt:"Offen"},geplant:{cls:"b-gray",txt:"Geplant"},abgelehnt:{cls:"b-red",txt:"Abgelehnt"}
+};
+function badge(k){const m=STATUS_MAP[k]||{cls:"b-gray",txt:k};return `<span class="badge ${m.cls}">${m.txt}</span>`;}
+
+/* LOGIN */
+$("#roleTabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;selRole=b.dataset.role;
+  document.querySelectorAll("#roleTabs button").forEach(x=>x.classList.toggle("active",x===b));$("#loginErr").textContent="";});
+$("#loginBtn").addEventListener("click",doLogin);
+$("#pw").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+function doLogin(){const pw=$("#pw").value.trim();if(pw===PASSWORDS[selRole])startSession(selRole);
+  else{$("#loginErr").textContent="Falsches Passwort für diese Rolle.";$("#pw").value="";$("#pw").focus();}}
+function startSession(role){ROLE=role;try{sessionStorage.setItem(SESSION_KEY,role);}catch(e){}
+  $("#login").classList.add("hidden");$("#app").classList.remove("hidden");
+  $("#rolePill").textContent=ROLE_LABEL[role];$("#adminBar").classList.toggle("hidden",role!=="admin");
+  render(); maybeOfferInstall();}
+$("#logoutBtn").addEventListener("click",()=>{ROLE=null;try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}
+  $("#app").classList.add("hidden");$("#login").classList.remove("hidden");$("#pw").value="";$("#loginErr").textContent="";});
+
+/* NAV */
+$("#nav").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;TAB=b.dataset.tab;
+  document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("active",x===b));render();});
+function go(tab){TAB=tab;document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===tab));render();}
+
+/* RENDER */
+function render(){
+  const m=$("#main");
+  const map={status:viewStatus,zeit:viewZeit,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte,kommentare:viewKommentare};
+  m.innerHTML=(map[TAB]||viewStatus)();
+  window.scrollTo({top:0});
+}
+
+function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
+function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due))[0];}
+
+/* STATUS */
+function viewStatus(){
+  const p=DATA.project;
+  const done=DATA.phases.filter(x=>x.status==="done").length;
+  const cur=DATA.phases.find(x=>x.status==="prog");
+  const openInv=DATA.invoices.filter(i=>i.status==="offen").reduce((s,i)=>s+i.amount,0);
+  const restDays=daysBetween(new Date().toISOString().slice(0,10),p.planEnd);
+  const openChanges=DATA.changes.filter(c=>c.status==="eingereicht"||c.status==="pruefung").length;
+  const nm=nextMeeting(), np=nextPayment();
+  const recent=DATA.photos.slice(0,6);
+  return `<div class="view">
+    ${installBanner()}
+
+    <div class="card welcome">
+      <div class="w-inner">
+        <div class="eyebrow">JJ Real Estate · Bauportal</div>
+        <h2>Südring 50</h2>
+        <div class="addr">Vollsanierung · Südring 50, 63500 Seligenstadt</div>
+        <div class="w-greet">${ROLE==='bauherr'?'Willkommen, Familie Bauherr! 👋':'Willkommen zurück! 👋'} Schön, dass Sie reinschauen – hier sehen Sie jederzeit live, wie aus Ihrem Haus ein Zuhause wird. 🏡</div>
+        <div class="w-tags"><span>📈 ${p.progress}% fertig</span><span>📅 Ziel ${fdate(p.planEnd)}</span><span>🌐 360°-Rundgang</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="strip-title">✨ Letzte Fortschritte <span class="c-act" onclick="go('medien')">Alle Bilder →</span></div>
+      <div class="hscroll">
+        ${recent.length?recent.map((ph,i)=>pcard(ph,i)).join(""):'<div class="empty" style="width:100%">Noch keine Bilder.</div>'}
+      </div>
+    </div>
+
+    <div class="card hero">
+      <h3>Gesamtfortschritt</h3>
+      <div class="big">${p.progress}<small>%</small></div>
+      <div class="pbar"><i style="width:${p.progress}%"></i></div>
+      <div class="meta"><span>Start ${fdate(p.start)}</span><span>Ziel ${fdate(p.planEnd)}</span></div>
+      <div class="kpis">
+        <div class="kpi"><b>${done}/${DATA.phases.length}</b><span>Phasen fertig</span></div>
+        <div class="kpi"><b>${restDays>0?restDays:0}</b><span>Tage bis Ziel</span></div>
+        <div class="kpi"><b>${openChanges}</b><span>offene Änderungen</span></div>
+      </div>
+      <div class="next-strip">
+        <div class="ns" onclick="go('zeit')" style="cursor:pointer"><div class="lbl">📅 Nächster Vor-Ort-Termin</div>
+          ${nm?`<b>${esc(nm.title)}</b><span>${fmeeting(nm.date)}</span>`:`<b>–</b><span>kein Termin</span>`}</div>
+        <div class="ns" onclick="go('finanzen')" style="cursor:pointer"><div class="lbl">💶 Nächste Zahlung</div>
+          ${np?`<b>${euro(np.amount)}</b><span>fällig ${fdate(np.due)}</span>`:`<b>–</b><span>keine offen</span>`}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📍 Aktueller Stand ${isAdmin()?'<span class="c-act" onclick="editStatus()">Bearbeiten</span>':''}</h3>
+      <div style="margin-bottom:10px">${badge(p.statusBadge)}</div>
+      <p style="margin:0;font-size:14.5px">${esc(p.statusText)}</p>
+      ${cur?`<hr class="sep"><div style="font-size:13px;color:var(--muted)">Aktive Phase</div><b style="font-size:15px">${esc(cur.name)}</b>`:''}
+    </div>
+
+    <div class="card">
+      <h3>🔧 Änderungsanfragen <span class="c-act" onclick="go('zeit')">Alle ansehen</span></h3>
+      ${DATA.changes.slice(0,3).map(c=>`<div class="row"><div class="r-main"><b>${esc(c.title)}</b><p>${euro(c.cost)} · ${fdate(c.date)}</p></div><div class="r-right">${badge(c.status)}</div></div>`).join("")}
+    </div>
+
+    <div class="card">
+      <h3>💶 Finanzen kompakt <span class="c-act" onclick="go('finanzen')">Details</span></h3>
+      <div class="row"><div class="r-main"><b>Offene Rechnungen</b></div><div class="r-right amount">${euro(openInv)}</div></div>
+      <div class="row"><div class="r-main"><b>Fördermittel zugesagt</b></div><div class="r-right amount" style="color:var(--green)">${euro(DATA.funding.filter(f=>f.status==='genehmigt').reduce((s,f)=>s+f.amount,0))}</div></div>
+    </div>
+  </div>`;
+}
+
+/* ZEIT / TERMINE / ÄNDERUNGEN */
+function viewZeit(){
+  const upcoming=DATA.meetings.slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+  return `<div class="view">
+    <h2 class="vt">Termine & Zeitplan</h2>
+    <p class="vsub">Vor-Ort-Termine, Soll-/Ist-Bauphasen und Änderungsanfragen.</p>
+
+    <div class="card">
+      <h3>🤝 Vor-Ort-Termine ${isAdmin()?'<span class="c-act" onclick="addMeeting()">+ Termin</span>':''}</h3>
+      ${upcoming.length?upcoming.map((mt,i)=>{const d=new Date(mt.date);const past=d<Date.now()-36e5;
+        return `<div class="mtg" style="${past?'opacity:.5':''}">
+          <div class="date-chip"><div class="d">${d.getDate()}</div><div class="m">${d.toLocaleDateString("de-DE",{month:"short"})}</div></div>
+          <div class="m-info"><b>${esc(mt.title)}</b>
+            <p>🕒 ${fmeeting(mt.date)}</p>
+            <p>📍 ${esc(mt.place)}</p>
+            <p>👥 ${esc(mt.who)}</p>
+            ${isAdmin()?`<p><a onclick="delMeeting(${DATA.meetings.indexOf(mt)})" style="color:var(--red);font-weight:600">löschen</a></p>`:''}
+          </div></div>`;}).join(""):'<div class="empty">Keine Termine eingetragen.</div>'}
+    </div>
+
+    <div class="card">
+      <h3>📅 Bauphasen (Soll/Ist)</h3>
+      <div class="tl">
+        ${DATA.phases.map((ph,i)=>{const m=STATUS_MAP[ph.status];let delta="";
+          if(ph.status==="done"&&ph.actEnd){const d=daysBetween(ph.planEnd,ph.actEnd);
+            delta=d>0?`<span class="delta">+${d} T Verzug</span>`:(d<0?`<span class="ok">${d} T früher</span>`:`<span class="ok">pünktlich</span>`);}
+          return `<div class="tl-item"><div class="tl-dot ${m.dot}"></div>
+            <h4>${esc(ph.name)} ${badge(ph.status)}</h4>
+            <div class="tl-dates">Plan: ${fdateShort(ph.planStart)}–${fdateShort(ph.planEnd)}${ph.actEnd?` · Ist-Ende: ${fdateShort(ph.actEnd)} `:""}${delta}
+              ${isAdmin()?` · <a style="font-weight:600" onclick="editPhase(${i})">ändern</a>`:""}</div></div>`;}).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔧 Änderungsanfragen <span class="c-act" onclick="addChange()">+ Neue Anfrage</span></h3>
+      ${DATA.changes.length?DATA.changes.map((c,i)=>`<div class="row">
+        <div class="r-main"><b>${esc(c.title)}</b><p>${esc(c.desc)}</p>
+          <p style="margin-top:4px"><b style="color:var(--txt)">${euro(c.cost)}</b> · eingereicht ${fdate(c.date)}</p></div>
+        <div class="r-right">${badge(c.status)}${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:8px" onclick="cycleChange(${i})">Status →</button>`:""}</div>
+      </div>`).join(""):'<div class="empty">Noch keine Änderungsanfragen.</div>'}
+    </div>
+  </div>`;
+}
+
+/* MEDIEN */
+function viewMedien(){
+  const mp=DATA.project.matterport;
+  return `<div class="view">
+    <h2 class="vt">Medien & Dokumente</h2>
+    <p class="vsub">360°-Rundgang, Baufortschritt-Fotos und Angebote.</p>
+
+    <div class="card">
+      <h3>🌐 360°-Rundgang (Matterport) ${isAdmin()?'<span class="c-act" onclick="editMatterport()">Link bearbeiten</span>':''}</h3>
+      <div class="mp-frame">
+        ${mp?`<iframe src="${esc(mp)}" allowfullscreen allow="xr-spatial-tracking"></iframe>`
+            :`<div style="padding:24px"><div style="font-size:34px">🏛️</div><div style="margin-top:8px">Noch kein Matterport-Link hinterlegt.${isAdmin()?'<br>Tippe oben auf „Link bearbeiten".':''}</div></div>`}
+      </div>
+      ${mp?`<a class="mp-cta" href="${esc(mp)}" target="_blank" rel="noopener">🔗 In Vollbild öffnen</a>`:""}
+    </div>
+
+    <div class="card">
+      <h3>📷 Baufortschritt-Galerie</h3>
+      <div class="gal">
+        ${isAdmin()?`<label class="uploadtile"><span class="pl">＋</span>Foto hochladen<input type="file" accept="image/*" multiple style="display:none" onchange="uploadPhotos(event)"></label>`:""}
+        ${DATA.photos.map((ph,i)=>photoTile(ph,i)).join("")}
+      </div>
+      ${!DATA.photos.length&&!isAdmin()?'<div class="empty">Noch keine Fotos hochgeladen.</div>':''}
+    </div>
+
+    <div class="card">
+      <h3>📄 Angebote & Dokumente ${isAdmin()?'<span class="c-act" onclick="addDoc()">+ Hinzufügen</span>':''}</h3>
+      ${DATA.documents.length?DATA.documents.map((d,i)=>`<div class="doc">
+        <div class="d-ic">${d.type==='Angebot'?'📑':(d.type==='Plan'?'📐':'📄')}</div>
+        <div class="d-info"><b>${esc(d.name)}</b><p>${esc(d.type)} · ${fdate(d.date)}${d.note?' · '+esc(d.note):''}</p></div>
+        ${isAdmin()?`<a onclick="delDoc(${i})" style="color:var(--red);font-weight:600;font-size:12.5px">löschen</a>`:''}
+      </div>`).join(""):'<div class="empty">Noch keine Dokumente.</div>'}
+    </div>
+  </div>`;
+}
+function pcard(ph,i){
+  const inner=ph.src?`<img src="${ph.src}" alt="">`
+    :`<div class="emoji" style="background:${ph.tone||'#5d8bb0'}1a;color:${ph.tone||'#5d8bb0'}">${ph.emoji||'📷'}</div>`;
+  return `<div class="pcard" onclick="go('medien')">${inner}<div class="pc-cap">${esc(ph.cap||'Foto')}</div></div>`;
+}
+function photoTile(ph,i){
+  const inner=ph.src?`<img src="${ph.src}" alt="">`
+    :`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;background:${ph.tone||'#5d8bb0'}1a;color:${ph.tone||'#5d8bb0'}">${ph.emoji||"📷"}</div>`;
+  return `<div class="ph" onclick="openPhoto(${i})">${inner}<div class="cap">${esc(ph.cap||"Foto")}</div></div>`;
+}
+
+/* FINANZEN */
+function viewFinanzen(){
+  const inv=DATA.invoices, total=inv.reduce((s,i)=>s+i.amount,0),
+    paid=inv.filter(i=>i.status==="bezahlt").reduce((s,i)=>s+i.amount,0),
+    open=inv.filter(i=>i.status==="offen").reduce((s,i)=>s+i.amount,0),
+    pruef=inv.filter(i=>i.status==="eingereicht").reduce((s,i)=>s+i.amount,0);
+  const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
+  const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
+  const pays=DATA.payments.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
+  return `<div class="view">
+    <h2 class="vt">Finanzen & Förderung</h2>
+    <p class="vsub">Zahlungsplan, Rechnungen und Fördermittel.</p>
+
+    <div class="card">
+      <h3>📆 Nächste Zahlungen ${isAdmin()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
+      ${pays.map((pm,i)=>{const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
+        return `<div class="row">
+          <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
+          <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
+          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cyclePayment(${DATA.payments.indexOf(pm)})">Status →</button>`:""}</div>
+        </div>`;}).join("")}
+    </div>
+
+    <div class="card">
+      <h3>💶 Rechnungen <span class="c-act" onclick="submitInvoice()">📤 Rechnung einreichen</span></h3>
+      <div class="fin-sum">
+        <div class="fin-box"><b style="color:var(--green)">${euro(paid)}</b><span>Bezahlt</span></div>
+        <div class="fin-box"><b style="color:var(--amber)">${euro(open)}</b><span>Offen</span></div>
+        <div class="fin-box"><b style="color:var(--blue)">${euro(pruef)}</b><span>In Prüfung</span></div>
+      </div>
+      ${foerderBreakdown()}
+      ${inv.map((iv,i)=>`<div class="row">
+        <div class="r-main"><b>${esc(iv.vendor)}</b><p>${esc(iv.ref)} · ${fdate(iv.date)}</p>
+          ${iv.foerderung?`<p style="margin-top:5px"><span class="badge b-blue">🏦 ${esc(shortFoerder(iv.foerderung))}</span></p>`:''}</div>
+        <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${badge(iv.status)}</div>
+        ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button><br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button>`:""}</div>
+      </div>`).join("")}
+    </div>
+
+    <div class="card">
+      <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
+      <div class="fin-sum">
+        <div class="fin-box"><b style="color:var(--green)">${euro(fundOK)}</b><span>Genehmigt</span></div>
+        <div class="fin-box"><b style="color:var(--blue)">${euro(fundPend)}</b><span>In Bearbeitung</span></div>
+        <div class="fin-box"><b>${euro(fundOK+fundPend)}</b><span>Potenzial</span></div>
+      </div>
+      ${DATA.funding.map((f,i)=>`<div class="row">
+        <div class="r-main"><b>${esc(f.program)}</b><p>${esc(f.note)}</p><p style="margin-top:3px">Eingereicht: ${fdate(f.date)}</p>
+          ${(()=>{const a=DATA.invoices.filter(x=>x.foerderung===f.program).reduce((s,x)=>s+x.amount,0);return a?`<p style="margin-top:4px">📎 Zugeordnete Rechnungen: <b style="color:var(--txt)">${euro(a)}</b></p>`:'';})()}</div>
+        <div class="r-right"><div class="amount">${euro(f.amount)}</div><div style="margin-top:5px">${badge(f.status)}</div>
+        ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleFunding(${i})">Status →</button>`:""}</div>
+      </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+/* KONTAKTE */
+function viewKontakte(){
+  return `<div class="view">
+    <h2 class="vt">Kontakte</h2>
+    <p class="vsub">Alle Beteiligten auf einen Blick – Anruf direkt antippen.</p>
+    <div class="card">
+      <h3>📇 Beteiligte ${isAdmin()?'<span class="c-act" onclick="addContact()">+ Hinzufügen</span>':''}</h3>
+      ${DATA.contacts.map((c,i)=>`<div class="contact">
+        <div class="av" style="background:${c.tone||'#173a5e'}">${esc((c.name||'?').slice(0,1).toUpperCase())}</div>
+        <div class="c-info"><b>${esc(c.name)}</b><p>${esc(c.role)}</p><p>${esc(c.phone||'')}</p></div>
+        <div class="callbtns">
+          ${c.phone?`<a class="call" href="tel:${esc(c.phone.replace(/\s/g,''))}">📞</a>`:''}
+          ${c.email?`<a class="mail" href="mailto:${esc(c.email)}">✉️</a>`:''}
+        </div>
+      </div>`).join("")}
+      ${isAdmin()?'':''}
+    </div>
+  </div>`;
+}
+
+/* KOMMENTARE */
+function viewKommentare(){
+  return `<div class="view">
+    <h2 class="vt">Dialog</h2>
+    <p class="vsub">Fragen und Abstimmung zwischen Bauherr und Bauleitung.</p>
+    <div class="card">
+      <div id="cmtList">
+        ${DATA.comments.map(c=>`<div class="cmt">
+          <div class="av" style="background:${c.tone||'#173a5e'}">${esc((c.author||'?').slice(0,1).toUpperCase())}</div>
+          <div class="c-body"><div class="c-head"><b>${esc(c.author)}</b><span class="role">${esc(c.role)}</span><time>${ftime(c.ts)}</time></div>
+          <p>${esc(c.text)}</p></div></div>`).join("")}
+      </div>
+      <div class="composer"><textarea id="cmtInput" rows="1" placeholder="Nachricht schreiben…"></textarea><button class="send" onclick="postComment()">Senden</button></div>
+    </div>
+  </div>`;
+}
+
+/* ACTIONS */
+function editStatus(){const t=prompt("Aktueller Stand:",DATA.project.statusText);if(t===null)return;DATA.project.statusText=t;
+  const pr=prompt("Fortschritt in % (0–100):",DATA.project.progress);if(pr!==null&&!isNaN(parseInt(pr)))DATA.project.progress=Math.max(0,Math.min(100,parseInt(pr)));save();render();}
+function editPhase(i){const ph=DATA.phases[i];const s=prompt("Status: done / prog / up / late",ph.status);if(s===null)return;
+  if(["done","prog","up","late"].includes(s.trim()))ph.status=s.trim();
+  if(ph.status==="done"){const a=prompt("Ist-Enddatum (JJJJ-MM-TT):",ph.actEnd||ph.planEnd);if(a!==null)ph.actEnd=a.trim();}save();render();}
+const CHANGE_FLOW=["eingereicht","pruefung","genehmigt"];
+function cycleChange(i){const c=DATA.changes[i];if(c.status==="abgelehnt"){c.status="eingereicht";save();render();return;}
+  const idx=CHANGE_FLOW.indexOf(c.status);c.status=idx<CHANGE_FLOW.length-1?CHANGE_FLOW[idx+1]:"abgelehnt";save();render();}
+function addChange(){const title=prompt("Titel der Änderungsanfrage:");if(!title)return;const desc=prompt("Beschreibung:")||"";
+  const cost=parseInt(prompt("Geschätzte Mehrkosten in € (0 wenn offen):","0"))||0;
+  DATA.changes.unshift({title,desc,cost,status:"eingereicht",date:new Date().toISOString().slice(0,10)});save();render();}
+
+function cycleInvoice(i){const iv=DATA.invoices[i];
+  iv.status = iv.status==="eingereicht"?"offen":(iv.status==="offen"?"bezahlt":"offen");save();render();}
+function foerderOptions(){return ["§35c EStG (Steuerbonus)"].concat(DATA.funding.map(f=>f.program));}
+function shortFoerder(s){if(!s)return"";if(/35c/.test(s))return"§35c";const m=s.match(/KfW\s?\d+|BAFA/i);return m?m[0]:s.split(/[ –-]/)[0];}
+function pickFoerderung(current){
+  const opts=foerderOptions();let msg="Welcher Förderung zuordnen?\n0 = Keine";
+  opts.forEach((o,i)=>{msg+="\n"+(i+1)+" = "+o;});
+  const ans=prompt(msg, current?String(opts.indexOf(current)+1):"0");
+  if(ans===null) return current||"";
+  const n=parseInt(ans);if(isNaN(n)||n<=0) return "";return opts[n-1]||"";
+}
+function setInvoiceFoerderung(i){DATA.invoices[i].foerderung=pickFoerderung(DATA.invoices[i].foerderung);save();render();}
+function foerderBreakdown(){
+  const opts=foerderOptions();
+  const rows=opts.map(o=>({o,sum:DATA.invoices.filter(x=>x.foerderung===o).reduce((s,x)=>s+x.amount,0)})).filter(r=>r.sum>0);
+  if(!rows.length) return "";
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 12px">${rows.map(r=>`<span class="badge b-blue">🏦 ${esc(shortFoerder(r.o))}: ${euro(r.sum)}</span>`).join("")}</div>`;
+}
+function submitInvoice(){
+  const vendor=prompt("Ihr Name / Firma (Gewerk):");if(!vendor)return;
+  const ref=prompt("Rechnungsnummer:","RE-2026-")||"";
+  const amount=parseInt(prompt("Rechnungsbetrag in €:","0"))||0;
+  const foerderung=pickFoerderung("");
+  DATA.invoices.push({vendor,ref,amount,status:"eingereicht",date:new Date().toISOString().slice(0,10),foerderung});
+  save();render();
+  alert("Danke! Ihre Rechnung wurde eingereicht und wird von der Bauleitung geprüft.");
+}
+function addInvoice(){const vendor=prompt("Lieferant / Gewerk:");if(!vendor)return;const ref=prompt("Rechnungsnummer:","RE-2026-")||"";
+  const amount=parseInt(prompt("Betrag in €:","0"))||0;DATA.invoices.push({vendor,ref,amount,status:"offen",date:new Date().toISOString().slice(0,10)});save();render();}
+
+const PAY_FLOW=["geplant","offen","bezahlt"];
+function cyclePayment(i){const p=DATA.payments[i];const idx=PAY_FLOW.indexOf(p.status);p.status=PAY_FLOW[(idx+1)%PAY_FLOW.length];save();render();}
+function addPayment(){const label=prompt("Bezeichnung der Zahlung:");if(!label)return;const amount=parseInt(prompt("Betrag in €:","0"))||0;
+  const due=prompt("Fällig am (JJJJ-MM-TT):",new Date().toISOString().slice(0,10))||"";DATA.payments.push({label,amount,due,status:"geplant"});save();render();}
+
+const FUND_FLOW=["eingereicht","pruefung","genehmigt"];
+function cycleFunding(i){const f=DATA.funding[i];if(f.status==="abgelehnt"){f.status="eingereicht";save();render();return;}
+  const idx=FUND_FLOW.indexOf(f.status);f.status=idx<FUND_FLOW.length-1?FUND_FLOW[idx+1]:"abgelehnt";save();render();}
+function addFunding(){const program=prompt("Förderprogramm:");if(!program)return;const amount=parseInt(prompt("Fördersumme in €:","0"))||0;
+  const note=prompt("Notiz:","Antrag eingereicht.")||"";DATA.funding.push({program,amount,status:"eingereicht",note,date:new Date().toISOString().slice(0,10)});save();render();}
+
+function addMeeting(){const title=prompt("Termin-Titel:");if(!title)return;
+  const date=prompt("Datum & Uhrzeit (JJJJ-MM-TTThh:mm), z. B. 2026-06-20T10:00:",new Date().toISOString().slice(0,16))||"";
+  const place=prompt("Ort:","Baustelle Südring 50, vor Ort")||"";const who=prompt("Teilnehmer:","Bauleitung, Bauherr")||"";
+  DATA.meetings.push({title,date,place,who});save();render();}
+function delMeeting(i){if(confirm("Termin löschen?")){DATA.meetings.splice(i,1);save();render();}}
+
+function addContact(){const name=prompt("Name / Firma:");if(!name)return;const role=prompt("Rolle / Gewerk:")||"";
+  const phone=prompt("Telefon:","+49 ")||"";const email=prompt("E-Mail:")||"";
+  const tones=["#173a5e","#1f9d6b","#c9912b","#3a8f8f","#7d5ba6","#b9784a","#2d6fb8"];
+  DATA.contacts.push({name,role,phone,email,tone:tones[DATA.contacts.length%tones.length]});save();render();}
+
+function addDoc(){const name=prompt("Dokument-Name:");if(!name)return;const type=prompt("Typ (Angebot / Plan / Dokument):","Angebot")||"Dokument";
+  const note=prompt("Notiz:")||"";DATA.documents.unshift({name,type,note,date:new Date().toISOString().slice(0,10)});save();render();}
+function delDoc(i){if(confirm("Dokument löschen?")){DATA.documents.splice(i,1);save();render();}}
+
+function editMatterport(){const url=prompt("Matterport Einbettungs-Link (https://my.matterport.com/show/?m=...):",DATA.project.matterport||"");
+  if(url===null)return;DATA.project.matterport=url.trim();save();render();}
+
+function uploadPhotos(ev){const files=[...ev.target.files];if(!files.length)return;let pending=files.length;
+  files.forEach(file=>{const reader=new FileReader();reader.onload=e=>{compressImage(e.target.result,1100,0.7).then(src=>{
+    const cap=prompt("Bildunterschrift:",file.name.replace(/\.[^.]+$/,""))||"Foto";
+    if(SUPA){
+      const path = Date.now()+"_"+Math.random().toString(36).slice(2,8)+".jpg";
+      fetch(SUPA_URL+"/storage/v1/object/"+SUPA_BUCKET+"/"+path,{
+        method:"POST",
+        headers:{apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content-Type":"image/jpeg"},
+        body: dataURLtoBlob(src)
+      }).then(r=>{ if(!r.ok) throw new Error("Status "+r.status);
+        const url = SUPA_URL+"/storage/v1/object/public/"+SUPA_BUCKET+"/"+path;
+        DATA.photos.unshift({src:url,cap}); save(); render();
+      }).catch(err=>alert("Upload fehlgeschlagen: "+(err&&err.message||err)));
+    }else{
+      DATA.photos.unshift({src,cap});
+      if(--pending===0){save();render();}
+    }});};reader.readAsDataURL(file);});}
+function compressImage(dataUrl,maxW,quality){return new Promise(res=>{const img=new Image();
+  img.onload=()=>{const scale=Math.min(1,maxW/img.width);const c=document.createElement("canvas");
+    c.width=img.width*scale;c.height=img.height*scale;c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    res(c.toDataURL("image/jpeg",quality));};img.onerror=()=>res(dataUrl);img.src=dataUrl;});}
+function openPhoto(i){const ph=DATA.photos[i];const wrap=document.createElement("div");wrap.className="modal";
+  const media=ph.src?`<img src="${ph.src}">`:`<div style="font-size:120px">${ph.emoji||"📷"}</div>`;
+  wrap.innerHTML=`<button class="x">×</button>${media}<div class="mcap">${esc(ph.cap||"")}${isAdmin()?' · <span style="color:#ff8e80;cursor:pointer" id="delPh">Foto löschen</span>':''}</div>`;
+  wrap.addEventListener("click",e=>{if(e.target===wrap||e.target.classList.contains("x"))wrap.remove();});
+  document.body.appendChild(wrap);const del=wrap.querySelector("#delPh");
+  if(del)del.addEventListener("click",()=>{if(confirm("Dieses Foto löschen?")){DATA.photos.splice(i,1);save();wrap.remove();render();}});}
+
+function postComment(){const inp=$("#cmtInput");const text=inp.value.trim();if(!text)return;
+  const author=ROLE==="admin"?"Bauleitung":"Familie Bauherr";const tone=ROLE==="admin"?"#173a5e":"#1f9d6b";
+  DATA.comments.push({author,role:ROLE_LABEL[ROLE],text,ts:new Date().toISOString(),tone});save();render();
+  setTimeout(()=>{const l=$("#cmtList");if(l)l.lastElementChild.scrollIntoView({behavior:"smooth"});},50);}
+
+/* ============================================================
+   SELF-INSTALL (Homescreen)
+   ============================================================ */
+function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;}
+function isiOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);}
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;
+  if(ROLE) render(); // zeigt Banner sobald installierbar
+});
+
+function installDismissed(){try{return localStorage.getItem('s50_install_dismissed')==='1';}catch(e){return false;}}
+function dismissInstall(){try{localStorage.setItem('s50_install_dismissed','1');}catch(e){}render();}
+
+function installBanner(){
+  if(isStandalone()||installDismissed()) return "";
+  return `<div class="installbar">
+    <div style="font-size:22px">📲</div>
+    <div class="ib-txt">Südring 50 als App auf dem Home-Bildschirm ablegen</div>
+    <button onclick="triggerInstall()">Ablegen</button>
+    <button class="ib-close" onclick="dismissInstall()">×</button>
+  </div>`;
+}
+
+function maybeOfferInstall(){
+  if(isStandalone()) return;
+  let asked=false; try{asked=sessionStorage.getItem('s50_install_asked')==='1';}catch(e){}
+  if(asked || installDismissed()) return;
+  try{sessionStorage.setItem('s50_install_asked','1');}catch(e){}
+  setTimeout(triggerInstall, 1200); // freundlich nach dem Login fragen
+}
+
+function triggerInstall(){
+  if(isStandalone()) return;
+  if(deferredInstall){ // Android / Chrome – echter nativer Dialog
+    deferredInstall.prompt();
+    deferredInstall.userChoice.finally(()=>{deferredInstall=null;render();});
+    return;
+  }
+  // iOS (und Fallback): Anleitung als Bottom-Sheet
+  showInstallSheet();
+}
+
+function showInstallSheet(){
+  if(document.querySelector('.sheet-bg')) return;
+  const ios=isiOS();
+  const wrap=document.createElement('div');wrap.className='sheet-bg';
+  const steps = ios ? `
+    <div class="st"><b>1</b><div>Unten in der Safari-Leiste auf <span class="share-ic">⬆️</span> <b>Teilen</b> tippen.</div></div>
+    <div class="st"><b>2</b><div>Etwas nach unten scrollen und <b>„Zum Home-Bildschirm"</b> wählen.</div></div>
+    <div class="st"><b>3</b><div>Oben rechts auf <b>„Hinzufügen"</b> tippen – fertig! 🎉</div></div>`
+  : `
+    <div class="st"><b>1</b><div>Im Browser-Menü (⋮) auf <b>„App installieren"</b> bzw. <b>„Zum Startbildschirm hinzufügen"</b> tippen.</div></div>
+    <div class="st"><b>2</b><div>Bestätigen – die App liegt dann auf dem Home-Bildschirm.</div></div>`;
+  wrap.innerHTML=`<div class="sheet">
+    <div class="s-ico">S50</div>
+    <h3>Auf den Home-Bildschirm legen</h3>
+    <p>So hast du Südring 50 wie eine echte App immer griffbereit – mit eigenem Icon und Vollbild.</p>
+    <div class="steps">${steps}</div>
+    ${(!ios&&deferredInstall)?'<button class="btn-primary" id="nativeInstall">Jetzt installieren</button>':''}
+    <button class="dismiss" id="sheetClose">Vielleicht später</button>
+  </div>`;
+  wrap.addEventListener('click',e=>{if(e.target===wrap)wrap.remove();});
+  document.body.appendChild(wrap);
+  const ni=wrap.querySelector('#nativeInstall');
+  if(ni)ni.addEventListener('click',()=>{wrap.remove();triggerInstall();});
+  wrap.querySelector('#sheetClose').addEventListener('click',()=>wrap.remove());
+}
+
+/* PWA manifest via Blob */
+(function setupPWA(){try{
+  const icon="data:image/svg+xml,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='#0f2742'/><text x='256' y='340' font-size='220' font-family='Arial' font-weight='700' fill='#e0a83e' text-anchor='middle'>S50</text></svg>`);
+  const manifest={name:"Südring 50 · Bauportal",short_name:"Südring 50",start_url:".",display:"standalone",background_color:"#0f2742",theme_color:"#0f2742",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+  const link=document.createElement("link");link.rel="manifest";link.href=URL.createObjectURL(blob);document.head.appendChild(link);
+}catch(e){}})();
+
+/* Auto-Login innerhalb der Session + Server-Daten laden */
+(function init(){let s=null;try{s=sessionStorage.getItem(SESSION_KEY);}catch(e){}if(s&&PASSWORDS[s])startSession(s);bootstrapServer();})();
+</script>
+</body>
+</html>
