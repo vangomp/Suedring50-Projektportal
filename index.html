@@ -35,10 +35,11 @@ a{color:var(--blue)}
 
 /* LOGIN */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:linear-gradient(rgba(15,39,66,.55),rgba(15,39,66,.7)), url('https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/login-bg.jpg') center/cover no-repeat, linear-gradient(160deg,var(--navy),#214c78)}
+  background:linear-gradient(rgba(15,39,66,.55),rgba(15,39,66,.7)), url('login-bg.jpg') center/cover no-repeat, linear-gradient(160deg,var(--navy),#214c78)}
 .login-card{width:100%;max-width:380px;background:var(--card);border-radius:22px;padding:30px 26px 26px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .brand{display:flex;align-items:center;gap:11px;margin-bottom:4px}
-.logo{width:46px;height:46px;border-radius:12px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex-shrink:0}
+.logo{width:46px;height:46px;border-radius:12px;background:#181818;color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:17px;letter-spacing:.5px;flex-shrink:0;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover;display:block}
 .brand small{color:var(--muted);font-size:12px;letter-spacing:.5px;text-transform:uppercase}
 .brand b{font-size:16px}
 .login-card h1{font-size:21px;margin:18px 0 2px}
@@ -269,6 +270,19 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .ck-row b{font-weight:600}
 .ck-row>span{color:var(--muted);font-size:12.5px;white-space:nowrap}
 .ck-link{margin-top:9px;font-size:12.5px;color:var(--blue);font-weight:600;cursor:pointer}
+/* editierbare Tabelle */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:4px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:740px}
+.tbl th{text-align:left;font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:9px 10px;border-bottom:1px solid var(--line);background:#f7f9fc;white-space:nowrap}
+.tbl td{padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl-in{width:100%;border:1px solid transparent;border-radius:8px;padding:7px 8px;background:transparent;font-size:13px;font-family:inherit;color:var(--txt)}
+.tbl-in:hover{border-color:var(--line);background:#fafbfc}
+.tbl-in:focus{outline:none;border-color:var(--navy);background:#fff}
+.tbl-name{min-width:150px}
+.tbl-dur{color:var(--muted);white-space:nowrap;font-size:12.5px;padding-left:10px}
+.tbl-muted{color:var(--muted);padding-left:8px}
+.tbl-del{color:var(--red);cursor:pointer;font-size:15px}
 /* Eingabemaske (Form-Modal) */
 .fm-sheet{max-height:86vh;overflow-y:auto}
 .fm-sheet h3{text-align:left;margin:0 0 14px;font-size:18px}
@@ -294,7 +308,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 <!-- LOGIN -->
 <div id="login">
   <div class="login-card">
-    <div class="brand"><div class="logo">JJ</div><div><b>JJ Real Estate</b><br><small>Projektapp</small></div></div>
+    <div class="brand"><div class="logo"><img src="cic-logo.png" alt="Collatz Immobilien Consulting"></div><div><b>Collatz Immobilien Consulting</b><br><small>Projektapp</small></div></div>
     <h1>Südring 50</h1>
     <div class="sub">Seligenstadt</div>
     <label class="fld">Benutzername</label>
@@ -309,7 +323,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 <!-- APP -->
 <div id="app" class="hidden">
   <div class="topbar">
-    <div class="logo">JJ</div>
+    <div class="logo"><img src="cic-logo.png" alt="CiC"></div>
     <div class="t-meta"><b>Südring 50</b><span>Seligenstadt</span></div>
     <span class="rolepill" id="rolePill">Bauherr</span>
     <button class="icon-btn" id="logoutBtn">Logout</button>
@@ -403,7 +417,7 @@ function seedData(){
     payments:[],
     funding:[],
     contacts:[
-      {name:"Jarne van Gompel",role:"Energieberatung · JJ Real Estate",phone:"",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
+      {name:"Jarne van Gompel",role:"Energieberatung · Collatz Immobilien Consulting",phone:"",email:"vangompel@jjrealestate.de",tone:"#173a5e"},
       {name:"Alexandra Herbold",role:"Bauherrin",phone:"+49 151 14944542",email:"alexandra-nikolaidis@gmx.de",tone:"#1f9d6b"},
       {name:"Innovativbau Sinn GmbH",role:"Bau, Abbruch & Rohbau · Timo Sinn",phone:"+49 173 7548219",email:"info@innovativbau-sinn.de",tone:"#c9912b"},
       {name:"Scholz & Hatwieger GmbH",role:"Heizung, Sanitär & Wärmepumpe · Fabian Hatwieger",phone:"+49 179 4220849",email:"info@scholz-hatwieger-gmbh.de",tone:"#3a8f8f"},
@@ -609,7 +623,7 @@ function viewZeit(){
 
     <div class="two-col">
       <div class="card col-main">
-        <h3>📊 Bauphasen-Gantt <span class="c-act" onclick="addTermin()">+ Eintrag</span></h3>
+        <h3>📊 Bauphasen-Gantt ${isBoard()?'<span style="font-weight:400;font-size:11px;color:var(--muted)">· Eintrag antippen zum Bearbeiten</span>':''} <span class="c-act" onclick="addTermin()">+ Eintrag</span></h3>
         ${ganttHTML()}
       </div>
       <div class="card col-side">
@@ -617,8 +631,61 @@ function viewZeit(){
         ${future.length?future.map(mt=>termRow(mt)).join(""):'<div class="empty">Keine anstehenden Vor-Ort-/Online-Termine.</div>'}
       </div>
     </div>
+    ${isBoard()?`<div class="card">
+      <h3>📋 Tabelle bearbeiten <span style="font-weight:400;font-size:11px;color:var(--muted)">· direkt eintippen, Dauer wird berechnet</span> <span class="c-act" onclick="tblAdd()">+ Zeile</span></h3>
+      ${tableHTML()}
+    </div>`:''}
   </div>`;
 }
+function tblEntries(){
+  const rows=[];
+  DATA.phases.forEach((p,i)=>rows.push({src:'p',i,name:p.name,typ:'aktivitaet',start:p.planStart,end:p.planEnd,status:p.status}));
+  DATA.meetings.forEach((m,i)=>rows.push({src:'m',i,name:m.title,typ:m.type,start:(m.date||'').slice(0,10),end:m.end||(m.date||'').slice(0,10),status:m.status||'up'}));
+  rows.sort((a,b)=>new Date(a.start)-new Date(b.start));
+  return rows;
+}
+function tblDur(s,e,typ){ if(typ==='meilenstein'||typ==='vorort'||typ==='online') return '–'; if(!s) return '–'; const a=new Date(s),b=new Date(e||s); if(isNaN(a)||isNaN(b)) return '–'; const d=Math.round((b-a)/864e5)+1; return d+(d===1?' Tag':' Tage'); }
+function tableHTML(){
+  const rows=tblEntries();
+  const typOpts=[['aktivitaet','Aktivität'],['meilenstein','Meilenstein'],['vorort','Vor-Ort'],['online','Zoom']];
+  const statOpts=[['up','Geplant'],['prog','In Arbeit'],['done','Fertig'],['late','Verzug']];
+  const sel=(val,opts,h)=>`<select class="tbl-in" onchange="${h}">${opts.map(o=>`<option value="${o[0]}"${o[0]===val?' selected':''}>${o[1]}</option>`).join('')}</select>`;
+  return `<div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th>Aktion</th><th>Typ</th><th>Anfang</th><th>Ende</th><th>Dauer</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.length?rows.map(r=>`<tr>
+      <td><input class="tbl-in tbl-name" value="${esc(r.name)}" onchange="tblSet('${r.src}',${r.i},'name',this.value)"></td>
+      <td>${sel(r.typ,typOpts,`tblSet('${r.src}',${r.i},'typ',this.value)`)}</td>
+      <td><input class="tbl-in" type="date" value="${r.start||''}" onchange="tblSet('${r.src}',${r.i},'start',this.value)"></td>
+      <td>${r.typ==='aktivitaet'?`<input class="tbl-in" type="date" value="${r.end||''}" onchange="tblSet('${r.src}',${r.i},'end',this.value)">`:'<span class="tbl-muted">–</span>'}</td>
+      <td class="tbl-dur">${tblDur(r.start,r.end,r.typ)}</td>
+      <td>${r.typ==='meilenstein'?'<span class="tbl-muted">–</span>':sel(r.status||'up',statOpts,`tblSet('${r.src}',${r.i},'status',this.value)`)}</td>
+      <td><a onclick="tblDel('${r.src}',${r.i})" class="tbl-del" title="Löschen">🗑️</a></td>
+    </tr>`).join(''):'<tr><td colspan="7"><div class="empty">Noch keine Einträge.</div></td></tr>'}
+    </tbody></table></div>`;
+}
+function tblSet(src,i,field,val){
+  if(src==='p'){
+    const p=DATA.phases[i]; if(!p) return;
+    if(field==='name')p.name=val;
+    else if(field==='start')p.planStart=val;
+    else if(field==='end')p.planEnd=val;
+    else if(field==='status')p.status=val;
+    else if(field==='typ'&&val!=='aktivitaet'){
+      const nm={title:p.name,type:val,date:p.planStart,status:p.status};
+      DATA.meetings.push(nm); DATA.phases.splice(i,1);
+    }
+  } else {
+    const m=DATA.meetings[i]; if(!m) return;
+    if(field==='name')m.title=val;
+    else if(field==='start'){const t=(m.date||'').slice(11);m.date=val+(t?('T'+t):'');}
+    else if(field==='end')m.end=val;
+    else if(field==='status')m.status=val;
+    else if(field==='typ'){m.type=val; if(val==='meilenstein')delete m.end; if(val==='aktivitaet'&&!m.end)m.end=(m.date||'').slice(0,10);}
+  }
+  save(); render();
+}
+function tblDel(src,i){ if(!confirm("Zeile löschen?")) return; if(src==='p')DATA.phases.splice(i,1); else DATA.meetings.splice(i,1); save(); render(); }
+function tblAdd(){ DATA.meetings.push({title:"Neuer Eintrag",type:"aktivitaet",date:TODAY(),end:TODAY(),status:"up"}); save(); render(); }
 function viewAenderungen(){
   return `<div class="view">
     <h2 class="vt">Änderungsanfragen</h2>
@@ -645,13 +712,13 @@ function termRow(mt){
       <p>🕒 ${datestr}</p>
       ${mt.place?`<p>📍 ${esc(mt.place)}</p>`:''}
       ${mt.who?`<p>👥 ${esc(mt.who)}</p>`:''}
-      ${isBoard()||mt.type==='vorort'?`<p><a onclick="delMeeting(${idx})" style="color:var(--red);font-weight:600">löschen</a></p>`:''}
+      ${isBoard()?`<p><a onclick="editMeeting(${idx})" style="color:var(--blue);font-weight:600">bearbeiten</a> · <a onclick="delMeeting(${idx})" style="color:var(--red);font-weight:600">löschen</a></p>`:''}
     </div></div>`;
 }
 function ganttHTML(){
-  const items=DATA.phases.map(p=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,sort:p.planStart}))
-    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:'akt',sort:m.date})))
-    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),sort:m.date})));
+  const items=DATA.phases.map((p,i)=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,sort:p.planStart,src:'p',si:i}))
+    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:m.status||'akt',sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})))
+    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
   let ds=[]; items.forEach(it=>{ if(it.kind==='act'){ds.push(it.start,it.end);} else ds.push(it.date); });
   ds=ds.filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
   if(!ds.length) return '<div class="empty">Keine Phasen.</div>';
@@ -663,11 +730,13 @@ function ganttHTML(){
   while(cur<=max){const l=pos(cur); if(l>=0&&l<=100) ticks+=`<div class="g-tick" style="left:${l}%"><span>${cur.toLocaleDateString('de-DE',{month:'short'})}</span></div>`; cur.setMonth(cur.getMonth()+1);}
   const tl=pos(new Date()); const today=(tl>=0&&tl<=100)?`<div class="g-today" style="left:${tl}%"></div>`:'';
   const col={done:'#1f9d6b',prog:'#e0a83e',up:'#cfd8e2',late:'#d6493b',akt:'#2d6fb8'};
+  const clk=it=>isBoard()?` onclick="editGanttItem('${it.src}',${it.si})"`:'';
+  const cur2=isBoard()?';cursor:pointer':'';
   const rows=items.map(it=>{
     if(it.kind==='ms'){const l=pos(it.date);
-      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:var(--gold-2);font-weight:700" title="${esc(it.name)}">◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%" title="${esc(it.name)}"></div></div></div>`;}
+      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:var(--gold-2);font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%" title="${esc(it.name)}"></div></div></div>`;}
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
-    return `<div class="g-row"><div class="g-lbl" title="${esc(it.name)}">${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
+    return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
   }).join('');
   return `<div class="g-scroll"><div class="gantt">
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
@@ -814,7 +883,8 @@ function viewKommentare(){
 
 /* ACTIONS */
 /* ===== Eingabemaske (Form-Modal) ===== */
-function showForm(title, fields, onSubmit){
+function showForm(title, fields, onSubmit, opts){
+  opts=opts||{};
   const wrap=document.createElement('div'); wrap.className='sheet-bg';
   const fieldHtml=f=>{
     if(f.type==='textarea') return `<textarea class="fm-in" data-k="${f.key}" rows="3" placeholder="${esc(f.placeholder||'')}">${esc(f.value||'')}</textarea>`;
@@ -825,11 +895,14 @@ function showForm(title, fields, onSubmit){
   };
   const body=fields.map(f=>`<div class="fm-row" data-row="${f.key}"><label>${esc(f.label)}</label>${fieldHtml(f)}</div>`).join('');
   wrap.innerHTML=`<div class="sheet fm-sheet"><h3>${esc(title)}</h3><div class="fm-body">${body}</div>
-    <button class="btn-primary" id="fmSave">Speichern</button><button class="dismiss" id="fmCancel">Abbrechen</button></div>`;
+    <button class="btn-primary" id="fmSave">Speichern</button>
+    ${opts.onDelete?'<button class="dismiss" id="fmDelete" style="color:var(--red);font-weight:600">🗑️ Eintrag löschen</button>':''}
+    <button class="dismiss" id="fmCancel">Abbrechen</button></div>`;
   wrap.addEventListener('click',e=>{if(e.target===wrap)wrap.remove();});
   document.body.appendChild(wrap);
   const setRowShow=(k,show)=>{const r=wrap.querySelector(`.fm-row[data-row="${k}"]`);if(r)r.style.display=show?'':'none';};
   const collect=()=>{const v={};wrap.querySelectorAll('.fm-in').forEach(el=>v[el.dataset.k]=el.value);return v;};
+  if(opts.onDelete){wrap.querySelector('#fmDelete').addEventListener('click',()=>{if(confirm("Diesen Eintrag wirklich löschen?")){opts.onDelete();wrap.remove();}});}
   wrap.querySelector('#fmCancel').addEventListener('click',()=>wrap.remove());
   wrap.querySelector('#fmSave').addEventListener('click',()=>{
     const vals={};const files={};
@@ -853,11 +926,39 @@ function editStatus(){
     {key:"progress",label:"Gesamtfortschritt in %",type:"number",value:DATA.project.progress}
   ],v=>{DATA.project.statusText=v.statusText;DATA.project.progress=Math.max(0,Math.min(100,num(v.progress)));save();render();});
 }
-function editPhase(i){const ph=DATA.phases[i];
-  showForm("Phase: "+ph.name,[
+function editGanttItem(src,i){ if(!isBoard()) return; if(src==='p') editPhase(i); else editMeeting(i); }
+function editPhase(i){const ph=DATA.phases[i]; if(!ph) return;
+  showForm("Bauphase bearbeiten",[
+    {key:"name",label:"Bezeichnung",type:"text",value:ph.name},
+    {key:"planStart",label:"Start",type:"date",value:ph.planStart},
+    {key:"planEnd",label:"Ende",type:"date",value:ph.planEnd},
     {key:"status",label:"Status",type:"select",value:ph.status,options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Abgeschlossen"},{value:"late",label:"Verzug"}]},
-    {key:"actEnd",label:"Ist-Enddatum (bei abgeschlossen)",type:"date",value:ph.actEnd}
-  ],v=>{ph.status=v.status;ph.actEnd=v.actEnd||"";save();render();});
+    {key:"actEnd",label:"Ist-Enddatum (optional)",type:"date",value:ph.actEnd}
+  ],v=>{ if(!v.name) return false; ph.name=v.name;ph.planStart=v.planStart;ph.planEnd=v.planEnd;ph.status=v.status;ph.actEnd=v.actEnd||"";save();render(); },
+  {onDelete:()=>{DATA.phases.splice(i,1);save();render();}});
+}
+function editMeeting(i){const m=DATA.meetings[i]; if(!m) return;
+  const dpart=(m.date||'').slice(0,10), tpart=(m.date||'').slice(11,16);
+  const fields=[
+    {key:"typ",label:"Art",type:"select",value:m.type||'aktivitaet',options:[
+      {value:"aktivitaet",label:"📊 Aktivität (Balken)"},{value:"meilenstein",label:"◆ Meilenstein"},
+      {value:"vorort",label:"📍 Vor-Ort-Termin"},{value:"online",label:"💻 Online (Zoom)"}]},
+    {key:"title",label:"Titel",type:"text",value:m.title},
+    {key:"date",label:"Datum",type:"date",value:dpart},
+    {key:"time",label:"Uhrzeit",type:"time",value:tpart||"10:00"},
+    {key:"end",label:"Ende (bei Aktivität)",type:"date",value:m.end||dpart},
+    {key:"place",label:"Ort / Link",type:"text",value:m.place||""},
+    {key:"who",label:"Teilnehmer",type:"text",value:m.who||""}
+  ];
+  fields.__onChange=(v,{setRowShow})=>{const meet=v.typ==='vorort'||v.typ==='online';setRowShow('time',meet);setRowShow('place',meet);setRowShow('who',meet);setRowShow('end',v.typ==='aktivitaet');};
+  showForm("Eintrag bearbeiten",fields,v=>{
+    if(!v.title) return false;
+    m.title=v.title; m.type=v.typ;
+    if(v.typ==='aktivitaet'){m.date=v.date;m.end=v.end||v.date;delete m.place;delete m.who;}
+    else if(v.typ==='meilenstein'){m.date=v.date;delete m.end;delete m.place;delete m.who;}
+    else {m.date=v.date+(v.time?("T"+v.time):"");m.place=v.place;m.who=v.who;delete m.end;}
+    save();render();
+  },{onDelete:()=>{DATA.meetings.splice(i,1);save();render();}});
 }
 const CHANGE_FLOW=["eingereicht","pruefung","genehmigt"];
 function cycleChange(i){const c=DATA.changes[i];if(c.status==="abgelehnt"){c.status="eingereicht";save();render();return;}
@@ -872,11 +973,12 @@ function addChange(){
 
 function cycleInvoice(i){const iv=DATA.invoices[i];
   iv.status = iv.status==="eingereicht"?"offen":(iv.status==="offen"?"bezahlt":"offen");save();render();}
-function foerderOptions(){return ["§35c EStG (Steuerbonus)"].concat(DATA.funding.map(f=>f.program));}
-function shortFoerder(s){if(!s)return"";if(/35c/.test(s))return"§35c";const m=s.match(/KfW\s?\d+|BAFA/i);return m?m[0]:s.split(/[ –-]/)[0];}
+const FOERDER_KATS=["KfW","§35c","Fenster"];
+function foerderOptions(){return FOERDER_KATS.slice();}
+function shortFoerder(s){return s||"";}
 function setInvoiceFoerderung(i){const iv=DATA.invoices[i];
   showForm("Förderung zuordnen",[
-    {key:"foerderung",label:"Passende Förderung",type:"select",value:iv.foerderung||"",options:foerderSelect()}
+    {key:"foerderung",label:"Kategorie",type:"select",value:iv.foerderung||"",options:[{value:"",label:"— Ohne —"},{value:"KfW",label:"KfW"},{value:"§35c",label:"§35c"},{value:"Fenster",label:"Fenster"}]}
   ],v=>{iv.foerderung=v.foerderung;save();render();});
 }
 function foerderBreakdown(){
@@ -1001,8 +1103,11 @@ function uploadDocs(ev){
   ev.target.value="";
 }
 
-function editMatterport(){const url=prompt("Matterport Einbettungs-Link (https://my.matterport.com/show/?m=...):",DATA.project.matterport||"");
-  if(url===null)return;DATA.project.matterport=url.trim();save();render();}
+function editMatterport(){
+  showForm("360°-Rundgang (Matterport)",[
+    {key:"url",label:"Matterport-Einbettungslink",type:"text",value:DATA.project.matterport||"",placeholder:"https://my.matterport.com/show/?m=…"}
+  ],v=>{DATA.project.matterport=v.url;save();render();});
+}
 
 function uploadPhotos(ev){const files=[...ev.target.files];if(!files.length)return;let pending=files.length;
   files.forEach(file=>{const reader=new FileReader();reader.onload=e=>{compressImage(e.target.result,1100,0.7).then(src=>{
