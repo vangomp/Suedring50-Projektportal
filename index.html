@@ -265,6 +265,7 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .g-today{position:absolute;top:0;bottom:0;width:2px;background:rgba(214,73,59,.55);z-index:2}
 .g-ms{position:absolute;top:3px;width:13px;height:13px;background:var(--gold);transform:translateX(-50%) rotate(45deg);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--gold-2);z-index:3}
 .g-resp{position:absolute;top:3px;font-size:9.5px;font-weight:600;color:var(--muted);white-space:nowrap;pointer-events:none;z-index:2;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.g-evt{position:absolute;top:-1px;font-size:14px;line-height:20px;transform:translateX(-50%);z-index:3;cursor:default}
 .g-vo{position:absolute;top:5px;width:10px;height:10px;border-radius:50%;background:var(--blue);transform:translateX(-50%);border:1.5px solid #fff;z-index:3}
 .g-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
 .g-legend span{display:inline-flex;align-items:center;gap:5px}
@@ -891,7 +892,8 @@ function termRow(mt){
 function ganttHTML(){
   const items=DATA.phases.map((p,i)=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,resp:p.resp,sort:p.planStart,src:'p',si:i}))
     .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:m.status||'akt',resp:m.resp,sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})))
-    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),status:m.status||'up',resp:m.resp,sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
+    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),status:m.status||'up',resp:m.resp,sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})))
+    .concat(DATA.meetings.filter(m=>(m.type==='vorort'||m.type==='online')&&m.date).map(m=>({kind:'evt',etype:m.type,name:m.title,date:(m.date||'').slice(0,10),resp:m.resp,sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
   let ds=[]; items.forEach(it=>{ if(it.kind==='act'){ds.push(it.start,it.end);} else ds.push(it.date); });
   ds=ds.filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
   if(!ds.length) return '<div class="empty">Keine Phasen.</div>';
@@ -926,6 +928,8 @@ function ganttHTML(){
     if(it.kind==='ms'){const l=pos(it.date); const mc=msCol[it.status]; const extra=mc?`;background:${mc};box-shadow:0 0 0 1px ${mc}`:''; const lblC=mc||'var(--gold-2)';
       const rsp=it.resp?`<span class="g-resp" style="left:${l}%;transform:translateX(11px)" title="Verantwortlich: ${esc(it.resp)}">👤 ${esc(it.resp)}</span>`:'';
       return `<div class="g-row g-msrow"><div class="g-lbl" style="color:${lblC};font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%${extra}" title="${esc(it.name)}"></div>${rsp}</div></div>`;}
+    if(it.kind==='evt'){const l=pos(it.date);const ic=it.etype==='online'?'💻':'📍';const lbl=it.etype==='online'?'Zoom':'Vor-Ort';
+      return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${ic} ${esc(it.name)}</div><div class="g-track">${today}<div class="g-evt" style="left:${l}%" title="${lbl}: ${esc(it.name)}">${ic}</div></div></div>`;}
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
     const rsp=it.resp?`<span class="g-resp" style="left:${Math.min(l+w,100)}%;transform:translateX(6px)" title="Verantwortlich: ${esc(it.resp)}">👤 ${esc(it.resp)}</span>`:'';
     return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div>${rsp}</div></div>`;
@@ -934,7 +938,7 @@ function ganttHTML(){
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
     ${rows}
   </div></div>
-  <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ld" style="background:#b3261e"></i>kritisch/blockiert</span><span><i class="ms-leg"></i>Meilenstein</span><span style="margin-left:auto;color:var(--muted)">↔ seitlich scrollbar</span></div>`;
+  <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ld" style="background:#b3261e"></i>kritisch/blockiert</span><span><i class="ms-leg"></i>Meilenstein</span><span>📍 Vor-Ort</span><span>💻 Zoom</span><span style="margin-left:auto;color:var(--muted)">↔ seitlich scrollbar</span></div>`;
 }
 
 /* OFFENE FRAGEN */
@@ -1065,7 +1069,9 @@ function viewFinanzen(){
   const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
   const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
   const pays=DATA.payments.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
-  const planned=DATA.payments.filter(p=>p.status!=="bezahlt").reduce((s,p)=>s+p.amount,0);
+  const payB=DATA.payments.filter(p=>p.status==='bezahlt').reduce((s,p)=>s+p.amount,0);
+  const payO=DATA.payments.filter(p=>p.status==='offen').reduce((s,p)=>s+p.amount,0);
+  const payG=DATA.payments.filter(p=>p.status==='geplant').reduce((s,p)=>s+p.amount,0);
   const MON=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
   const months=[];
   for(let mo=4;mo<=11;mo++){const key=`2026-${String(mo+1).padStart(2,'0')}`;let mp=0,mpl=0,mof=0;DATA.payments.forEach(p=>{if((p.due||'').slice(0,7)===key){if(p.status==='bezahlt')mp+=p.amount;else if(p.status==='geplant')mpl+=p.amount;else mof+=p.amount;}});months.push({label:MON[mo],paid:mp,planned:mpl,open:mof});}
@@ -1074,7 +1080,7 @@ function viewFinanzen(){
     <h2 class="vt">Finanzen &amp; Förderungen</h2>
     <p class="vsub">Überblick oben, darunter die Rechnungen in voller Breite.</p>
 
-    ${finChartsHTML(paid,open,planned,months,maxM)}
+    ${finChartsHTML(payB,payO,payG,months,maxM)}
 
     <div class="card">
         <h3>💶 Rechnungen für Förderungen <span class="c-act" onclick="submitInvoice()">📤 Rechnung hochladen</span></h3>
@@ -1112,15 +1118,15 @@ function viewFinanzen(){
           return `<div class="row">
             <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
             <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
-            ${isBoard()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${DATA.payments.indexOf(pm)})">✏️ Bearbeiten</button>`:""}</div>
+            <br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${DATA.payments.indexOf(pm)})">✏️ Bearbeiten</button>${pm.status!=='bezahlt'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px;color:var(--green)" onclick="markPaid(${DATA.payments.indexOf(pm)})">✓ Überwiesen</button>`:''}</div>
           </div>`;}).join("")}
       </div>
     </div>
   </div>`;
 }
 function kfmt(v){return v>=1000?(Math.round(v/100)/10).toLocaleString('de-DE')+'k':String(v||0);}
-function finChartsHTML(paid,open,planned,months,maxM){
-  const segs=[['Bezahlt',paid,'#1f9d6b'],['Offene Rechnungen',open,'#e0972a'],['Noch geplant',planned,'#2d6fb8']];
+function finChartsHTML(payB,payO,payG,months,maxM){
+  const segs=[['Überwiesen',payB,'#1f9d6b'],['Offen / überfällig',payO,'#e0972a'],['Geplant',payG,'#2d6fb8']];
   const mx=Math.max(1,...segs.map(s=>s[1]));
   const areaPx=130;
   const left=`<div class="bars">${segs.map(s=>`<div class="bar-row"><div class="bar-top"><span>${s[0]}</span><b>${euro(s[1])}</b></div><div class="bar-track"><i style="width:${Math.round(s[1]/mx*100)}%;background:${s[2]}"></i></div></div>`).join('')}</div>`;
@@ -1129,7 +1135,7 @@ function finChartsHTML(paid,open,planned,months,maxM){
   const right=`<div class="vchart">${cols}</div>
     <div class="g-legend" style="margin-top:8px"><span><i class="ld" style="background:#1f9d6b"></i>bezahlt</span><span><i class="ld" style="background:#2d6fb8"></i>geplant</span><span><i class="ld" style="background:#e0972a"></i>offen / überfällig</span></div>`;
   return `<div class="two-col charts" style="margin-top:14px">
-    <div class="card chart-l"><h3>📊 Rechnungs-Überblick</h3>${left}</div>
+    <div class="card chart-l"><h3>📊 Zahlungs-Überblick</h3>${left}</div>
     <div class="card chart-r"><h3>📈 Liquiditätsplanung <span style="font-weight:400;font-size:11px;color:var(--muted)">pro Monat · Mai–Dez 2026</span></h3>${right}</div>
   </div>`;
 }
@@ -1379,6 +1385,7 @@ function editPayment(i){const p=DATA.payments[i]; if(!p) return;
   ],v=>{if(!v.label)return false;p.label=v.label;p.amount=num(v.amount);p.due=v.due;p.status=v.status;save();render();},
   {onDelete:()=>{DATA.payments.splice(i,1);save();render();}});
 }
+function markPaid(i){const p=DATA.payments[i];if(!p)return;if(confirm("Diese Zahlung als überwiesen markieren?")){p.status='bezahlt';save();render();toast('Als überwiesen markiert ✓');}}
 
 const FUND_FLOW=["eingereicht","pruefung","genehmigt"];
 function cycleFunding(i){const f=DATA.funding[i];if(f.status==="abgelehnt"){f.status="eingereicht";save();render();return;}
