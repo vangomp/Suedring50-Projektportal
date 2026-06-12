@@ -428,6 +428,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
     <div class="logo"><img src="cic-logo.png" alt="CiC"></div>
     <div class="t-meta"><b>Südring 50</b><span>Seligenstadt</span></div>
     <span class="rolepill" id="rolePill">Bauherr</span>
+    <button class="icon-btn" id="refreshBtn" title="App auf neueste Version aktualisieren">🔄 Aktualisieren</button>
     <button class="icon-btn" id="logoutBtn">Logout</button>
   </div>
   <div class="adminbar hidden" id="adminBar">Bearbeitungsmodus aktiv – Änderungen werden für alle gespeichert</div>
@@ -435,7 +436,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
   <nav class="nav" id="nav">
     <button data-tab="status" class="active"><span class="ic">📊</span>Überblick</button>
     <button data-tab="zeit"><span class="ic">📅</span>Zeitplan</button>
-    <button data-tab="aenderungen"><span class="ic">🔧</span>Änderungen</button>
+    <button data-tab="aenderungen"><span class="ic">🔧</span>Planänderung</button>
     <button data-tab="fragen"><span class="ic">❓</span>Fragen</button>
     <button data-tab="medien"><span class="ic">📷</span>Dokumente</button>
     <button data-tab="finanzen"><span class="ic">💶</span>Finanzen</button>
@@ -632,6 +633,7 @@ function startSession(username){const U=USERS[username]; if(!U) return; ROLE=U.r
   render(); maybeOfferInstall();}
 $("#logoutBtn").addEventListener("click",()=>{ROLE=null;USERNAME="";try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}
   $("#app").classList.add("hidden");$("#login").classList.remove("hidden");$("#user").value="";$("#pw").value="";$("#loginErr").textContent="";});
+$("#refreshBtn").addEventListener("click",()=>{location.replace(location.pathname+"?v="+Date.now());});
 
 /* NAV */
 $("#nav").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;TAB=b.dataset.tab;
@@ -838,7 +840,7 @@ function changeIsForMe(c){
 function viewAenderungen(){
   const me=currentKey();
   return `<div class="view">
-    <h2 class="vt">Änderungswünsche</h2>
+    <h2 class="vt">Planänderungen · Änderungsmanagement</h2>
     <p class="vsub">Der Bauherr äußert Wünsche und markiert die betroffenen Handwerker – diese können kommentieren, akzeptieren oder ablehnen.</p>
     <div class="card">
       <h3>💡 Neuen Wunsch äußern <span class="c-act" onclick="addChange()">+ Wunsch</span></h3>
@@ -882,7 +884,7 @@ function termRow(mt){
     : (mt.type==='meilenstein' ? fdate(mt.date) : fmeeting(mt.date));
   return `<div class="mtg" style="${past?'opacity:.55':''}">
     <div class="date-chip"><div class="d">${d.getDate()}</div><div class="m">${d.toLocaleDateString("de-DE",{month:"short"})}</div></div>
-    <div class="m-info"><b>${esc(mt.title)}</b> <span class="badge b-gray" style="font-size:10px">${ty.ic} ${ty.label}</span>
+    <div class="m-info"><b style="${(mt.type==='vorort'||mt.type==='online')?'text-transform:uppercase':''}">${esc(mt.title)}</b> <span class="badge b-gray" style="font-size:10px">${ty.ic} ${ty.label}</span>
       <p>🕒 ${datestr}</p>
       ${mt.place?`<p>📍 ${esc(mt.place)}</p>`:''}
       ${mt.who?`<p>👥 ${esc(mt.who)}</p>`:''}
@@ -929,7 +931,7 @@ function ganttHTML(){
       const rsp=it.resp?`<span class="g-resp" style="left:${l}%;transform:translateX(11px)" title="Verantwortlich: ${esc(it.resp)}">👤 ${esc(it.resp)}</span>`:'';
       return `<div class="g-row g-msrow"><div class="g-lbl" style="color:${lblC};font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%${extra}" title="${esc(it.name)}"></div>${rsp}</div></div>`;}
     if(it.kind==='evt'){const l=pos(it.date);const ic=it.etype==='online'?'💻':'📍';const lbl=it.etype==='online'?'Zoom':'Vor-Ort';
-      return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${ic} ${esc(it.name)}</div><div class="g-track">${today}<div class="g-evt" style="left:${l}%" title="${lbl}: ${esc(it.name)}">${ic}</div></div></div>`;}
+      return `<div class="g-row"><div class="g-lbl" style="font-weight:700;text-transform:uppercase${cur2}" title="${esc(it.name)}"${clk(it)}>${ic} ${esc(it.name)}</div><div class="g-track">${today}<div class="g-evt" style="left:${l}%" title="${lbl}: ${esc(it.name)}">${ic}</div></div></div>`;}
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
     const rsp=it.resp?`<span class="g-resp" style="left:${Math.min(l+w,100)}%;transform:translateX(6px)" title="Verantwortlich: ${esc(it.resp)}">👤 ${esc(it.resp)}</span>`:'';
     return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div>${rsp}</div></div>`;
