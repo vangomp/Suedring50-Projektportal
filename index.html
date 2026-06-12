@@ -261,6 +261,15 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .gz-save{margin-left:auto;font-size:11.5px;font-weight:600;padding:5px 11px;border:1px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy)}
 .gz-save:active{background:var(--navy);color:#fff}
 #toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);background:#101a26;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+/* update pop-up */
+.upd-pop{position:fixed;left:0;right:0;top:0;z-index:9998;display:flex;justify-content:center;padding:12px;pointer-events:none;animation:updIn .35s ease}
+.upd-card{pointer-events:auto;display:flex;align-items:center;gap:14px;background:#0f2742;color:#fff;border:1.5px solid var(--gold);border-radius:16px;padding:13px 16px;box-shadow:0 14px 46px rgba(0,0,0,.45);max-width:540px;width:100%}
+.upd-ic{font-size:26px;line-height:1}
+.upd-txt{flex:1;display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.upd-txt b{font-size:14.5px}
+.upd-txt span{font-size:12px;color:#cfe0f0}
+.upd-card .btn-primary{margin:0;width:auto;padding:10px 18px;white-space:nowrap;background:var(--gold);color:#181818;font-weight:700}
+@keyframes updIn{from{transform:translateY(-24px);opacity:0}to{transform:translateY(0);opacity:1}}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .g-today{position:absolute;top:0;bottom:0;width:2px;background:rgba(214,73,59,.55);z-index:2}
 .g-ms{position:absolute;top:3px;width:13px;height:13px;background:var(--gold);transform:translateX(-50%) rotate(45deg);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--gold-2);z-index:3}
@@ -557,6 +566,32 @@ const SUPA = !!(SUPA_URL && SUPA_KEY);
 const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content-Type":"application/json"};
 
 let DATA=load(), ROLE=null, USERNAME="", TAB="status", deferredInstall=null, saveTimer=null;
+
+/* ===== Auto-Update: erkennt neue deployte Version und zeigt Pop-up ===== */
+const APP_VERSION="2026-06-12.1"; // bei jedem Deploy hochzählen
+function showUpdatePopup(){
+  if(document.getElementById('updPop'))return;
+  const d=document.createElement('div');d.id='updPop';d.className='upd-pop';
+  d.innerHTML=`<div class="upd-card"><div class="upd-ic">🔄</div><div class="upd-txt"><b>Neue Version verfügbar</b><span>Tippe auf „Aktualisieren" für die neuesten Funktionen.</span></div><button class="btn-primary" id="updBtn">Aktualisieren</button></div>`;
+  document.body.appendChild(d);
+  d.querySelector('#updBtn').addEventListener('click',()=>location.replace(location.pathname+"?v="+Date.now()));
+}
+let _baseTag=null;
+function checkForUpdate(){
+  if(!/^https?:/.test(location.protocol))return;
+  // Sparsam: nur Header (HEAD) abfragen, ETag/Last-Modified vergleichen
+  fetch(location.pathname,{method:'HEAD',cache:'no-store'}).then(r=>{
+    const t=r.headers.get('etag')||r.headers.get('last-modified');
+    if(t){ if(_baseTag===null){_baseTag=t;} else if(t!==_baseTag){showUpdatePopup();} return; }
+    // Fallback, falls kein Header: Versionsnummer aus der Datei lesen
+    return fetch(location.pathname+"?vc="+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(html=>{
+      const m=html.match(/APP_VERSION\s*=\s*"([^"]+)"/); if(m&&m[1]&&m[1]!==APP_VERSION)showUpdatePopup();
+    });
+  }).catch(()=>{});
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkForUpdate();});
+setInterval(checkForUpdate,5*60*1000);
+setTimeout(checkForUpdate,6000);
 
 function load(){
   if(SUPA) return seedData(); // Platzhalter bis Server-Daten geladen sind
