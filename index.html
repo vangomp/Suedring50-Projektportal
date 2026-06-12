@@ -548,9 +548,12 @@ function render(){
   const m=$("#main");
   const map={status:viewStatus,zeit:viewZeit,aenderungen:viewAenderungen,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
   m.innerHTML=(map[TAB]||viewStatus)();
-  window.scrollTo({top:0});
+  if(!KEEP_SCROLL) window.scrollTo({top:0});
   if(TAB==='zeit') requestAnimationFrame(restoreGScroll);
 }
+let KEEP_SCROLL=false;
+/* Re-render ohne dass der Bildschirm nach oben springt (z.B. Tabellen-Edits) */
+function rerenderKeepScroll(){const y=window.scrollY;KEEP_SCROLL=true;render();KEEP_SCROLL=false;window.scrollTo(0,y);}
 /* ---- Gantt-Zoom & gespeicherte Ansicht ---- */
 function savedGView(){try{return JSON.parse(localStorage.getItem('sr50_gview')||'null');}catch(e){return null;}}
 let GZOOM=(savedGView()&&savedGView().zoom)||'M';
@@ -702,10 +705,10 @@ function tblSet(src,i,field,val){
     else if(field==='status')m.status=val;
     else if(field==='typ'){m.type=val; if(val==='meilenstein')delete m.end; if(val==='aktivitaet'&&!m.end)m.end=(m.date||'').slice(0,10);}
   }
-  save(); render();
+  save(); rerenderKeepScroll();
 }
-function tblDel(src,i){ if(!confirm("Zeile löschen?")) return; if(src==='p')DATA.phases.splice(i,1); else DATA.meetings.splice(i,1); save(); render(); }
-function tblAdd(){ DATA.meetings.push({title:"Neuer Eintrag",type:"aktivitaet",date:TODAY(),end:TODAY(),status:"up"}); save(); render(); }
+function tblDel(src,i){ if(!confirm("Zeile löschen?")) return; if(src==='p')DATA.phases.splice(i,1); else DATA.meetings.splice(i,1); save(); rerenderKeepScroll(); }
+function tblAdd(){ DATA.meetings.push({title:"Neuer Eintrag",type:"aktivitaet",date:TODAY(),end:TODAY(),status:"up"}); save(); rerenderKeepScroll(); }
 function viewAenderungen(){
   return `<div class="view">
     <h2 class="vt">Änderungsanfragen</h2>
