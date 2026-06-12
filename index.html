@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Südring 50 · Bauportal</title>
-<meta name="description" content="Bauportal Vollsanierung Südring 50, Seligenstadt – Fortschritt, Medien, Finanzen, Termine & Kommunikation." />
+<title>Südring 50 · Projektapp</title>
+<meta name="description" content="Projektapp Südring 50, Seligenstadt – Fortschritt, Dokumente, Finanzen und Termine." />
 
 <!-- PWA / Homescreen -->
 <meta name="theme-color" content="#0f2742" />
@@ -35,7 +35,7 @@ a{color:var(--blue)}
 
 /* LOGIN */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 60%,#214c78 100%)}
+  background:linear-gradient(rgba(15,39,66,.55),rgba(15,39,66,.7)), url('https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/login-bg.jpg') center/cover no-repeat, linear-gradient(160deg,var(--navy),#214c78)}
 .login-card{width:100%;max-width:380px;background:var(--card);border-radius:22px;padding:30px 26px 26px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .brand{display:flex;align-items:center;gap:11px;margin-bottom:4px}
 .logo{width:46px;height:46px;border-radius:12px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex-shrink:0}
@@ -179,8 +179,9 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .doc .d-info b{font-size:14px}
 .doc .d-info p{margin:2px 0 0;font-size:12px;color:var(--muted)}
 
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;gap:6px;padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);max-width:1280px;margin:0 auto}
-.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:12px;font-weight:700;padding:9px 2px;border-radius:14px;transition:.15s}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:flex-start;gap:4px;padding:8px 8px calc(env(safe-area-inset-bottom) + 8px);max-width:1280px;margin:0 auto;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.nav button{flex:1 0 78px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:11.5px;font-weight:700;padding:9px 2px;border-radius:14px;transition:.15s}
 .nav button .ic{font-size:23px;line-height:1}
 .nav button:hover{background:#f3f6fa}
 .nav button.active{color:#fff;background:var(--navy)}
@@ -236,10 +237,13 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 @media(max-width:680px){.two-col{flex-direction:column}.two-col>*{width:100%}}
 
 /* gantt */
-.gantt{margin-top:4px;font-size:12px;overflow-x:auto}
+.g-scroll{max-height:66vh;overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:4px}
+.g-scroll::-webkit-scrollbar{height:10px;width:10px}.g-scroll::-webkit-scrollbar-thumb{background:#c4d0dd;border-radius:6px}
+.gantt{font-size:12px;min-width:1080px}
 .g-row{display:flex;align-items:center;min-height:26px}
-.g-head{height:22px}
-.g-lbl{flex:0 0 120px;width:120px;padding-right:8px;font-size:11px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-head{height:24px;position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}
+.g-lbl{flex:0 0 150px;width:150px;padding:0 8px 0 10px;font-size:11px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:sticky;left:0;background:#fff;z-index:3}
+.g-head .g-lbl{z-index:6}
 .g-track{position:relative;flex:1;height:20px;border-left:1px solid var(--line)}
 .g-axis{height:18px}
 .g-bar{position:absolute;top:4px;height:12px;border-radius:6px;min-width:3px}
@@ -254,6 +258,17 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .g-legend .ms-leg{width:11px;height:11px;background:var(--gold);transform:rotate(45deg);display:inline-block}
 .g-legend .vo-leg{width:10px;height:10px;border-radius:50%;background:var(--blue);display:inline-block}
 .empty{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
+/* cockpit */
+.cockpit{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-top:14px}
+.ck h3{margin:0 0 10px;font-size:14.5px}
+.ck-stats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.ck-stats span{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:20px}
+.ck-stats .b-green{background:var(--green-bg);color:var(--green)}.ck-stats .b-amber{background:var(--amber-bg);color:var(--amber)}.ck-stats .b-gray{background:#eef1f5;color:var(--muted)}.ck-stats .b-red{background:var(--red-bg);color:var(--red)}
+.ck-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.ck-row:last-child{border-bottom:none}
+.ck-row b{font-weight:600}
+.ck-row>span{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.ck-link{margin-top:9px;font-size:12.5px;color:var(--blue);font-weight:600;cursor:pointer}
 /* Eingabemaske (Form-Modal) */
 .fm-sheet{max-height:86vh;overflow-y:auto}
 .fm-sheet h3{text-align:left;margin:0 0 14px;font-size:18px}
@@ -279,21 +294,15 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 <!-- LOGIN -->
 <div id="login">
   <div class="login-card">
-    <div class="brand"><div class="logo">JJ</div><div><b>JJ Real Estate</b><br><small>Bauportal</small></div></div>
+    <div class="brand"><div class="logo">JJ</div><div><b>JJ Real Estate</b><br><small>Projektapp</small></div></div>
     <h1>Südring 50</h1>
-    <div class="sub">Vollsanierung · Seligenstadt</div>
+    <div class="sub">Seligenstadt</div>
     <label class="fld">Benutzername</label>
-    <input id="user" class="input" type="text" placeholder="z. B. herbold" autocomplete="username" autocapitalize="none" />
+    <input id="user" class="input" type="text" placeholder="Benutzername" autocomplete="username" autocapitalize="none" />
     <label class="fld">Passwort</label>
     <input id="pw" class="input" type="password" placeholder="••••••••" autocomplete="current-password" />
     <div class="login-err" id="loginErr"></div>
     <button class="btn-primary" id="loginBtn">Anmelden</button>
-    <div class="hint">
-      <b>Zugänge:</b><br>
-      Bauherrin · <b>herbold</b> / herbold26<br>
-      Energieberatung · <b>jarne</b> / energie26<br>
-      Handwerker: <b>timo</b>/sinn26 · <b>fabian</b>/scholz26 · <b>visar</b>/viz26 · <b>jens</b>/gabor26 · <b>marius</b>/holz26
-    </div>
   </div>
 </div>
 
@@ -301,11 +310,11 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
 <div id="app" class="hidden">
   <div class="topbar">
     <div class="logo">JJ</div>
-    <div class="t-meta"><b>Südring 50 · Vollsanierung</b><span>Seligenstadt</span></div>
+    <div class="t-meta"><b>Südring 50</b><span>Seligenstadt</span></div>
     <span class="rolepill" id="rolePill">Bauherr</span>
     <button class="icon-btn" id="logoutBtn">Logout</button>
   </div>
-  <div class="adminbar hidden" id="adminBar">Bearbeitungsmodus aktiv – Änderungen werden lokal gespeichert</div>
+  <div class="adminbar hidden" id="adminBar">Bearbeitungsmodus aktiv – Änderungen werden für alle gespeichert</div>
   <main id="main"></main>
   <nav class="nav" id="nav">
     <button data-tab="status" class="active"><span class="ic">📊</span>Überblick</button>
@@ -334,7 +343,7 @@ const USERS={
 
 function seedData(){
   return {
-    project:{name:"Südring 50",subtitle:"Vollsanierung · Seligenstadt",progress:20,start:"2026-04-01",planEnd:"2026-10-26",
+    project:{name:"Südring 50",subtitle:"Seligenstadt",progress:20,start:"2026-04-01",planEnd:"2026-10-26",
       statusText:"Förderzuweisung läuft – Baustart 22. Juni mit Entkernung und Durchbrüchen.",statusBadge:"prog",matterport:"https://my.matterport.com/show/?m=SxQL3iGyvQk"},
     phases:[
       {name:"Angebote Projektberatung einverstanden",planStart:"2026-04-14",planEnd:"2026-04-15",actEnd:"",status:"done"},
@@ -521,13 +530,19 @@ function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort
 
 /* STATUS */
 function viewStatus(){
-  const p=DATA.project;
-  const done=DATA.phases.filter(x=>x.status==="done").length;
-  const cur=DATA.phases.find(x=>x.status==="prog");
-  const openInv=DATA.invoices.filter(i=>i.status==="offen").reduce((s,i)=>s+i.amount,0);
+  const p=DATA.project, ph=DATA.phases;
+  const done=ph.filter(x=>x.status==="done").length, prog=ph.filter(x=>x.status==="prog").length,
+        up=ph.filter(x=>x.status==="up").length, late=ph.filter(x=>x.status==="late").length;
   const restDays=daysBetween(new Date().toISOString().slice(0,10),p.planEnd);
   const openChanges=DATA.changes.filter(c=>c.status==="eingereicht"||c.status==="pruefung").length;
   const nm=nextMeeting(), np=nextPayment();
+  const ms=DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date&&new Date(m.date)>=Date.now()-864e5).sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(0,4);
+  const paid=DATA.invoices.filter(i=>i.status==="bezahlt").reduce((s,i)=>s+i.amount,0);
+  const openInv=DATA.invoices.filter(i=>i.status==="offen").reduce((s,i)=>s+i.amount,0);
+  const pruef=DATA.invoices.filter(i=>i.status==="eingereicht").reduce((s,i)=>s+i.amount,0);
+  const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
+  const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
+  const upPays=DATA.payments.filter(x=>x.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due)).slice(0,3);
   return `<div class="view">
     ${installBanner()}
     <div class="card hero">
@@ -545,6 +560,40 @@ function viewStatus(){
           ${nm?`<b>${esc(nm.title)}</b><span>${fmeeting(nm.date)}</span>`:`<b>–</b><span>kein Termin</span>`}</div>
         <div class="ns" onclick="go('finanzen')" style="cursor:pointer"><div class="lbl">💶 Nächste Zahlung</div>
           ${np?`<b>${euro(np.amount)}</b><span>fällig ${fdate(np.due)}</span>`:`<b>–</b><span>keine offen</span>`}</div>
+      </div>
+    </div>
+    <div class="cockpit">
+      <div class="card ck">
+        <h3>🏗️ Bauphasen</h3>
+        <div class="ck-stats"><span class="b-green">${done} fertig</span><span class="b-amber">${prog} in Arbeit</span><span class="b-gray">${up} geplant</span>${late?`<span class="b-red">${late} Verzug</span>`:''}</div>
+        <div class="ck-link" onclick="go('zeit')">Zum Zeitplan →</div>
+      </div>
+      <div class="card ck">
+        <h3>◆ Nächste Meilensteine</h3>
+        ${ms.length?ms.map(m=>`<div class="ck-row"><b>${esc(m.title)}</b><span>${fdate(m.date)}</span></div>`).join(''):'<div class="empty">Keine anstehenden.</div>'}
+      </div>
+      <div class="card ck">
+        <h3>💶 Finanzen</h3>
+        <div class="ck-row"><b>Bezahlt</b><span style="color:var(--green)">${euro(paid)}</span></div>
+        <div class="ck-row"><b>Offen</b><span style="color:var(--amber)">${euro(openInv)}</span></div>
+        <div class="ck-row"><b>In Prüfung</b><span style="color:var(--blue)">${euro(pruef)}</span></div>
+        <div class="ck-link" onclick="go('finanzen')">Details →</div>
+      </div>
+      <div class="card ck">
+        <h3>🏦 Förderungen</h3>
+        <div class="ck-row"><b>Genehmigt</b><span style="color:var(--green)">${euro(fundOK)}</span></div>
+        <div class="ck-row"><b>In Bearbeitung</b><span style="color:var(--blue)">${euro(fundPend)}</span></div>
+        <div class="ck-row"><b>Programme</b><span>${DATA.funding.length}</span></div>
+      </div>
+      <div class="card ck">
+        <h3>📆 Anstehende Zahlungen</h3>
+        ${upPays.length?upPays.map(x=>`<div class="ck-row"><b>${esc(x.label)}</b><span>${euro(x.amount)} · ${fdate(x.due)}</span></div>`).join(''):'<div class="empty">Keine offen.</div>'}
+      </div>
+      <div class="card ck">
+        <h3>📄 Dokumente</h3>
+        <div class="ck-row"><b>Hinterlegt</b><span>${DATA.documents.length}</span></div>
+        ${DATA.documents.slice(0,3).map(d=>`<div class="ck-row"><b style="font-weight:500;font-size:12.5px">${esc(d.name)}</b></div>`).join('')}
+        <div class="ck-link" onclick="go('medien')">Alle ansehen →</div>
       </div>
     </div>
   </div>`;
@@ -620,11 +669,11 @@ function ganttHTML(){
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
     return `<div class="g-row"><div class="g-lbl" title="${esc(it.name)}">${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
   }).join('');
-  return `<div class="gantt">
+  return `<div class="g-scroll"><div class="gantt">
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
     ${rows}
-    <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ms-leg"></i>Meilenstein</span></div>
-  </div>`;
+  </div></div>
+  <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ms-leg"></i>Meilenstein</span><span style="margin-left:auto;color:var(--muted)">↔ seitlich scrollbar</span></div>`;
 }
 
 /* MEDIEN */
@@ -1059,7 +1108,7 @@ function showInstallSheet(){
 /* PWA manifest via Blob */
 (function setupPWA(){try{
   const icon="data:image/svg+xml,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='#0f2742'/><text x='256' y='340' font-size='220' font-family='Arial' font-weight='700' fill='#e0a83e' text-anchor='middle'>S50</text></svg>`);
-  const manifest={name:"Südring 50 · Bauportal",short_name:"Südring 50",start_url:".",display:"standalone",background_color:"#0f2742",theme_color:"#0f2742",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+  const manifest={name:"Südring 50 · Projektapp",short_name:"Südring 50",start_url:".",display:"standalone",background_color:"#0f2742",theme_color:"#0f2742",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
   const blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
   const link=document.createElement("link");link.rel="manifest";link.href=URL.createObjectURL(blob);document.head.appendChild(link);
 }catch(e){}})();
