@@ -514,6 +514,7 @@ function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/864e5);}
 const STATUS_MAP={
   done:{cls:"b-green",txt:"Abgeschlossen",dot:"dot-done"},prog:{cls:"b-amber",txt:"In Arbeit",dot:"dot-prog"},
   up:{cls:"b-gray",txt:"Geplant",dot:"dot-up"},late:{cls:"b-red",txt:"Verzug",dot:"dot-late"},
+  block:{cls:"b-red",txt:"Kritisch/Blockiert",dot:"dot-late"},
   genehmigt:{cls:"b-green",txt:"Genehmigt"},bezahlt:{cls:"b-green",txt:"Bezahlt"},
   pruefung:{cls:"b-blue",txt:"In Prüfung"},eingereicht:{cls:"b-amber",txt:"Eingereicht"},
   offen:{cls:"b-amber",txt:"Offen"},geplant:{cls:"b-gray",txt:"Geplant"},abgelehnt:{cls:"b-red",txt:"Abgelehnt"}
@@ -569,7 +570,8 @@ function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort
 function viewStatus(){
   const p=DATA.project, ph=DATA.phases;
   const done=ph.filter(x=>x.status==="done").length, prog=ph.filter(x=>x.status==="prog").length,
-        up=ph.filter(x=>x.status==="up").length, late=ph.filter(x=>x.status==="late").length;
+        up=ph.filter(x=>x.status==="up").length, late=ph.filter(x=>x.status==="late").length,
+        block=ph.filter(x=>x.status==="block").length;
   const restDays=daysBetween(new Date().toISOString().slice(0,10),p.planEnd);
   const openChanges=DATA.changes.filter(c=>c.status==="eingereicht"||c.status==="pruefung").length;
   const nm=nextMeeting(), np=nextPayment();
@@ -602,7 +604,7 @@ function viewStatus(){
     <div class="cockpit">
       <div class="card ck">
         <h3>🏗️ Bauphasen</h3>
-        <div class="ck-stats"><span class="b-green">${done} fertig</span><span class="b-amber">${prog} in Arbeit</span><span class="b-gray">${up} geplant</span>${late?`<span class="b-red">${late} Verzug</span>`:''}</div>
+        <div class="ck-stats"><span class="b-green">${done} fertig</span><span class="b-amber">${prog} in Arbeit</span><span class="b-gray">${up} geplant</span>${late?`<span class="b-red">${late} Verzug</span>`:''}${block?`<span class="b-red">⚠ ${block} kritisch</span>`:''}</div>
         <div class="ck-link" onclick="go('zeit')">Zum Zeitplan →</div>
       </div>
       <div class="card ck">
@@ -671,7 +673,7 @@ function tblDur(s,e,typ){ if(typ==='meilenstein'||typ==='vorort'||typ==='online'
 function tableHTML(){
   const rows=tblEntries();
   const typOpts=[['aktivitaet','Aktivität'],['meilenstein','Meilenstein'],['vorort','Vor-Ort'],['online','Zoom']];
-  const statOpts=[['up','Geplant'],['prog','In Arbeit'],['done','Fertig'],['late','Verzug']];
+  const statOpts=[['up','Geplant'],['prog','In Arbeit'],['done','Fertig'],['late','Verzug'],['block','Kritisch/Blockiert']];
   const sel=(val,opts,h)=>`<select class="tbl-in" onchange="${h}">${opts.map(o=>`<option value="${o[0]}"${o[0]===val?' selected':''}>${o[1]}</option>`).join('')}</select>`;
   return `<div class="tbl-wrap"><table class="tbl">
     <thead><tr><th>Aktion</th><th>Typ</th><th>Anfang</th><th>Ende</th><th>Dauer</th><th>Status</th><th></th></tr></thead><tbody>
@@ -681,7 +683,7 @@ function tableHTML(){
       <td><input class="tbl-in" type="date" value="${r.start||''}" onchange="tblSet('${r.src}',${r.i},'start',this.value)"></td>
       <td>${r.typ==='aktivitaet'?`<input class="tbl-in" type="date" value="${r.end||''}" onchange="tblSet('${r.src}',${r.i},'end',this.value)">`:'<span class="tbl-muted">–</span>'}</td>
       <td class="tbl-dur">${tblDur(r.start,r.end,r.typ)}</td>
-      <td>${r.typ==='meilenstein'?'<span class="tbl-muted">–</span>':sel(r.status||'up',statOpts,`tblSet('${r.src}',${r.i},'status',this.value)`)}</td>
+      <td>${sel(r.status||'up',statOpts,`tblSet('${r.src}',${r.i},'status',this.value)`)}</td>
       <td><a onclick="tblDel('${r.src}',${r.i})" class="tbl-del" title="Löschen">🗑️</a></td>
     </tr>`).join(''):'<tr><td colspan="7"><div class="empty">Noch keine Einträge.</div></td></tr>'}
     </tbody></table></div>`;
@@ -741,7 +743,7 @@ function termRow(mt){
 function ganttHTML(){
   const items=DATA.phases.map((p,i)=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,sort:p.planStart,src:'p',si:i}))
     .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:m.status||'akt',sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})))
-    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
+    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),status:m.status||'up',sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
   let ds=[]; items.forEach(it=>{ if(it.kind==='act'){ds.push(it.start,it.end);} else ds.push(it.date); });
   ds=ds.filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
   if(!ds.length) return '<div class="empty">Keine Phasen.</div>';
@@ -768,12 +770,13 @@ function ganttHTML(){
   const zbtns=Object.keys(GZ).map(z=>`<button class="gz-btn${GZOOM===z?' active':''}" onclick="setGZoom('${z}')">${GZ[z].label}</button>`).join('');
   const toolbar=`<div class="g-zoom"><span class="gz-lbl">🔍 Zoom</span>${zbtns}<button class="gz-save" onclick="saveGView()">💾 Ansicht speichern</button></div>`;
   const tl=pos(new Date()); const today=(tl>=0&&tl<=100)?`<div class="g-today" style="left:${tl}%"></div>`:'';
-  const col={done:'#1f9d6b',prog:'#e0a83e',up:'#cfd8e2',late:'#d6493b',akt:'#2d6fb8'};
+  const col={done:'#1f9d6b',prog:'#e0a83e',up:'#cfd8e2',late:'#d6493b',akt:'#2d6fb8',block:'#b3261e'};
+  const msCol={done:'#1f9d6b',prog:'#e0a83e',late:'#d6493b',block:'#b3261e'};
   const clk=it=>isBoard()?` onclick="editGanttItem('${it.src}',${it.si})"`:'';
   const cur2=isBoard()?';cursor:pointer':'';
   const rows=items.map(it=>{
-    if(it.kind==='ms'){const l=pos(it.date);
-      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:var(--gold-2);font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%" title="${esc(it.name)}"></div></div></div>`;}
+    if(it.kind==='ms'){const l=pos(it.date); const mc=msCol[it.status]; const extra=mc?`;background:${mc};box-shadow:0 0 0 1px ${mc}`:''; const lblC=mc||'var(--gold-2)';
+      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:${lblC};font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%${extra}" title="${esc(it.name)}"></div></div></div>`;}
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
     return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
   }).join('');
@@ -781,7 +784,7 @@ function ganttHTML(){
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
     ${rows}
   </div></div>
-  <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ms-leg"></i>Meilenstein</span><span style="margin-left:auto;color:var(--muted)">↔ seitlich scrollbar</span></div>`;
+  <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ld" style="background:#b3261e"></i>kritisch/blockiert</span><span><i class="ms-leg"></i>Meilenstein</span><span style="margin-left:auto;color:var(--muted)">↔ seitlich scrollbar</span></div>`;
 }
 
 /* MEDIEN */
@@ -971,7 +974,7 @@ function editPhase(i){const ph=DATA.phases[i]; if(!ph) return;
     {key:"name",label:"Bezeichnung",type:"text",value:ph.name},
     {key:"planStart",label:"Start",type:"date",value:ph.planStart},
     {key:"planEnd",label:"Ende",type:"date",value:ph.planEnd},
-    {key:"status",label:"Status",type:"select",value:ph.status,options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Abgeschlossen"},{value:"late",label:"Verzug"}]},
+    {key:"status",label:"Status",type:"select",value:ph.status,options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Abgeschlossen"},{value:"late",label:"Verzug"},{value:"block",label:"Kritisch/Blockiert"}]},
     {key:"actEnd",label:"Ist-Enddatum (optional)",type:"date",value:ph.actEnd}
   ],v=>{ if(!v.name) return false; ph.name=v.name;ph.planStart=v.planStart;ph.planEnd=v.planEnd;ph.status=v.status;ph.actEnd=v.actEnd||"";save();render(); },
   {onDelete:()=>{DATA.phases.splice(i,1);save();render();}});
@@ -987,14 +990,15 @@ function editMeeting(i){const m=DATA.meetings[i]; if(!m) return;
     {key:"time",label:"Uhrzeit",type:"time",value:tpart||"10:00"},
     {key:"end",label:"Ende (bei Aktivität)",type:"date",value:m.end||dpart},
     {key:"place",label:"Ort / Link",type:"text",value:m.place||""},
-    {key:"who",label:"Teilnehmer",type:"text",value:m.who||""}
+    {key:"who",label:"Teilnehmer",type:"text",value:m.who||""},
+    {key:"status",label:"Status",type:"select",value:m.status||'up',options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Fertig"},{value:"late",label:"Verzug"},{value:"block",label:"Kritisch/Blockiert"}]}
   ];
-  fields.__onChange=(v,{setRowShow})=>{const meet=v.typ==='vorort'||v.typ==='online';setRowShow('time',meet);setRowShow('place',meet);setRowShow('who',meet);setRowShow('end',v.typ==='aktivitaet');};
+  fields.__onChange=(v,{setRowShow})=>{const meet=v.typ==='vorort'||v.typ==='online';setRowShow('time',meet);setRowShow('place',meet);setRowShow('who',meet);setRowShow('end',v.typ==='aktivitaet');setRowShow('status',v.typ==='aktivitaet'||v.typ==='meilenstein');};
   showForm("Eintrag bearbeiten",fields,v=>{
     if(!v.title) return false;
     m.title=v.title; m.type=v.typ;
-    if(v.typ==='aktivitaet'){m.date=v.date;m.end=v.end||v.date;delete m.place;delete m.who;}
-    else if(v.typ==='meilenstein'){m.date=v.date;delete m.end;delete m.place;delete m.who;}
+    if(v.typ==='aktivitaet'){m.date=v.date;m.end=v.end||v.date;m.status=v.status;delete m.place;delete m.who;}
+    else if(v.typ==='meilenstein'){m.date=v.date;m.status=v.status;delete m.end;delete m.place;delete m.who;}
     else {m.date=v.date+(v.time?("T"+v.time):"");m.place=v.place;m.who=v.who;delete m.end;}
     save();render();
   },{onDelete:()=>{DATA.meetings.splice(i,1);save();render();}});
