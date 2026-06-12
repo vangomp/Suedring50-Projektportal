@@ -264,6 +264,7 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .g-today{position:absolute;top:0;bottom:0;width:2px;background:rgba(214,73,59,.55);z-index:2}
 .g-ms{position:absolute;top:3px;width:13px;height:13px;background:var(--gold);transform:translateX(-50%) rotate(45deg);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--gold-2);z-index:3}
+.g-resp{position:absolute;top:3px;font-size:9.5px;font-weight:600;color:var(--muted);white-space:nowrap;pointer-events:none;z-index:2;max-width:160px;overflow:hidden;text-overflow:ellipsis}
 .g-vo{position:absolute;top:5px;width:10px;height:10px;border-radius:50%;background:var(--blue);transform:translateX(-50%);border:1.5px solid #fff;z-index:3}
 .g-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
 .g-legend span{display:inline-flex;align-items:center;gap:5px}
@@ -273,6 +274,94 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .empty{text-align:center;color:var(--muted);font-size:13.5px;padding:18px 0}
 /* cockpit */
 .cockpit{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-top:14px}
+.term-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:4px}
+.term-grid .empty{grid-column:1/-1}
+.term-grid .mtg{margin:0}
+.pay-tile{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:#fff}
+.pay-tile b{display:block;margin-bottom:3px;font-size:13.5px}
+.pay-tile .pay-meta{color:var(--muted);font-size:12px;margin-bottom:6px}
+/* finanz-charts */
+.two-col.charts{align-items:stretch}
+.charts .chart-l{flex:35;min-width:0}
+.charts .chart-r{flex:65;min-width:0}
+@media(max-width:680px){.charts .chart-l,.charts .chart-r{flex:1 1 100%}}
+.bars{display:flex;flex-direction:column;gap:15px;margin-top:8px}
+.bar-row .bar-top{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:5px}
+.bar-row .bar-top b{font-size:14px}
+.bar-track{height:14px;background:#eef1f5;border-radius:8px;overflow:hidden}
+.bar-track i{display:block;height:100%;border-radius:8px;min-width:2px;transition:width .3s}
+.vchart{display:flex;align-items:flex-end;gap:6px;margin-top:10px}
+.vcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0}
+.vamt{font-size:9.5px;font-weight:700;color:var(--txt);margin-bottom:3px;white-space:nowrap}
+.vbar-area{height:130px;width:100%;display:flex;align-items:flex-end;justify-content:center}
+.vbar{width:62%;max-width:34px;min-width:14px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.vbar i{display:block;width:100%}
+.vbar .seg-paid{background:#1f9d6b}.vbar .seg-plan{background:#2d6fb8}.vbar .seg-open{background:#e0972a}
+.vlbl{font-size:10.5px;color:var(--muted);margin-top:6px}
+.fund-dates{margin-top:4px!important;font-size:12px;color:var(--muted)}
+/* offene fragen */
+.q-area{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;resize:vertical;background:#fff;display:block}
+.qtag-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0}
+.qtag-lbl{font-size:12px;color:var(--muted);font-weight:600}
+.qtag{font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:16px;background:#fafbfc;color:var(--txt)}
+.qtag.active{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);font-weight:600}
+.q-actions{display:flex;align-items:center;gap:10px;margin-top:8px}
+.qfile{cursor:pointer;font-size:13px;color:var(--blue);font-weight:600;white-space:nowrap}
+.qfile.sm{font-size:16px}
+.q-imgname{font-size:11.5px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-send{margin-left:auto}
+.qcard{border-left:4px solid var(--line)}
+.qcard.q-offen{border-left-color:var(--amber)}
+.qcard.q-geklaert{border-left-color:var(--green)}
+.qcard.q-problem{border-left-color:var(--red);background:#fff7f6}
+.q-head{display:flex;align-items:center;gap:10px}
+.q-meta{flex:1;min-width:0}
+.q-meta b{font-size:14px}.q-meta time{display:block;font-size:11px;color:var(--muted)}
+.q-status .tbl-in{font-size:12px;padding:4px 6px}
+.q-text{margin:10px 0 6px;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+.q-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.qtag-chip{font-size:11.5px;background:var(--blue-bg);color:var(--blue);padding:3px 9px;border-radius:14px;font-weight:600}
+.q-img{max-width:240px;border-radius:10px;margin:6px 0;cursor:pointer;display:block}
+.q-img.sm{max-width:160px}
+.q-answers{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:10px}
+.q-ans{display:flex;gap:9px}
+.av.sm{width:28px;height:28px;font-size:12px;flex-shrink:0}
+.q-ans-body{flex:1;min-width:0}
+.q-ans-body time{font-size:10.5px;color:var(--muted);margin-left:6px}
+.q-ans-body p{margin:2px 0 0;font-size:13.5px;word-break:break-word}
+.q-reply{display:flex;align-items:center;gap:8px;margin-top:10px}
+.q-reply .q-area{flex:1}
+.q-quick{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.qq-btn{font-size:11.5px;font-weight:600;padding:4px 12px;border:1px solid var(--line);border-radius:14px;background:#fafbfc;color:var(--muted)}
+.qq-btn.on.qq-offen{background:var(--amber-bg);color:var(--amber);border-color:var(--amber)}
+.qq-btn.on.qq-geklaert{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.qq-btn.on.qq-problem{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+/* änderungswünsche */
+.qcard.ch-offen{border-left-color:var(--amber)}
+.qcard.ch-akzeptiert{border-left-color:var(--green)}
+.qcard.ch-abgelehnt{border-left-color:var(--red)}
+.ch-note{display:inline-block;background:var(--amber-bg);color:var(--amber);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:12px;margin:2px 0 6px}
+.nav button{position:relative}
+.navbadge{position:absolute;top:3px;right:8px;min-width:16px;height:16px;padding:0 4px;background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:9px;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 0 2px #fff}
+/* admin zugänge */
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.3px}
+.logincred{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.logincred:last-of-type{border-bottom:none}
+.logincred span{color:var(--muted)}
+.callbtns .key{background:#fff7e6}
+/* nuki code banner */
+.nuki-banner{display:flex;align-items:center;gap:16px;background:#181818;border:1px solid var(--gold-2);border-radius:16px;padding:13px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.nuki-banner .nuki-ic{font-size:28px;line-height:1}
+.nuki-banner .nuki-txt span{display:block;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:#c9b079;margin-bottom:2px}
+.nuki-banner .nuki-txt b{font-size:30px;letter-spacing:5px;color:var(--gold);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+/* 3-farben fortschritt */
+.pbar-stack{display:flex;overflow:hidden}
+.pbar-stack i{height:100%;display:block;transition:width .3s}
+.pbar-stack .seg-done{background:#1f9d6b}.pbar-stack .seg-prog{background:#e0a83e}.pbar-stack .seg-open{background:#8aa0b8}
+.pbar-leg{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:11.5px;color:#cfe0f0}
+.pbar-leg span{display:inline-flex;align-items:center;gap:5px}
+.pbar-leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.kpi-alert b{color:#ff8e80!important}
 .ck h3{margin:0 0 10px;font-size:14.5px}
 .ck-stats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
 .ck-stats span{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:20px}
@@ -346,6 +435,7 @@ hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
     <button data-tab="status" class="active"><span class="ic">📊</span>Überblick</button>
     <button data-tab="zeit"><span class="ic">📅</span>Zeitplan</button>
     <button data-tab="aenderungen"><span class="ic">🔧</span>Änderungen</button>
+    <button data-tab="fragen"><span class="ic">❓</span>Fragen</button>
     <button data-tab="medien"><span class="ic">📷</span>Dokumente</button>
     <button data-tab="finanzen"><span class="ic">💶</span>Finanzen</button>
     <button data-tab="kontakte"><span class="ic">📇</span>Kontaktdaten</button>
@@ -358,18 +448,18 @@ const ROLE_LABEL={bauherr:"Bauherr",handwerker:"Handwerker",energie:"Energiebera
 /* Individuelle Logins (Benutzername → Passwort, Rolle, Anzeigename).
    Passwörter hier anpassen und an die Beteiligten verteilen. */
 const USERS={
-  herbold:{pw:"herbold26",role:"bauherr",name:"Alexandra Herbold"},
-  jarne:{pw:"energie26",role:"energie",name:"Jarne van Gompel"},
-  timo:{pw:"sinn26",role:"handwerker",name:"Timo Sinn · Innovativbau"},
-  fabian:{pw:"scholz26",role:"handwerker",name:"Fabian Hatwieger · Scholz & Hatwieger"},
-  visar:{pw:"viz26",role:"handwerker",name:"Visar Jakupi · ViZ-Elektro"},
-  jens:{pw:"gabor26",role:"handwerker",name:"Jens du Maire · Gabor"},
-  marius:{pw:"holz26",role:"handwerker",name:"Marius Seyfert · HolzLand"}
+  herbold:{pw:"herbold26",role:"bauherr",name:"Alexandra Herbold",nuki:"497286"},
+  jarne:{pw:"energie26",role:"energie",name:"Jarne van Gompel",nuki:"355111"},
+  timo:{pw:"sinn26",role:"handwerker",name:"Timo Sinn · Innovativbau",nuki:"273849"},
+  fabian:{pw:"scholz26",role:"handwerker",name:"Fabian Hatwieger · Scholz & Hatwieger",nuki:"162345"},
+  visar:{pw:"viz26",role:"handwerker",name:"Visar Jakupi · ViZ-Elektro",nuki:"276831"},
+  jens:{pw:"gabor26",role:"handwerker",name:"Jens du Maire · Gabor",nuki:"234567"},
+  marius:{pw:"holz26",role:"handwerker",name:"Marius Seyfert · HolzLand",nuki:"355111"}
 };
 
 function seedData(){
   return {
-    project:{name:"Südring 50",subtitle:"Seligenstadt",progress:20,start:"2026-04-01",planEnd:"2026-10-26",
+    project:{name:"Südring 50",subtitle:"Seligenstadt",progress:20,start:"2026-04-01",planEnd:"2026-11-15",
       statusText:"Förderzuweisung läuft – Baustart 22. Juni mit Entkernung und Durchbrüchen.",statusBadge:"prog",matterport:"https://my.matterport.com/show/?m=SxQL3iGyvQk"},
     phases:[
       {name:"Angebote Projektberatung einverstanden",planStart:"2026-04-14",planEnd:"2026-04-15",actEnd:"",status:"done"},
@@ -450,7 +540,8 @@ function seedData(){
       {name:"Fensterbänke & Sitzbank (26VG0090)",type:"Angebot",date:"2026-06-03",note:"Eichemassiv, lackiert, inkl. Einbau · 3.719,35 €",url:"https://uovhhhzrsaggjfklaaov.supabase.co/storage/v1/object/public/app/docs/10-fensterbank-sitzbank-26VG0090.pdf"}
     ],
     photos:[],
-    comments:[]
+    comments:[],
+    questions:[]
   };
 }
 
@@ -517,7 +608,9 @@ const STATUS_MAP={
   block:{cls:"b-red",txt:"Kritisch/Blockiert",dot:"dot-late"},
   genehmigt:{cls:"b-green",txt:"Genehmigt"},bezahlt:{cls:"b-green",txt:"Bezahlt"},
   pruefung:{cls:"b-blue",txt:"In Prüfung"},eingereicht:{cls:"b-amber",txt:"Eingereicht"},
-  offen:{cls:"b-amber",txt:"Offen"},geplant:{cls:"b-gray",txt:"Geplant"},abgelehnt:{cls:"b-red",txt:"Abgelehnt"}
+  offen:{cls:"b-amber",txt:"Offen"},geplant:{cls:"b-gray",txt:"Geplant"},abgelehnt:{cls:"b-red",txt:"Abgelehnt"},
+  geklaert:{cls:"b-green",txt:"Geklärt"},problem:{cls:"b-red",txt:"PROBLEM"},
+  akzeptiert:{cls:"b-green",txt:"Akzeptiert"}
 };
 function badge(k){const m=STATUS_MAP[k]||{cls:"b-gray",txt:k};return `<span class="badge ${m.cls}">${m.txt}</span>`;}
 
@@ -547,10 +640,18 @@ function go(tab){TAB=tab;document.querySelectorAll("#nav button").forEach(x=>x.c
 /* RENDER */
 function render(){
   const m=$("#main");
-  const map={status:viewStatus,zeit:viewZeit,aenderungen:viewAenderungen,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
+  const map={status:viewStatus,zeit:viewZeit,aenderungen:viewAenderungen,fragen:viewFragen,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
   m.innerHTML=(map[TAB]||viewStatus)();
   if(!KEEP_SCROLL) window.scrollTo({top:0});
   if(TAB==='zeit') requestAnimationFrame(restoreGScroll);
+  updateNavBadges();
+}
+function updateNavBadges(){
+  const cnt=(DATA.changes||[]).filter(c=>{const s=c.status||'offen';return (s==='offen'||s==='eingereicht'||s==='pruefung')&&changeIsForMe(c);}).length;
+  const btn=document.querySelector('#nav button[data-tab="aenderungen"]');
+  if(!btn)return; let bd=btn.querySelector('.navbadge');
+  if(cnt>0){if(!bd){bd=document.createElement('span');bd.className='navbadge';btn.appendChild(bd);}bd.textContent=cnt;}
+  else if(bd){bd.remove();}
 }
 let KEEP_SCROLL=false;
 /* Re-render ohne dass der Bildschirm nach oben springt (z.B. Tabellen-Edits) */
@@ -565,6 +666,23 @@ function toast(msg){let t=document.getElementById('toast');if(!t){t=document.cre
 
 function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>(x.type==='vorort'||x.type==='online')&&x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
 function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due))[0];}
+/* Ziel = spätestes Datum aller Aktivitäten/Meilensteine */
+function projectEnd(){
+  const ds=[];
+  DATA.phases.forEach(p=>{if(p.planEnd)ds.push(p.planEnd);if(p.actEnd)ds.push(p.actEnd);});
+  DATA.meetings.forEach(m=>{if(m.date)ds.push((m.date||'').slice(0,10));if(m.end)ds.push(m.end);});
+  const dd=ds.map(d=>new Date(d)).filter(d=>!isNaN(d));
+  if(!dd.length) return DATA.project.planEnd;
+  return new Date(Math.max.apply(null,dd.map(d=>+d))).toISOString().slice(0,10);
+}
+/* Fortschritt = fertig vs. in Arbeit vs. offen (aus Bauphasen) */
+function progressStats(){
+  const ph=DATA.phases; const total=ph.length||1;
+  const done=ph.filter(x=>x.status==="done").length;
+  const prog=ph.filter(x=>x.status==="prog").length;
+  const offen=Math.max(0,total-done-prog);
+  return {total:ph.length,done,prog,offen,pct:Math.round(done/total*100)};
+}
 
 /* STATUS */
 function viewStatus(){
@@ -572,27 +690,37 @@ function viewStatus(){
   const done=ph.filter(x=>x.status==="done").length, prog=ph.filter(x=>x.status==="prog").length,
         up=ph.filter(x=>x.status==="up").length, late=ph.filter(x=>x.status==="late").length,
         block=ph.filter(x=>x.status==="block").length;
-  const restDays=daysBetween(new Date().toISOString().slice(0,10),p.planEnd);
+  const st=progressStats(); const tgt=projectEnd();
+  const restDays=daysBetween(new Date().toISOString().slice(0,10),tgt);
   const openChanges=DATA.changes.filter(c=>c.status==="eingereicht"||c.status==="pruefung").length;
+  const openQ=(DATA.questions||[]).filter(q=>(q.status||'offen')!=="geklaert").length;
   const nm=nextMeeting(), np=nextPayment();
+  const terms=DATA.meetings.filter(m=>(m.type==='vorort'||m.type==='online')&&m.date&&new Date(m.date)>=Date.now()-864e5).sort((a,b)=>new Date(a.date)-new Date(b.date));
   const ms=DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date&&new Date(m.date)>=Date.now()-864e5).sort((a,b)=>new Date(a.date)-new Date(b.date)).slice(0,4);
   const paid=DATA.invoices.filter(i=>i.status==="bezahlt").reduce((s,i)=>s+i.amount,0);
   const openInv=DATA.invoices.filter(i=>i.status==="offen").reduce((s,i)=>s+i.amount,0);
   const pruef=DATA.invoices.filter(i=>i.status==="eingereicht").reduce((s,i)=>s+i.amount,0);
   const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
   const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
-  const upPays=DATA.payments.filter(x=>x.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due)).slice(0,3);
+  const payGeplant=DATA.payments.filter(p=>p.status==='geplant').reduce((s,p)=>s+p.amount,0);
+  const payOffen=DATA.payments.filter(p=>p.status==='offen').reduce((s,p)=>s+p.amount,0);
+  const upAll=DATA.payments.filter(x=>x.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due));
+  const cu=Object.values(USERS).find(u=>u.name===USERNAME); const nuki=(cu&&cu.nuki)||'';
   return `<div class="view">
     ${installBanner()}
+    ${nuki?`<div class="nuki-banner"><div class="nuki-ic">🔑</div><div class="nuki-txt"><span>NUKI-Code für Hauseingang</span><b>${esc(nuki)}</b></div></div>`:''}
     <div class="card hero">
-      <h3>Gesamtfortschritt</h3>
-      <div class="big">${p.progress}<small>%</small></div>
-      <div class="pbar"><i style="width:${p.progress}%"></i></div>
-      <div class="meta"><span>Start ${fdate(p.start)}</span><span>Ziel ${fdate(p.planEnd)}</span></div>
+      <h3>Gesamtfortschritt ${isBoard()?'<span class="c-act" style="color:#dceaf7" onclick="editStatus()">✏️ Eckdaten</span>':''}</h3>
+      <div class="big">${st.pct}<small>%</small></div>
+      <div class="pbar pbar-stack">
+        ${st.done?`<i class="seg-done" style="width:${st.done/st.total*100}%"></i>`:''}${st.prog?`<i class="seg-prog" style="width:${st.prog/st.total*100}%"></i>`:''}${st.offen?`<i class="seg-open" style="width:${st.offen/st.total*100}%"></i>`:''}
+      </div>
+      <div class="pbar-leg"><span><i style="background:#1f9d6b"></i>${st.done} fertig</span><span><i style="background:#e0a83e"></i>${st.prog} in Arbeit</span><span><i style="background:#8aa0b8"></i>${st.offen} offen</span></div>
+      <div class="meta"><span>Start ${fdate(p.start)}</span><span>Ziel ${fdate(tgt)} <small style="opacity:.7">· letzte Aktivität</small></span></div>
       <div class="kpis">
-        <div class="kpi"><b>${done}/${DATA.phases.length}</b><span>Phasen fertig</span></div>
+        <div class="kpi"><b>${st.done}/${st.total}</b><span>Phasen fertig</span></div>
         <div class="kpi"><b>${restDays>0?restDays:0}</b><span>Tage bis Ziel</span></div>
-        <div class="kpi"><b>${openChanges}</b><span>offene Änderungen</span></div>
+        <div class="kpi${openQ?' kpi-alert':''}" onclick="go('fragen')" style="cursor:pointer"><b>${openQ}</b><span>offene Fragen ${openQ?'❗':''}</span></div>
       </div>
       <div class="next-strip">
         <div class="ns" onclick="go('zeit')" style="cursor:pointer"><div class="lbl">📅 Nächster Termin (Vor-Ort/Online)</div>
@@ -602,31 +730,24 @@ function viewStatus(){
       </div>
     </div>
     <div class="cockpit">
-      <div class="card ck">
-        <h3>🏗️ Bauphasen</h3>
-        <div class="ck-stats"><span class="b-green">${done} fertig</span><span class="b-amber">${prog} in Arbeit</span><span class="b-gray">${up} geplant</span>${late?`<span class="b-red">${late} Verzug</span>`:''}${block?`<span class="b-red">⚠ ${block} kritisch</span>`:''}</div>
-        <div class="ck-link" onclick="go('zeit')">Zum Zeitplan →</div>
+      <div class="card ck" style="grid-column:1/-1">
+        <h3>📅 Nächste Termine <span style="font-weight:400;font-size:11px;color:var(--muted)">Vor-Ort &amp; Online</span> <span class="c-act" onclick="addTermin()">+ Termin</span></h3>
+        <div class="term-grid">${terms.length?terms.map(mt=>termRow(mt)).join(''):'<div class="empty">Keine anstehenden Vor-Ort-/Online-Termine.</div>'}</div>
+      </div>
+      <div class="card ck" style="grid-column:1/-1">
+        <h3>📆 Anstehende Zahlungen <span style="font-weight:400;font-size:11px;color:var(--muted)">Liquiditätsplanung</span> <span class="c-act" onclick="go('finanzen')">Details →</span></h3>
+        <div class="ck-stats"><span class="b-gray">Geplant ${euro(payGeplant)}</span><span class="b-amber">Offen ${euro(payOffen)}</span></div>
+        <div class="term-grid">${upAll.length?upAll.map(x=>`<div class="pay-tile"><b>${esc(x.label)}</b><div class="pay-meta">${euro(x.amount)} · fällig ${fdate(x.due)}</div><div>${badge(x.status)}</div></div>`).join(''):'<div class="empty">Keine offenen Zahlungen.</div>'}</div>
       </div>
       <div class="card ck">
         <h3>◆ Nächste Meilensteine</h3>
         ${ms.length?ms.map(m=>`<div class="ck-row"><b>${esc(m.title)}</b><span>${fdate(m.date)}</span></div>`).join(''):'<div class="empty">Keine anstehenden.</div>'}
       </div>
       <div class="card ck">
-        <h3>💶 Finanzen</h3>
-        <div class="ck-row"><b>Bezahlt</b><span style="color:var(--green)">${euro(paid)}</span></div>
-        <div class="ck-row"><b>Offen</b><span style="color:var(--amber)">${euro(openInv)}</span></div>
-        <div class="ck-row"><b>In Prüfung</b><span style="color:var(--blue)">${euro(pruef)}</span></div>
-        <div class="ck-link" onclick="go('finanzen')">Details →</div>
-      </div>
-      <div class="card ck">
         <h3>🏦 Förderungen</h3>
+        <div class="ck-row"><b>Beantragt</b><span style="color:var(--blue)">${euro(fundPend)}</span></div>
         <div class="ck-row"><b>Genehmigt</b><span style="color:var(--green)">${euro(fundOK)}</span></div>
-        <div class="ck-row"><b>In Bearbeitung</b><span style="color:var(--blue)">${euro(fundPend)}</span></div>
-        <div class="ck-row"><b>Programme</b><span>${DATA.funding.length}</span></div>
-      </div>
-      <div class="card ck">
-        <h3>📆 Anstehende Zahlungen</h3>
-        ${upPays.length?upPays.map(x=>`<div class="ck-row"><b>${esc(x.label)}</b><span>${euro(x.amount)} · ${fdate(x.due)}</span></div>`).join(''):'<div class="empty">Keine offen.</div>'}
+        <div class="ck-link" onclick="go('finanzen')">Details →</div>
       </div>
       <div class="card ck">
         <h3>📄 Dokumente</h3>
@@ -640,21 +761,13 @@ function viewStatus(){
 
 /* ZEIT / GANTT / ÄNDERUNGEN */
 function viewZeit(){
-  const upcoming=DATA.meetings.slice().filter(m=>m.date&&(m.type==='vorort'||m.type==='online')).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const future=upcoming.filter(m=>new Date(m.date)>=Date.now()-864e5);
   return `<div class="view">
     <h2 class="vt">Zeitplan</h2>
-    <p class="vsub">Bauphasen als Gantt und anstehende Termine.</p>
+    <p class="vsub">Bauphasen als Gantt – über die volle Breite.</p>
 
-    <div class="two-col">
-      <div class="card col-main">
-        <h3>📊 Bauphasen-Gantt ${isBoard()?'<span style="font-weight:400;font-size:11px;color:var(--muted)">· Eintrag antippen zum Bearbeiten</span>':''} <span class="c-act" onclick="addTermin()">+ Eintrag</span></h3>
-        ${ganttHTML()}
-      </div>
-      <div class="card col-side">
-        <h3>📅 Nächste Termine <span class="vsub" style="font-weight:400;font-size:11px;color:var(--muted)">Vor-Ort &amp; Online</span> <span class="c-act" onclick="addTermin()">+ Termin</span></h3>
-        ${future.length?future.map(mt=>termRow(mt)).join(""):'<div class="empty">Keine anstehenden Vor-Ort-/Online-Termine.</div>'}
-      </div>
+    <div class="card">
+      <h3>📊 Bauphasen-Gantt ${isBoard()?'<span style="font-weight:400;font-size:11px;color:var(--muted)">· Eintrag antippen zum Bearbeiten</span>':''} <span class="c-act" onclick="addTermin()">+ Eintrag</span></h3>
+      ${ganttHTML()}
     </div>
     ${isBoard()?`<div class="card">
       <h3>📋 Tabelle bearbeiten <span style="font-weight:400;font-size:11px;color:var(--muted)">· direkt eintippen, Dauer wird berechnet</span> <span class="c-act" onclick="tblAdd()">+ Zeile</span></h3>
@@ -664,8 +777,8 @@ function viewZeit(){
 }
 function tblEntries(){
   const rows=[];
-  DATA.phases.forEach((p,i)=>rows.push({src:'p',i,name:p.name,typ:'aktivitaet',start:p.planStart,end:p.planEnd,status:p.status}));
-  DATA.meetings.forEach((m,i)=>rows.push({src:'m',i,name:m.title,typ:m.type,start:(m.date||'').slice(0,10),end:m.end||(m.date||'').slice(0,10),status:m.status||'up'}));
+  DATA.phases.forEach((p,i)=>rows.push({src:'p',i,name:p.name,typ:'aktivitaet',start:p.planStart,end:p.planEnd,status:p.status,resp:p.resp}));
+  DATA.meetings.forEach((m,i)=>rows.push({src:'m',i,name:m.title,typ:m.type,start:(m.date||'').slice(0,10),end:m.end||(m.date||'').slice(0,10),status:m.status||'up',resp:m.resp}));
   rows.sort((a,b)=>new Date(a.start)-new Date(b.start));
   return rows;
 }
@@ -676,7 +789,7 @@ function tableHTML(){
   const statOpts=[['up','Geplant'],['prog','In Arbeit'],['done','Fertig'],['late','Verzug'],['block','Kritisch/Blockiert']];
   const sel=(val,opts,h)=>`<select class="tbl-in" onchange="${h}">${opts.map(o=>`<option value="${o[0]}"${o[0]===val?' selected':''}>${o[1]}</option>`).join('')}</select>`;
   return `<div class="tbl-wrap"><table class="tbl">
-    <thead><tr><th>Aktion</th><th>Typ</th><th>Anfang</th><th>Ende</th><th>Dauer</th><th>Status</th><th></th></tr></thead><tbody>
+    <thead><tr><th>Aktion</th><th>Typ</th><th>Anfang</th><th>Ende</th><th>Dauer</th><th>Status</th><th>Verantwortlich</th><th></th></tr></thead><tbody>
     ${rows.length?rows.map(r=>`<tr>
       <td><input class="tbl-in tbl-name" value="${esc(r.name)}" onchange="tblSet('${r.src}',${r.i},'name',this.value)"></td>
       <td>${sel(r.typ,typOpts,`tblSet('${r.src}',${r.i},'typ',this.value)`)}</td>
@@ -684,8 +797,9 @@ function tableHTML(){
       <td>${r.typ==='aktivitaet'?`<input class="tbl-in" type="date" value="${r.end||''}" onchange="tblSet('${r.src}',${r.i},'end',this.value)">`:'<span class="tbl-muted">–</span>'}</td>
       <td class="tbl-dur">${tblDur(r.start,r.end,r.typ)}</td>
       <td>${sel(r.status||'up',statOpts,`tblSet('${r.src}',${r.i},'status',this.value)`)}</td>
+      <td>${sel(r.resp||'',contactRespOptions(r.resp).map(o=>[o.value,o.label]),`tblSet('${r.src}',${r.i},'resp',this.value)`)}</td>
       <td><a onclick="tblDel('${r.src}',${r.i})" class="tbl-del" title="Löschen">🗑️</a></td>
-    </tr>`).join(''):'<tr><td colspan="7"><div class="empty">Noch keine Einträge.</div></td></tr>'}
+    </tr>`).join(''):'<tr><td colspan="8"><div class="empty">Noch keine Einträge.</div></td></tr>'}
     </tbody></table></div>`;
 }
 function tblSet(src,i,field,val){
@@ -695,8 +809,9 @@ function tblSet(src,i,field,val){
     else if(field==='start')p.planStart=val;
     else if(field==='end')p.planEnd=val;
     else if(field==='status')p.status=val;
+    else if(field==='resp')p.resp=val;
     else if(field==='typ'&&val!=='aktivitaet'){
-      const nm={title:p.name,type:val,date:p.planStart,status:p.status};
+      const nm={title:p.name,type:val,date:p.planStart,status:p.status,resp:p.resp};
       DATA.meetings.push(nm); DATA.phases.splice(i,1);
     }
   } else {
@@ -705,26 +820,59 @@ function tblSet(src,i,field,val){
     else if(field==='start'){const t=(m.date||'').slice(11);m.date=val+(t?('T'+t):'');}
     else if(field==='end')m.end=val;
     else if(field==='status')m.status=val;
+    else if(field==='resp')m.resp=val;
     else if(field==='typ'){m.type=val; if(val==='meilenstein')delete m.end; if(val==='aktivitaet'&&!m.end)m.end=(m.date||'').slice(0,10);}
   }
   save(); rerenderKeepScroll();
 }
 function tblDel(src,i){ if(!confirm("Zeile löschen?")) return; if(src==='p')DATA.phases.splice(i,1); else DATA.meetings.splice(i,1); save(); rerenderKeepScroll(); }
 function tblAdd(){ DATA.meetings.push({title:"Neuer Eintrag",type:"aktivitaet",date:TODAY(),end:TODAY(),status:"up"}); save(); rerenderKeepScroll(); }
+function currentKey(){return Object.keys(USERS).find(k=>USERS[k].name===USERNAME)||'';}
+function changeIsForMe(c){
+  if(ROLE==='energie') return true;
+  if(ROLE!=='handwerker'||!c.handwerker) return false;
+  const me=currentKey();
+  return c.handwerker.some(name=>{const ct=DATA.contacts.find(x=>x.name===name);return ct&&accountForContact(ct)===me;});
+}
 function viewAenderungen(){
+  const me=currentKey();
   return `<div class="view">
-    <h2 class="vt">Änderungsanfragen</h2>
-    <p class="vsub">Wünsche und Änderungen am Bauvorhaben – Freigabe durch die Energieberatung.</p>
+    <h2 class="vt">Änderungswünsche</h2>
+    <p class="vsub">Der Bauherr äußert Wünsche und markiert die betroffenen Handwerker – diese können kommentieren, akzeptieren oder ablehnen.</p>
     <div class="card">
-      <h3>🔧 Alle Anfragen <span class="c-act" onclick="addChange()">+ Neue Anfrage</span></h3>
-      ${DATA.changes.length?DATA.changes.map((c,i)=>`<div class="row">
-        <div class="r-main"><b>${esc(c.title)}</b><p>${esc(c.desc)}</p>
-          <p style="margin-top:4px"><b style="color:var(--txt)">${euro(c.cost)}</b> · eingereicht ${fdate(c.date)}</p></div>
-        <div class="r-right">${badge(c.status)}${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:8px" onclick="cycleChange(${i})">Status →</button>`:""}</div>
-      </div>`).join(""):'<div class="empty">Noch keine Änderungsanfragen.</div>'}
+      <h3>💡 Neuen Wunsch äußern <span class="c-act" onclick="addChange()">+ Wunsch</span></h3>
+      <p class="vsub" style="margin:-2px 0 0">„Ich wünsche mir doch noch …" – und antippen, welche Handwerker es betrifft.</p>
     </div>
+    ${DATA.changes.length?DATA.changes.map((c,i)=>changeCard(c,i)).join(""):'<div class="card"><div class="empty">Noch keine Änderungswünsche.</div></div>'}
   </div>`;
 }
+function changeCard(c,i){
+  const txt=c.desc||c.title||'';
+  const hw=c.handwerker||[];
+  const st=c.status||'offen';
+  const forMe=ROLE==='handwerker'&&changeIsForMe(c);
+  const canDecide=(ROLE==='energie'||forMe)&&st!=='akzeptiert'&&st!=='abgelehnt';
+  return `<div class="card qcard ch-${st}">
+    <div class="q-head">
+      <span class="av" style="background:${qTone(c.by)}">${esc((c.by||'?').slice(0,1).toUpperCase())}</span>
+      <div class="q-meta"><b>${esc(c.by||'—')}</b><time>${fdate(c.date)}</time></div>
+      <div class="q-status">${badge(st)}</div>
+    </div>
+    ${forMe&&st==='offen'?'<div class="ch-note">📣 An dich gerichtet – bitte prüfen</div>':''}
+    <p class="q-text">💡 ${esc(txt)}</p>
+    ${hw.length?`<div class="q-tags">${hw.map(n=>`<span class="qtag-chip">🔧 ${esc(n)}</span>`).join('')}</div>`:''}
+    ${(c.comments&&c.comments.length)?`<div class="q-answers">${c.comments.map(a=>`<div class="q-ans"><span class="av sm" style="background:${qTone(a.by)}">${esc((a.by||'?').slice(0,1).toUpperCase())}</span><div class="q-ans-body"><b>${esc(a.by||'—')}</b><time>${ftime(a.ts)}</time><p>${esc(a.text||'')}</p></div></div>`).join('')}</div>`:''}
+    <div class="q-reply">
+      <textarea id="ch-${i}" class="q-area" rows="1" placeholder="Kommentar oder Rückfrage…"></textarea>
+      <button class="btn-sm btn-primary" onclick="commentChange(${i})">Senden</button>
+    </div>
+    ${canDecide?`<div class="q-quick"><button class="qq-btn qq-geklaert" onclick="changeDecision(${i},'akzeptiert')">✓ Akzeptieren</button><button class="qq-btn qq-problem" onclick="changeDecision(${i},'abgelehnt')">✕ Ablehnen</button></div>`:''}
+    ${(ROLE==='energie'||c.by===USERNAME)?`<div style="text-align:right;margin-top:6px"><a onclick="delChange(${i})" style="color:var(--red);font-weight:600;font-size:12px">löschen</a></div>`:''}
+  </div>`;
+}
+function changeDecision(i,st){const c=DATA.changes[i];if(!c)return;c.status=st;save();render();}
+function commentChange(i){const c=DATA.changes[i];if(!c)return;const t=$("#ch-"+i);const text=(t&&t.value||'').trim();if(!text)return;c.comments=c.comments||[];c.comments.push({by:USERNAME,text,ts:new Date().toISOString()});save();render();}
+function delChange(i){if(confirm("Wunsch löschen?")){DATA.changes.splice(i,1);save();render();}}
 const TTYPE={aktivitaet:{label:"Aktivität",ic:"📊"},meilenstein:{label:"Meilenstein",ic:"◆"},vorort:{label:"Vor-Ort",ic:"📍"},online:{label:"Online / Zoom",ic:"💻"}};
 function termRow(mt){
   const d=new Date(mt.date); const past=d<Date.now()-864e5;
@@ -741,9 +889,9 @@ function termRow(mt){
     </div></div>`;
 }
 function ganttHTML(){
-  const items=DATA.phases.map((p,i)=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,sort:p.planStart,src:'p',si:i}))
-    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:m.status||'akt',sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})))
-    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),status:m.status||'up',sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
+  const items=DATA.phases.map((p,i)=>({kind:'act',name:p.name,start:p.planStart,end:p.planEnd,status:p.status,resp:p.resp,sort:p.planStart,src:'p',si:i}))
+    .concat(DATA.meetings.filter(m=>m.type==='aktivitaet'&&m.date).map(m=>({kind:'act',name:m.title,start:m.date,end:m.end||m.date,status:m.status||'akt',resp:m.resp,sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})))
+    .concat(DATA.meetings.filter(m=>m.type==='meilenstein'&&m.date).map(m=>({kind:'ms',name:m.title,date:(m.date||'').slice(0,10),status:m.status||'up',resp:m.resp,sort:m.date,src:'m',si:DATA.meetings.indexOf(m)})));
   let ds=[]; items.forEach(it=>{ if(it.kind==='act'){ds.push(it.start,it.end);} else ds.push(it.date); });
   ds=ds.filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
   if(!ds.length) return '<div class="empty">Keine Phasen.</div>';
@@ -776,16 +924,90 @@ function ganttHTML(){
   const cur2=isBoard()?';cursor:pointer':'';
   const rows=items.map(it=>{
     if(it.kind==='ms'){const l=pos(it.date); const mc=msCol[it.status]; const extra=mc?`;background:${mc};box-shadow:0 0 0 1px ${mc}`:''; const lblC=mc||'var(--gold-2)';
-      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:${lblC};font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%${extra}" title="${esc(it.name)}"></div></div></div>`;}
+      const rsp=it.resp?`<span class="g-resp" style="left:${l}%;transform:translateX(11px)" title="Verantwortlich: ${esc(it.resp)}">👤 ${esc(it.resp)}</span>`:'';
+      return `<div class="g-row g-msrow"><div class="g-lbl" style="color:${lblC};font-weight:700${cur2}" title="${esc(it.name)}"${clk(it)}>◆ ${esc(it.name)}</div><div class="g-track">${today}<div class="g-ms" style="left:${l}%${extra}" title="${esc(it.name)}"></div>${rsp}</div></div>`;}
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
-    return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
+    const rsp=it.resp?`<span class="g-resp" style="left:${Math.min(l+w,100)}%;transform:translateX(6px)" title="Verantwortlich: ${esc(it.resp)}">👤 ${esc(it.resp)}</span>`:'';
+    return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div>${rsp}</div></div>`;
   }).join('');
-  return `${toolbar}<div class="g-scroll" id="gScroll"><div class="gantt" style="width:${contW}px">
+  return `${toolbar}<div class="g-scroll" id="gScroll"><div class="gantt" style="width:max(${contW}px,100%)">
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
     ${rows}
   </div></div>
   <div class="g-legend"><span><i class="ld" style="background:#1f9d6b"></i>fertig</span><span><i class="ld" style="background:#e0a83e"></i>in Arbeit</span><span><i class="ld" style="background:#cfd8e2"></i>geplant</span><span><i class="ld" style="background:#b3261e"></i>kritisch/blockiert</span><span><i class="ms-leg"></i>Meilenstein</span><span style="margin-left:auto;color:var(--muted)">↔ seitlich scrollbar</span></div>`;
 }
+
+/* OFFENE FRAGEN */
+function qTone(name){const c=(DATA.contacts||[]).find(c=>name&&name.indexOf(c.name)>-1);return (c&&c.tone)||'#173a5e';}
+function mentionize(s){return (s||'').replace(/@([^\s,.;:!?]+)/g,'<b style="color:var(--blue)">@$1</b>');}
+const QSTAT=[['offen','Offen'],['geklaert','Geklärt'],['problem','PROBLEM']];
+function viewFragen(){
+  const qs=DATA.questions||[];
+  return `<div class="view">
+    <h2 class="vt">Offene Fragen &amp; Themen</h2>
+    <p class="vsub">Stellen Sie hier Ihre Fragen – gerne mit Bild und @-Markierung der richtigen Person. Status: Offen, Geklärt oder PROBLEM.</p>
+    <div class="card">
+      <h3>➕ Neue Frage / Thema</h3>
+      <textarea id="qText" class="q-area" rows="3" placeholder="Ihre Frage oder Ihr Thema… (mit @ Personen erwähnen)"></textarea>
+      <div class="qtag-row"><span class="qtag-lbl">@ Taggen:</span>
+        ${(DATA.contacts||[]).map(c=>`<button type="button" class="qtag" data-name="${esc(c.name)}" onclick="this.classList.toggle('active')">${esc(c.name)}</button>`).join('')}
+      </div>
+      <div class="q-actions">
+        <label class="qfile">🖼️ Bild anhängen<input type="file" id="qImg" accept="image/*" style="display:none" onchange="qImgName(this)"></label>
+        <span id="qImgName" class="q-imgname"></span>
+        <button class="btn-primary q-send" onclick="addQuestion()">Frage stellen</button>
+      </div>
+    </div>
+    ${qs.length?qs.map((q,qi)=>questionCard(q,qi)).join(''):'<div class="card"><div class="empty">Noch keine Fragen – stellen Sie die erste oben.</div></div>'}
+  </div>`;
+}
+function questionCard(q,qi){
+  const ini=esc((q.by||'?').slice(0,1).toUpperCase());
+  const statusSel=`<select class="tbl-in q-statussel" onchange="setQuestionStatus(${qi},this.value)">${QSTAT.map(s=>`<option value="${s[0]}"${(q.status||'offen')===s[0]?' selected':''}>${s[1]}</option>`).join('')}</select>`;
+  return `<div class="card qcard q-${q.status||'offen'}">
+    <div class="q-head">
+      <span class="av" style="background:${qTone(q.by)}">${ini}</span>
+      <div class="q-meta"><b>${esc(q.by||'—')}</b><time>${ftime(q.ts)}</time></div>
+      <div class="q-status">${statusSel}</div>
+    </div>
+    <p class="q-text">${mentionize(esc(q.text))}</p>
+    ${q.tags&&q.tags.length?`<div class="q-tags">${q.tags.map(n=>`<span class="qtag-chip">@${esc(n)}</span>`).join('')}</div>`:''}
+    ${q.img?`<img class="q-img" src="${esc(q.img)}" alt="" onclick="window.open('${esc(q.img)}','_blank')">`:''}
+    ${(q.answers&&q.answers.length)?`<div class="q-answers">${q.answers.map(a=>`<div class="q-ans"><span class="av sm" style="background:${qTone(a.by)}">${esc((a.by||'?').slice(0,1).toUpperCase())}</span><div class="q-ans-body"><b>${esc(a.by||'—')}</b><time>${ftime(a.ts)}</time><p>${mentionize(esc(a.text||''))}</p>${a.img?`<img class="q-img sm" src="${esc(a.img)}" onclick="window.open('${esc(a.img)}','_blank')">`:''}</div></div>`).join('')}</div>`:''}
+    <div class="q-reply">
+      <textarea id="qa-${qi}" class="q-area" rows="1" placeholder="Antwort oder Folgefrage…"></textarea>
+      <label class="qfile sm">🖼️<input type="file" id="qaimg-${qi}" accept="image/*" style="display:none"></label>
+      <button class="btn-sm btn-primary" onclick="answerQuestion(${qi})">Senden</button>
+    </div>
+    <div class="q-quick">${QSTAT.map(s=>`<button class="qq-btn qq-${s[0]}${(q.status||'offen')===s[0]?' on':''}" onclick="setQuestionStatus(${qi},'${s[0]}')">${s[1]}</button>`).join('')}</div>
+    ${isBoard()?`<div style="text-align:right;margin-top:6px"><a onclick="delQuestion(${qi})" style="color:var(--red);font-weight:600;font-size:12px">löschen</a></div>`:''}
+  </div>`;
+}
+function qImgName(el){const n=$("#qImgName");if(n)n.textContent=el.files&&el.files[0]?('📎 '+el.files[0].name):'';}
+function addQuestion(){
+  const t=$("#qText"); const text=(t&&t.value||'').trim();
+  const tags=[...document.querySelectorAll('.qtag.active')].map(b=>b.dataset.name);
+  if(!text&&!tags.length){alert("Bitte eine Frage eingeben.");return;}
+  const fEl=$("#qImg"); const file=fEl&&fEl.files&&fEl.files[0];
+  const who=(typeof USERNAME!=='undefined'&&USERNAME)?USERNAME:(ROLE_LABEL[ROLE]||"");
+  const q={text,by:who,tags,status:"offen",ts:new Date().toISOString(),answers:[]};
+  DATA.questions=DATA.questions||[]; DATA.questions.unshift(q); save();
+  if(file&&typeof SUPA!=='undefined'&&SUPA){supaUpload(file).then(url=>{q.img=url;save();render();}).catch(()=>{});}
+  render();
+}
+function answerQuestion(qi){
+  const q=(DATA.questions||[])[qi]; if(!q)return;
+  const t=$("#qa-"+qi); const text=(t&&t.value||'').trim();
+  const fEl=$("#qaimg-"+qi); const file=fEl&&fEl.files&&fEl.files[0];
+  if(!text&&!file)return;
+  const who=(typeof USERNAME!=='undefined'&&USERNAME)?USERNAME:(ROLE_LABEL[ROLE]||"");
+  const a={by:who,text,ts:new Date().toISOString()};
+  q.answers=q.answers||[]; q.answers.push(a); save();
+  if(file&&typeof SUPA!=='undefined'&&SUPA){supaUpload(file).then(url=>{a.img=url;save();render();}).catch(()=>{});}
+  render();
+}
+function setQuestionStatus(qi,val){const q=(DATA.questions||[])[qi];if(!q)return;q.status=val;save();render();}
+function delQuestion(qi){if(confirm("Frage löschen?")){DATA.questions.splice(qi,1);save();render();}}
 
 /* MEDIEN */
 function viewMedien(){
@@ -843,12 +1065,18 @@ function viewFinanzen(){
   const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
   const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
   const pays=DATA.payments.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
+  const planned=DATA.payments.filter(p=>p.status!=="bezahlt").reduce((s,p)=>s+p.amount,0);
+  const MON=['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const months=[];
+  for(let mo=4;mo<=11;mo++){const key=`2026-${String(mo+1).padStart(2,'0')}`;let mp=0,mpl=0,mof=0;DATA.payments.forEach(p=>{if((p.due||'').slice(0,7)===key){if(p.status==='bezahlt')mp+=p.amount;else if(p.status==='geplant')mpl+=p.amount;else mof+=p.amount;}});months.push({label:MON[mo],paid:mp,planned:mpl,open:mof});}
+  const maxM=Math.max(1,...months.map(m=>m.paid+m.planned+m.open));
   return `<div class="view">
     <h2 class="vt">Finanzen &amp; Förderungen</h2>
-    <p class="vsub">Rechnungen hochladen und einer Förderung zuordnen – geplante Zahlungen rechts im Blick.</p>
+    <p class="vsub">Überblick oben, darunter die Rechnungen in voller Breite.</p>
 
-    <div class="two-col fin">
-      <div class="card col60">
+    ${finChartsHTML(paid,open,planned,months,maxM)}
+
+    <div class="card">
         <h3>💶 Rechnungen für Förderungen <span class="c-act" onclick="submitInvoice()">📤 Rechnung hochladen</span></h3>
         <div class="fin-sum">
           <div class="fin-box"><b style="color:var(--green)">${euro(paid)}</b><span>Bezahlt</span></div>
@@ -863,13 +1091,18 @@ function viewFinanzen(){
           <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${badge(iv.status)}</div>
           ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button><br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button>`:''}</div>
         </div>`).join("")}
-        <hr class="sep">
+    </div>
+
+    <div class="two-col fin">
+      <div class="card col60">
         <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
+        <p class="vsub" style="margin:-2px 0 10px">Mit Datum, wann der jeweilige Status erreicht wurde.</p>
         ${DATA.funding.map((f,i)=>`<div class="row">
-          <div class="r-main"><b>${esc(f.program)}</b><p>${esc(f.note)}</p>
+          <div class="r-main"><b>${esc(f.program)}</b>${f.note?`<p>${esc(f.note)}</p>`:''}
+            ${(f.dEing||f.dPruef||f.dGen)?`<p class="fund-dates">${f.dEing?`📥 Eingereicht ${fdate(f.dEing)}`:''}${f.dPruef?`${f.dEing?' · ':''}🔎 In Prüfung ${fdate(f.dPruef)}`:''}${f.dGen?`${(f.dEing||f.dPruef)?' · ':''}✅ Genehmigt ${fdate(f.dGen)}`:''}</p>`:''}
             ${(()=>{const a=DATA.invoices.filter(x=>x.foerderung===f.program).reduce((s,x)=>s+x.amount,0);return a?`<p style="margin-top:4px">📎 Zugeordnete Rechnungen: <b style="color:var(--txt)">${euro(a)}</b></p>`:'';})()}</div>
           <div class="r-right"><div class="amount">${euro(f.amount)}</div><div style="margin-top:5px">${badge(f.status)}</div>
-          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleFunding(${i})">Status →</button>`:""}</div>
+          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editFunding(${i})">✏️ Bearbeiten</button>`:""}</div>
         </div>`).join("")}
       </div>
 
@@ -879,18 +1112,51 @@ function viewFinanzen(){
           return `<div class="row">
             <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
             <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
-            ${isBoard()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cyclePayment(${DATA.payments.indexOf(pm)})">Status →</button>`:""}</div>
+            ${isBoard()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${DATA.payments.indexOf(pm)})">✏️ Bearbeiten</button>`:""}</div>
           </div>`;}).join("")}
       </div>
     </div>
   </div>`;
 }
+function kfmt(v){return v>=1000?(Math.round(v/100)/10).toLocaleString('de-DE')+'k':String(v||0);}
+function finChartsHTML(paid,open,planned,months,maxM){
+  const segs=[['Bezahlt',paid,'#1f9d6b'],['Offene Rechnungen',open,'#e0972a'],['Noch geplant',planned,'#2d6fb8']];
+  const mx=Math.max(1,...segs.map(s=>s[1]));
+  const areaPx=130;
+  const left=`<div class="bars">${segs.map(s=>`<div class="bar-row"><div class="bar-top"><span>${s[0]}</span><b>${euro(s[1])}</b></div><div class="bar-track"><i style="width:${Math.round(s[1]/mx*100)}%;background:${s[2]}"></i></div></div>`).join('')}</div>`;
+  const cols=months.map(m=>{const tot=m.paid+m.planned+m.open;const ph=Math.round(m.paid/maxM*areaPx),pl=Math.round(m.planned/maxM*areaPx),oh=Math.round(m.open/maxM*areaPx);
+    return `<div class="vcol"><div class="vamt">${tot?'€'+kfmt(tot):''}</div><div class="vbar-area"><div class="vbar">${ph?`<i class="seg-paid" style="height:${ph}px" title="Bezahlt ${euro(m.paid)}"></i>`:''}${pl?`<i class="seg-plan" style="height:${pl}px" title="Geplant ${euro(m.planned)}"></i>`:''}${oh?`<i class="seg-open" style="height:${oh}px" title="Offen / überfällig ${euro(m.open)}"></i>`:''}</div></div><div class="vlbl">${m.label}</div></div>`;}).join('');
+  const right=`<div class="vchart">${cols}</div>
+    <div class="g-legend" style="margin-top:8px"><span><i class="ld" style="background:#1f9d6b"></i>bezahlt</span><span><i class="ld" style="background:#2d6fb8"></i>geplant</span><span><i class="ld" style="background:#e0972a"></i>offen / überfällig</span></div>`;
+  return `<div class="two-col charts" style="margin-top:14px">
+    <div class="card chart-l"><h3>📊 Rechnungs-Überblick</h3>${left}</div>
+    <div class="card chart-r"><h3>📈 Liquiditätsplanung <span style="font-weight:400;font-size:11px;color:var(--muted)">pro Monat · Mai–Dez 2026</span></h3>${right}</div>
+  </div>`;
+}
 
 /* KONTAKTE */
+function accountForContact(c){
+  const hay=((c.name||'')+' '+(c.role||'')).toLowerCase();
+  let best=null;
+  Object.keys(USERS).forEach(u=>{
+    const parts=USERS[u].name.toLowerCase().split('·').map(s=>s.trim()).filter(Boolean);
+    if(parts.some(p=>p.length>2&&hay.indexOf(p)>-1)) best=u;
+    if(hay.indexOf(u.toLowerCase())>-1) best=u;
+  });
+  return best;
+}
 function viewKontakte(){
   return `<div class="view">
     <h2 class="vt">Kontaktdaten</h2>
     <p class="vsub">Alle Beteiligten auf einen Blick – Anruf direkt antippen.</p>
+    ${isAdmin()?`<div class="card">
+      <h3>🔑 Zugänge &amp; Accounts <span style="font-weight:400;font-size:11px;color:var(--muted)">nur für dich (Energieberatung) sichtbar</span></h3>
+      <p class="vsub" style="margin:-2px 0 10px">Login-Daten zum Weitergeben an die jeweilige Person.</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Name</th><th>Rolle</th><th>Benutzername</th><th>Passwort</th><th>NUKI-Code</th></tr></thead><tbody>
+        ${Object.keys(USERS).map(u=>`<tr><td>${esc(USERS[u].name)}</td><td>${ROLE_LABEL[USERS[u].role]||USERS[u].role}</td><td class="mono">${esc(u)}</td><td class="mono">${esc(USERS[u].pw)}</td><td class="mono">${esc(USERS[u].nuki||'–')}</td></tr>`).join('')}
+        </tbody></table></div>
+    </div>`:''}
     <div class="card">
       <h3>📇 Beteiligte ${isBoard()?'<span class="c-act" onclick="addContact()">+ Hinzufügen</span>':''}</h3>
       ${DATA.contacts.map((c,i)=>`<div class="contact">
@@ -899,11 +1165,28 @@ function viewKontakte(){
         <div class="callbtns">
           ${c.phone?`<a class="call" href="tel:${esc(c.phone.replace(/\s/g,''))}">📞</a>`:''}
           ${c.email?`<a class="mail" href="mailto:${esc(c.email)}">✉️</a>`:''}
+          ${isAdmin()?`<a class="edit key" onclick="showLogin('${accountForContact(c)||''}')" title="Zugangsdaten">🔑</a>`:''}
           ${isBoard()?`<a class="edit" onclick="editContact(${i})" title="Bearbeiten">✏️</a><a class="del" onclick="delContact(${i})" title="Löschen">🗑️</a>`:''}
         </div>
       </div>`).join("")}
     </div>
   </div>`;
+}
+function showLogin(u){
+  if(!u||!USERS[u]){alert("Für diesen Kontakt ist (noch) kein Login-Account hinterlegt.");return;}
+  const a=USERS[u];
+  const wrap=document.createElement('div');wrap.className='sheet-bg';
+  wrap.innerHTML=`<div class="sheet fm-sheet"><h3>🔑 Zugangsdaten</h3>
+    <div class="logincred"><span>Name</span><b>${esc(a.name)}</b></div>
+    <div class="logincred"><span>Rolle</span><b>${ROLE_LABEL[a.role]||a.role}</b></div>
+    <div class="logincred"><span>Benutzername</span><b class="mono">${esc(u)}</b></div>
+    <div class="logincred"><span>Passwort</span><b class="mono">${esc(a.pw)}</b></div>
+    <div class="logincred"><span>🔑 NUKI-Code Hauseingang</span><b class="mono">${esc(a.nuki||'–')}</b></div>
+    <p class="vsub" style="margin-top:10px">Nur für dich sichtbar – bitte vertraulich an die Person weitergeben.</p>
+    <button class="dismiss" id="lcClose">Schließen</button></div>`;
+  wrap.addEventListener('click',e=>{if(e.target===wrap)wrap.remove();});
+  document.body.appendChild(wrap);
+  wrap.querySelector('#lcClose').addEventListener('click',()=>wrap.remove());
 }
 
 /* KOMMENTARE */
@@ -961,12 +1244,20 @@ const TODAY=()=>new Date().toISOString().slice(0,10);
 function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,''));return isNaN(n)?0:n;}
 function foerderSelect(){return [{value:"",label:"— Keine —"}].concat(foerderOptions().map(o=>({value:o,label:o})));}
 const TONES=["#173a5e","#1f9d6b","#c9912b","#3a8f8f","#7d5ba6","#b9784a","#2d6fb8","#d6493b"];
+/* Verantwortlich-Auswahl anhand der Kontaktliste (letzter Tab) */
+function contactRespOptions(current){
+  const opts=[{value:"",label:"— Niemand —"}];
+  (DATA.contacts||[]).forEach(c=>{const lbl=c.name+(c.role?` — ${c.role}`:'');opts.push({value:lbl,label:lbl});});
+  if(current && !opts.some(o=>o.value===current)) opts.push({value:current,label:current+" (manuell)"});
+  return opts;
+}
 
 function editStatus(){
-  showForm("Aktueller Stand bearbeiten",[
-    {key:"statusText",label:"Status-Text",type:"textarea",value:DATA.project.statusText},
-    {key:"progress",label:"Gesamtfortschritt in %",type:"number",value:DATA.project.progress}
-  ],v=>{DATA.project.statusText=v.statusText;DATA.project.progress=Math.max(0,Math.min(100,num(v.progress)));save();render();});
+  showForm("Projekt-Eckdaten bearbeiten",[
+    {key:"start",label:"Start",type:"date",value:DATA.project.start},
+    {key:"statusText",label:"Status-Text (optional)",type:"textarea",value:DATA.project.statusText}
+  ],v=>{if(v.start)DATA.project.start=v.start;DATA.project.statusText=v.statusText;save();render();},
+  {info:"Fortschritt (% / fertig-in Arbeit-offen) und Ziel-Datum werden automatisch aus den Bauphasen & Terminen berechnet."});
 }
 function editGanttItem(src,i){ if(!isBoard()) return; if(src==='p') editPhase(i); else editMeeting(i); }
 function editPhase(i){const ph=DATA.phases[i]; if(!ph) return;
@@ -975,8 +1266,9 @@ function editPhase(i){const ph=DATA.phases[i]; if(!ph) return;
     {key:"planStart",label:"Start",type:"date",value:ph.planStart},
     {key:"planEnd",label:"Ende",type:"date",value:ph.planEnd},
     {key:"status",label:"Status",type:"select",value:ph.status,options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Abgeschlossen"},{value:"late",label:"Verzug"},{value:"block",label:"Kritisch/Blockiert"}]},
+    {key:"resp",label:"Verantwortlich (aus Kontakten)",type:"select",value:ph.resp||"",options:contactRespOptions(ph.resp)},
     {key:"actEnd",label:"Ist-Enddatum (optional)",type:"date",value:ph.actEnd}
-  ],v=>{ if(!v.name) return false; ph.name=v.name;ph.planStart=v.planStart;ph.planEnd=v.planEnd;ph.status=v.status;ph.actEnd=v.actEnd||"";save();render(); },
+  ],v=>{ if(!v.name) return false; ph.name=v.name;ph.planStart=v.planStart;ph.planEnd=v.planEnd;ph.status=v.status;ph.resp=v.resp;ph.actEnd=v.actEnd||"";save();render(); },
   {onDelete:()=>{DATA.phases.splice(i,1);save();render();}});
 }
 function editMeeting(i){const m=DATA.meetings[i]; if(!m) return;
@@ -991,12 +1283,13 @@ function editMeeting(i){const m=DATA.meetings[i]; if(!m) return;
     {key:"end",label:"Ende (bei Aktivität)",type:"date",value:m.end||dpart},
     {key:"place",label:"Ort / Link",type:"text",value:m.place||""},
     {key:"who",label:"Teilnehmer",type:"text",value:m.who||""},
-    {key:"status",label:"Status",type:"select",value:m.status||'up',options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Fertig"},{value:"late",label:"Verzug"},{value:"block",label:"Kritisch/Blockiert"}]}
+    {key:"status",label:"Status",type:"select",value:m.status||'up',options:[{value:"up",label:"Geplant"},{value:"prog",label:"In Arbeit"},{value:"done",label:"Fertig"},{value:"late",label:"Verzug"},{value:"block",label:"Kritisch/Blockiert"}]},
+    {key:"resp",label:"Verantwortlich (aus Kontakten)",type:"select",value:m.resp||"",options:contactRespOptions(m.resp)}
   ];
   fields.__onChange=(v,{setRowShow})=>{const meet=v.typ==='vorort'||v.typ==='online';setRowShow('time',meet);setRowShow('place',meet);setRowShow('who',meet);setRowShow('end',v.typ==='aktivitaet');setRowShow('status',v.typ==='aktivitaet'||v.typ==='meilenstein');};
   showForm("Eintrag bearbeiten",fields,v=>{
     if(!v.title) return false;
-    m.title=v.title; m.type=v.typ;
+    m.title=v.title; m.type=v.typ; m.resp=v.resp;
     if(v.typ==='aktivitaet'){m.date=v.date;m.end=v.end||v.date;m.status=v.status;delete m.place;delete m.who;}
     else if(v.typ==='meilenstein'){m.date=v.date;m.status=v.status;delete m.end;delete m.place;delete m.who;}
     else {m.date=v.date+(v.time?("T"+v.time):"");m.place=v.place;m.who=v.who;delete m.end;}
@@ -1007,11 +1300,26 @@ const CHANGE_FLOW=["eingereicht","pruefung","genehmigt"];
 function cycleChange(i){const c=DATA.changes[i];if(c.status==="abgelehnt"){c.status="eingereicht";save();render();return;}
   const idx=CHANGE_FLOW.indexOf(c.status);c.status=idx<CHANGE_FLOW.length-1?CHANGE_FLOW[idx+1]:"abgelehnt";save();render();}
 function addChange(){
-  showForm("Neue Änderungsanfrage",[
-    {key:"title",label:"Titel",type:"text",placeholder:"z. B. Fußbodenheizung statt Heizkörper"},
-    {key:"desc",label:"Beschreibung",type:"textarea"},
-    {key:"cost",label:"Geschätzte Mehrkosten (€)",type:"number",value:0}
-  ],v=>{if(!v.title)return false;DATA.changes.unshift({title:v.title,desc:v.desc,cost:num(v.cost),status:"eingereicht",date:TODAY(),by:USERNAME});save();render();});
+  const hwContacts=DATA.contacts.filter(c=>{const a=accountForContact(c);return a&&USERS[a]&&USERS[a].role==='handwerker';});
+  const chips=hwContacts.length?hwContacts.map(c=>`<button type="button" class="qtag" data-name="${esc(c.name)}" onclick="this.classList.toggle('active')">${esc(c.name)}</button>`).join(''):'<span class="vsub">Keine Handwerker in der Kontaktliste.</span>';
+  const wrap=document.createElement('div');wrap.className='sheet-bg';
+  wrap.innerHTML=`<div class="sheet fm-sheet"><h3>Änderungswunsch äußern</h3>
+    <div class="fm-body">
+      <div class="fm-row"><label>Ich wünsche mir doch noch …</label><textarea class="fm-in" id="chDesc" rows="3" placeholder="z. B. doch eine Fußbodenheizung im Wohnzimmer statt Heizkörper"></textarea></div>
+      <div class="fm-row"><label>Betrifft welche Handwerker? (antippen)</label><div class="qtag-row" id="chHw">${chips}</div></div>
+    </div>
+    <button class="btn-primary" id="chSave">Wunsch senden</button>
+    <button class="dismiss" id="chCancel">Abbrechen</button></div>`;
+  wrap.addEventListener('click',e=>{if(e.target===wrap)wrap.remove();});
+  document.body.appendChild(wrap);
+  wrap.querySelector('#chCancel').addEventListener('click',()=>wrap.remove());
+  wrap.querySelector('#chSave').addEventListener('click',()=>{
+    const d=wrap.querySelector('#chDesc');const desc=(d.value||'').trim();if(!desc){d.focus();return;}
+    const hw=[...wrap.querySelectorAll('#chHw .qtag.active')].map(b=>b.dataset.name);
+    DATA.changes.unshift({title:desc.length>60?desc.slice(0,57)+'…':desc,desc,handwerker:hw,status:"offen",date:TODAY(),by:USERNAME,comments:[]});
+    save();render();wrap.remove();
+  });
+  setTimeout(()=>wrap.querySelector('#chDesc').focus(),60);
 }
 
 function cycleInvoice(i){const iv=DATA.invoices[i];
@@ -1062,6 +1370,15 @@ function addPayment(){
     {key:"status",label:"Status",type:"select",value:"geplant",options:[{value:"geplant",label:"Geplant"},{value:"offen",label:"Offen"},{value:"bezahlt",label:"Bezahlt"}]}
   ],v=>{if(!v.label)return false;DATA.payments.push({label:v.label,amount:num(v.amount),due:v.due,status:v.status});save();render();});
 }
+function editPayment(i){const p=DATA.payments[i]; if(!p) return;
+  showForm("Zahlung bearbeiten",[
+    {key:"label",label:"Bezeichnung",type:"text",value:p.label},
+    {key:"amount",label:"Betrag (€)",type:"number",value:p.amount},
+    {key:"due",label:"Fällig am",type:"date",value:p.due},
+    {key:"status",label:"Status",type:"select",value:p.status,options:[{value:"geplant",label:"Geplant"},{value:"offen",label:"Offen"},{value:"bezahlt",label:"Bezahlt"}]}
+  ],v=>{if(!v.label)return false;p.label=v.label;p.amount=num(v.amount);p.due=v.due;p.status=v.status;save();render();},
+  {onDelete:()=>{DATA.payments.splice(i,1);save();render();}});
+}
 
 const FUND_FLOW=["eingereicht","pruefung","genehmigt"];
 function cycleFunding(i){const f=DATA.funding[i];if(f.status==="abgelehnt"){f.status="eingereicht";save();render();return;}
@@ -1070,9 +1387,24 @@ function addFunding(){
   showForm("Neue Förderung",[
     {key:"program",label:"Förderprogramm",type:"text",placeholder:"z. B. BAFA Heizungsförderung (Wärmepumpe)"},
     {key:"amount",label:"Fördersumme (€)",type:"number",value:0},
-    {key:"status",label:"Status",type:"select",value:"eingereicht",options:[{value:"eingereicht",label:"Eingereicht"},{value:"pruefung",label:"In Prüfung"},{value:"genehmigt",label:"Genehmigt"}]},
+    {key:"status",label:"Aktueller Status",type:"select",value:"eingereicht",options:[{value:"eingereicht",label:"Eingereicht"},{value:"pruefung",label:"In Prüfung"},{value:"genehmigt",label:"Genehmigt"},{value:"abgelehnt",label:"Abgelehnt"}]},
+    {key:"dEing",label:"Eingereicht am",type:"date",value:TODAY()},
+    {key:"dPruef",label:"In Prüfung seit",type:"date",value:""},
+    {key:"dGen",label:"Genehmigt am",type:"date",value:""},
     {key:"note",label:"Notiz",type:"textarea"}
-  ],v=>{if(!v.program)return false;DATA.funding.push({program:v.program,amount:num(v.amount),status:v.status,note:v.note,date:TODAY()});save();render();});
+  ],v=>{if(!v.program)return false;DATA.funding.push({program:v.program,amount:num(v.amount),status:v.status,note:v.note,dEing:v.dEing,dPruef:v.dPruef,dGen:v.dGen,date:TODAY()});save();render();});
+}
+function editFunding(i){const f=DATA.funding[i]; if(!f) return;
+  showForm("Förderung bearbeiten",[
+    {key:"program",label:"Förderprogramm",type:"text",value:f.program},
+    {key:"amount",label:"Fördersumme (€)",type:"number",value:f.amount},
+    {key:"status",label:"Aktueller Status",type:"select",value:f.status,options:[{value:"eingereicht",label:"Eingereicht"},{value:"pruefung",label:"In Prüfung"},{value:"genehmigt",label:"Genehmigt"},{value:"abgelehnt",label:"Abgelehnt"}]},
+    {key:"dEing",label:"Eingereicht am",type:"date",value:f.dEing||""},
+    {key:"dPruef",label:"In Prüfung seit",type:"date",value:f.dPruef||""},
+    {key:"dGen",label:"Genehmigt am",type:"date",value:f.dGen||""},
+    {key:"note",label:"Notiz",type:"textarea",value:f.note||""}
+  ],v=>{if(!v.program)return false;f.program=v.program;f.amount=num(v.amount);f.status=v.status;f.dEing=v.dEing;f.dPruef=v.dPruef;f.dGen=v.dGen;f.note=v.note;save();render();},
+  {onDelete:()=>{DATA.funding.splice(i,1);save();render();}});
 }
 
 function addTermin(){
@@ -1087,15 +1419,16 @@ function addTermin(){
     {key:"time",label:"Uhrzeit",type:"time",value:"10:00"},
     {key:"end",label:"Ende (bei Aktivität)",type:"date",value:TODAY()},
     {key:"place",label:"Ort / Link",type:"text",value:"Baustelle Südring 50, vor Ort"},
-    {key:"who",label:"Teilnehmer",type:"text"}
+    {key:"who",label:"Teilnehmer",type:"text"},
+    {key:"resp",label:"Verantwortlich (aus Kontakten)",type:"select",value:"",options:contactRespOptions("")}
   ];
   fields.__onChange=(v,{setRowShow})=>{const meet=v.typ==='vorort'||v.typ==='online';
     setRowShow('time',meet);setRowShow('place',meet);setRowShow('who',meet);setRowShow('end',v.typ==='aktivitaet');};
   showForm("Neuer Eintrag",fields,v=>{
     if(!v.title)return false;
-    if(v.typ==='aktivitaet')DATA.meetings.push({title:v.title,type:"aktivitaet",date:v.date,end:v.end||v.date});
-    else if(v.typ==='meilenstein')DATA.meetings.push({title:v.title,type:"meilenstein",date:v.date});
-    else DATA.meetings.push({title:v.title,type:v.typ,date:v.date+(v.time?("T"+v.time):""),place:v.place,who:v.who});
+    if(v.typ==='aktivitaet')DATA.meetings.push({title:v.title,type:"aktivitaet",date:v.date,end:v.end||v.date,resp:v.resp});
+    else if(v.typ==='meilenstein')DATA.meetings.push({title:v.title,type:"meilenstein",date:v.date,resp:v.resp});
+    else DATA.meetings.push({title:v.title,type:v.typ,date:v.date+(v.time?("T"+v.time):""),place:v.place,who:v.who,resp:v.resp});
     save();render();
   });
 }
