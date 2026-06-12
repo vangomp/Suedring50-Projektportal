@@ -35,7 +35,7 @@ a{color:var(--blue)}
 
 /* LOGIN */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:linear-gradient(rgba(15,39,66,.55),rgba(15,39,66,.7)), url('login-bg.jpg') center/cover no-repeat, linear-gradient(160deg,var(--navy),#214c78)}
+  background:url('login-bg.jpg') center/cover no-repeat, #20242b}
 .login-card{width:100%;max-width:380px;background:var(--card);border-radius:22px;padding:30px 26px 26px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .brand{display:flex;align-items:center;gap:11px;margin-bottom:4px}
 .logo{width:46px;height:46px;border-radius:12px;background:#181818;color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:17px;letter-spacing:.5px;flex-shrink:0;overflow:hidden}
@@ -240,7 +240,7 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 /* gantt */
 .g-scroll{max-height:66vh;overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:4px}
 .g-scroll::-webkit-scrollbar{height:10px;width:10px}.g-scroll::-webkit-scrollbar-thumb{background:#c4d0dd;border-radius:6px}
-.gantt{font-size:12px;min-width:1080px}
+.gantt{font-size:12px;min-width:480px}
 .g-row{display:flex;align-items:center;min-height:26px}
 .g-head{height:24px;position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}
 .g-lbl{flex:0 0 150px;width:150px;padding:0 8px 0 10px;font-size:11px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:sticky;left:0;background:#fff;z-index:3}
@@ -249,7 +249,17 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .g-axis{height:18px}
 .g-bar{position:absolute;top:4px;height:12px;border-radius:6px;min-width:3px}
 .g-tick{position:absolute;top:0;bottom:0;border-left:1px dashed #e9eef4}
-.g-tick span{position:absolute;top:0;left:2px;font-size:9.5px;color:var(--muted)}
+.g-tick.g-tick-m{border-left:1px solid #cfd8e2}
+.g-tick span{position:absolute;top:0;left:2px;font-size:9.5px;color:var(--muted);white-space:nowrap}
+/* gantt zoom toolbar */
+.g-zoom{display:flex;align-items:center;gap:6px;margin:2px 0 6px;flex-wrap:wrap}
+.g-zoom .gz-lbl{font-size:11px;color:var(--muted);margin-right:2px;font-weight:600}
+.gz-btn{font-size:11.5px;font-weight:600;padding:5px 11px;border:1px solid var(--line);border-radius:8px;background:#fafbfc;color:var(--muted)}
+.gz-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.gz-save{margin-left:auto;font-size:11.5px;font-weight:600;padding:5px 11px;border:1px solid var(--navy);border-radius:8px;background:#fff;color:var(--navy)}
+.gz-save:active{background:var(--navy);color:#fff}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(10px);background:#101a26;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,.3)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .g-today{position:absolute;top:0;bottom:0;width:2px;background:rgba(214,73,59,.55);z-index:2}
 .g-ms{position:absolute;top:3px;width:13px;height:13px;background:var(--gold);transform:translateX(-50%) rotate(45deg);border:1.5px solid #fff;box-shadow:0 0 0 1px var(--gold-2);z-index:3}
 .g-vo{position:absolute;top:5px;width:10px;height:10px;border-radius:50%;background:var(--blue);transform:translateX(-50%);border:1.5px solid #fff;z-index:3}
@@ -537,7 +547,15 @@ function render(){
   const map={status:viewStatus,zeit:viewZeit,aenderungen:viewAenderungen,medien:viewMedien,finanzen:viewFinanzen,kontakte:viewKontakte};
   m.innerHTML=(map[TAB]||viewStatus)();
   window.scrollTo({top:0});
+  if(TAB==='zeit') requestAnimationFrame(restoreGScroll);
 }
+/* ---- Gantt-Zoom & gespeicherte Ansicht ---- */
+function savedGView(){try{return JSON.parse(localStorage.getItem('sr50_gview')||'null');}catch(e){return null;}}
+let GZOOM=(savedGView()&&savedGView().zoom)||'M';
+function setGZoom(z){GZOOM=z; render();}
+function saveGView(){const sc=document.getElementById('gScroll');const v={zoom:GZOOM,sl:sc?sc.scrollLeft:0,st:sc?sc.scrollTop:0};try{localStorage.setItem('sr50_gview',JSON.stringify(v));toast('Ansicht gespeichert ✓');}catch(e){toast('Speichern nicht möglich');}}
+function restoreGScroll(){const sc=document.getElementById('gScroll');if(!sc)return;const v=savedGView();if(v&&v.zoom===GZOOM){sc.scrollLeft=v.sl||0;sc.scrollTop=v.st||0;}}
+function toast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t);}t.textContent=msg;t.className='show';clearTimeout(t._tm);t._tm=setTimeout(()=>{t.className='';},1800);}
 
 function nextMeeting(){const now=Date.now();return DATA.meetings.filter(x=>(x.type==='vorort'||x.type==='online')&&x.date&&new Date(x.date)>=now-36e5).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];}
 function nextPayment(){return DATA.payments.filter(p=>p.status!=="bezahlt").sort((a,b)=>new Date(a.due)-new Date(b.due))[0];}
@@ -726,8 +744,24 @@ function ganttHTML(){
   min.setDate(min.getDate()-5); max.setDate(max.getDate()+5);
   const total=(max-min)||1; const pos=d=>((new Date(d)-min)/total*100);
   items.sort((a,b)=>new Date(a.sort)-new Date(b.sort));
-  let ticks=''; let cur=new Date(min.getFullYear(),min.getMonth(),1);
-  while(cur<=max){const l=pos(cur); if(l>=0&&l<=100) ticks+=`<div class="g-tick" style="left:${l}%"><span>${cur.toLocaleDateString('de-DE',{month:'short'})}</span></div>`; cur.setMonth(cur.getMonth()+1);}
+  const totalDays=total/864e5;
+  const GZ={M:{ppd:3.4,label:'Monat'},W:{ppd:11,label:'Woche'},T:{ppd:30,label:'Tag'}};
+  const ppd=(GZ[GZOOM]||GZ.M).ppd;
+  const trackPx=Math.max(480,Math.round(totalDays*ppd));
+  const contW=150+trackPx;
+  let ticks='';
+  if(GZOOM==='M'){
+    let c=new Date(min.getFullYear(),min.getMonth(),1);
+    while(c<=max){const l=pos(c); if(l>=0&&l<=100) ticks+=`<div class="g-tick g-tick-m" style="left:${l}%"><span>${c.toLocaleDateString('de-DE',{month:'short'})}</span></div>`; c.setMonth(c.getMonth()+1);}
+  } else if(GZOOM==='W'){
+    let c=new Date(min); c.setHours(0,0,0,0); c.setDate(c.getDate()-((c.getDay()+6)%7));
+    while(c<=max){const l=pos(c); if(l>=0&&l<=100){const mm=c.getDate()<=7?' g-tick-m':''; ticks+=`<div class="g-tick${mm}" style="left:${l}%"><span>${c.toLocaleDateString('de-DE',{day:'numeric',month:'numeric'})}</span></div>`;} c.setDate(c.getDate()+7);}
+  } else {
+    let c=new Date(min); c.setHours(0,0,0,0);
+    while(c<=max){const l=pos(c); if(l>=0&&l<=100){const f=c.getDate()===1; ticks+=`<div class="g-tick${f?' g-tick-m':''}" style="left:${l}%"><span>${f?c.toLocaleDateString('de-DE',{day:'numeric',month:'short'}):c.getDate()}</span></div>`;} c.setDate(c.getDate()+1);}
+  }
+  const zbtns=Object.keys(GZ).map(z=>`<button class="gz-btn${GZOOM===z?' active':''}" onclick="setGZoom('${z}')">${GZ[z].label}</button>`).join('');
+  const toolbar=`<div class="g-zoom"><span class="gz-lbl">🔍 Zoom</span>${zbtns}<button class="gz-save" onclick="saveGView()">💾 Ansicht speichern</button></div>`;
   const tl=pos(new Date()); const today=(tl>=0&&tl<=100)?`<div class="g-today" style="left:${tl}%"></div>`:'';
   const col={done:'#1f9d6b',prog:'#e0a83e',up:'#cfd8e2',late:'#d6493b',akt:'#2d6fb8'};
   const clk=it=>isBoard()?` onclick="editGanttItem('${it.src}',${it.si})"`:'';
@@ -738,7 +772,7 @@ function ganttHTML(){
     const l=pos(it.start),w=Math.max(1.5,pos(it.end)-pos(it.start));
     return `<div class="g-row"><div class="g-lbl" style="${cur2.slice(1)}" title="${esc(it.name)}"${clk(it)}>${esc(it.name)}</div><div class="g-track">${today}<div class="g-bar" style="left:${l}%;width:${w}%;background:${col[it.status]||'#2d6fb8'}"></div></div></div>`;
   }).join('');
-  return `<div class="g-scroll"><div class="gantt">
+  return `${toolbar}<div class="g-scroll" id="gScroll"><div class="gantt" style="width:${contW}px">
     <div class="g-row g-head"><div class="g-lbl"></div><div class="g-track g-axis">${ticks}${today}</div></div>
     ${rows}
   </div></div>
