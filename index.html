@@ -594,7 +594,7 @@ const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content
 let DATA=load(), ROLE=null, USERNAME="", TAB="status", deferredInstall=null, saveTimer=null;
 
 /* ===== Auto-Update: erkennt neue deployte Version und zeigt Pop-up ===== */
-const APP_VERSION="2026-06-13.1"; // bei jedem Deploy hochzählen
+const APP_VERSION="2026-06-13.3"; // bei jedem Deploy hochzählen
 function showUpdatePopup(){
   if(document.getElementById('updPop'))return;
   const d=document.createElement('div');d.id='updPop';d.className='upd-pop';
@@ -1202,8 +1202,16 @@ function invRow(iv,i,opts){opts=opts||{};
 }
 function viewFinanzen(){
   if(ROLE==='handwerker') return viewFinanzenHandwerker();
-  if(ROLE==='bauherr') return viewFinanzenBauherr();
-  return viewFinanzenEnergie();
+  return viewFinanzenEnergie(); // Energieberatung UND Bauherr (Herbold) sehen die volle Sicht
+}
+function invActions(iv,i){
+  let a='';
+  if(isAdmin()){
+    a+=`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="reviewInvoice(${i})">✏️ Prüfen / Aufteilen</button>`;
+    if(iv.status!=='bezahlt') a+= iv.status==='freigegeben'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'eingereicht')">↩ Freigabe zurück</button>`:`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'freigegeben')">✓ Freigeben</button>`;
+  }
+  if(iv.status==='freigegeben') a+=`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'bezahlt')">✓ Überwiesen</button>`;
+  return a;
 }
 function viewFinanzenHandwerker(){
   const mine=DATA.invoices.filter(iv=>iv.by===USERNAME);
@@ -1233,8 +1241,8 @@ function viewFinanzenBauherr(){
   </div>`;
 }
 function viewFinanzenEnergie(){
-  const inv=DATA.invoices;
-  const zuPruefen=inv.filter(iv=>iv.status==='eingereicht').length;
+  const inv=isAdmin()?DATA.invoices:DATA.invoices.filter(iv=>iv.status==='freigegeben'||iv.status==='bezahlt');
+  const zuPruefen=DATA.invoices.filter(iv=>iv.status==='eingereicht').length;
   const pays=DATA.payments.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
   const payB=DATA.payments.filter(p=>p.status==='bezahlt').reduce((s,p)=>s+p.amount,0);
   const payO=DATA.payments.filter(p=>p.status==='offen').reduce((s,p)=>s+p.amount,0);
@@ -1246,33 +1254,33 @@ function viewFinanzenEnergie(){
   const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
   return `<div class="view">
     <h2 class="vt">Finanzen &amp; Förderungen</h2>
-    <p class="vsub">Rechnungen prüfen, Förderkategorien zuordnen und für den Bauherrn freigeben.</p>
+    <p class="vsub">${isAdmin()?'Rechnungen prüfen, Förderkategorien zuordnen und für den Bauherrn freigeben.':'Vollständiger Finanz-Überblick. Freigegebene Rechnungen können Sie als überwiesen markieren.'}</p>
 
     <div class="card">
-      <h3>🧾 Rechnungs-Workflow ${zuPruefen?`<span class="badge b-amber" style="font-size:11px">${zuPruefen} zu prüfen</span>`:''} <span class="c-act" onclick="submitInvoice()">📤 Rechnung erfassen</span></h3>
-      <p class="vsub" style="margin:-2px 0 8px">Handwerker reicht ein → Sie prüfen & teilen auf → Freigabe an den Bauherrn.</p>
-      ${inv.length?inv.map((iv,i)=>invRow(iv,i,{note:true,actions:`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="reviewInvoice(${i})">✏️ Prüfen / Aufteilen</button>${iv.status==='freigegeben'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'eingereicht')">↩ Freigabe zurück</button>`:(iv.status==='bezahlt'?'':`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'freigegeben')">✓ Freigeben</button>`)}`})).join(''):'<div class="empty">Noch keine Rechnungen eingereicht.</div>'}
+      <h3>🧾 ${isAdmin()?'Rechnungs-Workflow':'Freigegebene Rechnungen'} ${isAdmin()&&zuPruefen?`<span class="badge b-amber" style="font-size:11px">${zuPruefen} zu prüfen</span>`:''} ${isAdmin()?'<span class="c-act" onclick="submitInvoice()">📤 Rechnung erfassen</span>':''}</h3>
+      <p class="vsub" style="margin:-2px 0 8px">Handwerker reicht ein → Energieberatung prüft &amp; teilt auf → Freigabe an den Bauherrn.</p>
+      ${inv.map((iv)=>{const i=DATA.invoices.indexOf(iv);return invRow(iv,i,{note:true,actions:invActions(iv,i)});}).join('')||`<div class="empty">${isAdmin()?'Noch keine Rechnungen eingereicht.':'Aktuell keine freigegebenen Rechnungen.'}</div>`}
     </div>
 
     <div class="two-col fin">
       <div class="card col60">
-        <h3>🏦 Fördermittel <span class="c-act" onclick="addFunding()">+ Hinzufügen</span></h3>
+        <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
         <p class="vsub" style="margin:-2px 0 10px">Mit Datum, wann der jeweilige Status erreicht wurde.</p>
         ${DATA.funding.length?DATA.funding.map((f,i)=>`<div class="row">
           <div class="r-main"><b>${esc(f.program)}</b>${f.note?`<p>${esc(f.note)}</p>`:''}
             ${(f.dEing||f.dPruef||f.dGen)?`<p class="fund-dates">${f.dEing?`📥 Eingereicht ${fdate(f.dEing)}`:''}${f.dPruef?`${f.dEing?' · ':''}🔎 In Prüfung ${fdate(f.dPruef)}`:''}${f.dGen?`${(f.dEing||f.dPruef)?' · ':''}✅ Genehmigt ${fdate(f.dGen)}`:''}</p>`:''}</div>
           <div class="r-right"><div class="amount">${euro(f.amount)}</div><div style="margin-top:5px">${badge(f.status)}</div>
-          <br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editFunding(${i})">✏️ Bearbeiten</button></div>
+          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editFunding(${i})">✏️ Bearbeiten</button>`:''}</div>
         </div>`).join(""):'<div class="empty">Noch keine Fördermittel.</div>'}
       </div>
 
       <div class="card col40">
-        <h3>📆 Anstehende Zahlungen <span style="font-weight:400;font-size:11px;color:var(--muted)">Liquiditätsplanung</span> <span class="c-act" onclick="addPayment()">+ Hinzufügen</span></h3>
+        <h3>📆 Anstehende Zahlungen <span style="font-weight:400;font-size:11px;color:var(--muted)">Liquiditätsplanung</span> ${isAdmin()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
         ${pays.map((pm)=>{const i=DATA.payments.indexOf(pm);const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
           return `<div class="row">
             <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
             <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
-            <br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${i})">✏️ Bearbeiten</button>${pm.status!=='bezahlt'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px;color:var(--green)" onclick="markPaid(${i})">✓ Überwiesen</button>`:''}</div>
+            ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${i})">✏️ Bearbeiten</button>`:''}${pm.status!=='bezahlt'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px;color:var(--green)" onclick="markPaid(${i})">✓ Überwiesen</button>`:''}</div>
           </div>`;}).join("")}
       </div>
     </div>
