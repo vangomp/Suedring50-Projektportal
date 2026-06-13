@@ -346,6 +346,32 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .qq-btn.on.qq-offen{background:var(--amber-bg);color:var(--amber);border-color:var(--amber)}
 .qq-btn.on.qq-geklaert{background:var(--green-bg);color:var(--green);border-color:var(--green)}
 .qq-btn.on.qq-problem{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.qfilter-card{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.q-search{flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:11px;padding:9px 12px;font-size:14px;background:#fff}
+.qfilter{display:flex;gap:6px;flex-wrap:wrap}
+.qf-btn{font-size:12px;font-weight:600;padding:5px 12px;border:1px solid var(--line);border-radius:14px;background:#fafbfc;color:var(--muted)}
+.qf-btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.q-headline{margin:8px 0 0;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.qcard.open .q-headline{white-space:normal}
+.q-body{display:none;margin-top:8px}
+.qcard.open .q-body{display:block}
+.q-chev{margin-left:6px;color:var(--muted);transition:transform .2s;flex-shrink:0;align-self:center}
+.qcard.open .q-chev{transform:rotate(180deg)}
+.qfile.has{color:var(--green)}
+.q-openlink{display:inline-block;margin-top:8px;font-size:12.5px;color:var(--blue);font-weight:700;cursor:pointer}
+.qcard.open .q-openlink{display:none}
+.q-replybox{margin-top:12px;border:1.5px solid var(--line);border-radius:12px;padding:10px;background:#fafbfc}
+.q-replylabel{display:block;font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.q-replyarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:14px;background:#fff;resize:vertical}
+.q-replybar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.q-sendreply{width:auto;margin:0;padding:9px 20px}
+.q-flabel{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 5px}
+.q-titlein{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;font-size:15px;font-weight:600;background:#fff}
+.qfile.big{display:inline-block;border:1.5px dashed var(--blue);color:var(--blue);border-radius:11px;padding:11px 16px;font-weight:700;font-size:14px}
+.qfile.big.has{border-style:solid;background:var(--blue-bg)}
+.qtagsel{width:100%;margin-bottom:8px}
+.q-desc{margin:2px 0 8px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.q-fileatt{display:inline-block;margin:6px 0;font-size:13px;color:var(--blue);font-weight:600;border:1px solid var(--line);border-radius:8px;padding:6px 10px;text-decoration:none}
 /* änderungswünsche */
 .qcard.ch-offen{border-left-color:var(--amber)}
 .qcard.ch-akzeptiert{border-left-color:var(--green)}
@@ -568,7 +594,7 @@ const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content
 let DATA=load(), ROLE=null, USERNAME="", TAB="status", deferredInstall=null, saveTimer=null;
 
 /* ===== Auto-Update: erkennt neue deployte Version und zeigt Pop-up ===== */
-const APP_VERSION="2026-06-12.1"; // bei jedem Deploy hochzählen
+const APP_VERSION="2026-06-13.1"; // bei jedem Deploy hochzählen
 function showUpdatePopup(){
   if(document.getElementById('updPop'))return;
   const d=document.createElement('div');d.id='updPop';d.className='upd-pop';
@@ -682,8 +708,10 @@ function render(){
   m.innerHTML=(map[TAB]||viewStatus)();
   if(!KEEP_SCROLL) window.scrollTo({top:0});
   if(TAB==='zeit') requestAnimationFrame(restoreGScroll);
+  if(TAB==='fragen') requestAnimationFrame(filterQuestions);
   updateNavBadges();
 }
+let QFILTER={q:'',status:'alle'}; let QOPEN={};
 function updateNavBadges(){
   const cnt=(DATA.changes||[]).filter(c=>{const s=c.status||'offen';return (s==='offen'||s==='eingereicht'||s==='pruefung')&&changeIsForMe(c);}).length;
   const btn=document.querySelector('#nav button[data-tab="aenderungen"]');
@@ -984,70 +1012,130 @@ function mentionize(s){return (s||'').replace(/@([^\s,.;:!?]+)/g,'<b style="colo
 const QSTAT=[['offen','Offen'],['geklaert','Geklärt'],['problem','PROBLEM']];
 function viewFragen(){
   const qs=DATA.questions||[];
+  const fstat=[['alle','Alle'],['offen','Offen'],['geklaert','Geklärt'],['problem','PROBLEM']];
   return `<div class="view">
     <h2 class="vt">Offene Fragen &amp; Themen</h2>
-    <p class="vsub">Stellen Sie hier Ihre Fragen – gerne mit Bild und @-Markierung der richtigen Person. Status: Offen, Geklärt oder PROBLEM.</p>
+    <p class="vsub">Fragen stellen, die richtige Person taggen, Bilder anhängen – als Verlauf, bis alles geklärt ist. Tippen Sie eine Frage an, um den ganzen Verlauf zu sehen.</p>
     <div class="card">
       <h3>➕ Neue Frage / Thema</h3>
-      <textarea id="qText" class="q-area" rows="3" placeholder="Ihre Frage oder Ihr Thema… (mit @ Personen erwähnen)"></textarea>
-      <div class="qtag-row"><span class="qtag-lbl">@ Taggen:</span>
-        ${(DATA.contacts||[]).map(c=>`<button type="button" class="qtag" data-name="${esc(c.name)}" onclick="this.classList.toggle('active')">${esc(c.name)}</button>`).join('')}
-      </div>
+      <label class="q-flabel">Überschrift / Thema</label>
+      <input id="qTitle" class="q-titlein" type="text" placeholder="Kurzer Titel, z. B. Wallbox – Angebot anpassen">
+      <label class="q-flabel">Beschreibung</label>
+      <textarea id="qText" class="q-area" rows="5" placeholder="Beschreiben Sie Ihre Frage oder Ihr Thema ausführlich… (Personen auch direkt mit @ erwähnen)"></textarea>
+      <label class="q-flabel">Personen taggen (optional, Mehrfachauswahl)</label>
+      ${tagPickerHTML('qTagSel','qTagChips',[])}
       <div class="q-actions">
-        <label class="qfile">🖼️ Bild anhängen<input type="file" id="qImg" accept="image/*" style="display:none" onchange="qImgName(this)"></label>
-        <span id="qImgName" class="q-imgname"></span>
+        <label class="qfile big">📎 Bild oder Datei anhängen<input type="file" id="qFile" style="display:none" onchange="this.parentElement.classList.toggle('has',!!(this.files&&this.files[0]));document.getElementById('qFileName').textContent=this.files&&this.files[0]?('📎 '+this.files[0].name):''"></label>
+        <span id="qFileName" class="q-imgname"></span>
         <button class="btn-primary q-send" onclick="addQuestion()">Frage stellen</button>
       </div>
+    </div>
+    <div class="card qfilter-card">
+      <input id="qSearch" class="q-search" type="search" placeholder="🔍 In Fragen &amp; Antworten suchen…" value="${esc(QFILTER.q)}" oninput="QFILTER.q=this.value;filterQuestions()">
+      <div class="qfilter">${fstat.map(s=>`<button class="qf-btn${QFILTER.status===s[0]?' on':''}" onclick="setQFilter('${s[0]}')">${s[1]}</button>`).join('')}</div>
     </div>
     ${qs.length?qs.map((q,qi)=>questionCard(q,qi)).join(''):'<div class="card"><div class="empty">Noch keine Fragen – stellen Sie die erste oben.</div></div>'}
   </div>`;
 }
 function questionCard(q,qi){
+  const st=q.status||'offen';
   const ini=esc((q.by||'?').slice(0,1).toUpperCase());
-  const statusSel=`<select class="tbl-in q-statussel" onchange="setQuestionStatus(${qi},this.value)">${QSTAT.map(s=>`<option value="${s[0]}"${(q.status||'offen')===s[0]?' selected':''}>${s[1]}</option>`).join('')}</select>`;
-  return `<div class="card qcard q-${q.status||'offen'}">
-    <div class="q-head">
+  const ans=q.answers||[];
+  const headline=q.title||q.text||'(ohne Titel)';
+  const search=esc(((q.title||'')+' '+(q.text||'')+' '+((q.tags||[]).join(' '))+' '+ans.map(a=>a.text||'').join(' ')+' '+(q.by||'')));
+  const canEdit=isBoard()||q.by===USERNAME;
+  return `<div class="card qcard q-${st}${QOPEN[qi]?' open':''}" data-qi="${qi}" data-status="${st}" data-search="${search}">
+    <div class="q-head" onclick="toggleQ(${qi})">
       <span class="av" style="background:${qTone(q.by)}">${ini}</span>
-      <div class="q-meta"><b>${esc(q.by||'—')}</b><time>${ftime(q.ts)}</time></div>
-      <div class="q-status">${statusSel}</div>
+      <div class="q-meta"><b>${esc(q.by||'—')}</b><time>${ftime(q.ts)}${ans.length?` · 💬 ${ans.length}`:''}</time></div>
+      <div class="q-status">${badge(st)}</div>
+      <span class="q-chev">▾</span>
     </div>
-    <p class="q-text">${mentionize(esc(q.text))}</p>
+    <p class="q-headline" onclick="toggleQ(${qi})">${esc(headline)}</p>
     ${q.tags&&q.tags.length?`<div class="q-tags">${q.tags.map(n=>`<span class="qtag-chip">@${esc(n)}</span>`).join('')}</div>`:''}
-    ${q.img?`<img class="q-img" src="${esc(q.img)}" alt="" onclick="window.open('${esc(q.img)}','_blank')">`:''}
-    ${(q.answers&&q.answers.length)?`<div class="q-answers">${q.answers.map(a=>`<div class="q-ans"><span class="av sm" style="background:${qTone(a.by)}">${esc((a.by||'?').slice(0,1).toUpperCase())}</span><div class="q-ans-body"><b>${esc(a.by||'—')}</b><time>${ftime(a.ts)}</time><p>${mentionize(esc(a.text||''))}</p>${a.img?`<img class="q-img sm" src="${esc(a.img)}" onclick="window.open('${esc(a.img)}','_blank')">`:''}</div></div>`).join('')}</div>`:''}
-    <div class="q-reply">
-      <textarea id="qa-${qi}" class="q-area" rows="1" placeholder="Antwort oder Folgefrage…"></textarea>
-      <label class="qfile sm">🖼️<input type="file" id="qaimg-${qi}" accept="image/*" style="display:none"></label>
-      <button class="btn-sm btn-primary" onclick="answerQuestion(${qi})">Senden</button>
+    <a class="q-openlink" onclick="openAndReply(${qi})">💬 Antworten / Verlauf öffnen${ans.length?` (${ans.length})`:''}</a>
+    <div class="q-body">
+      ${(q.title&&q.text)?`<p class="q-desc">${mentionize(esc(q.text))}</p>`:''}
+      ${attHTML(q,false)}
+      ${ans.length?`<div class="q-answers">${ans.map(a=>`<div class="q-ans"><span class="av sm" style="background:${qTone(a.by)}">${esc((a.by||'?').slice(0,1).toUpperCase())}</span><div class="q-ans-body"><b>${esc(a.by||'—')}</b><time>${ftime(a.ts)}</time><p>${mentionize(esc(a.text||''))}</p>${attHTML(a,true)}</div></div>`).join('')}</div>`:''}
+      <div class="q-replybox">
+        <label class="q-replylabel">💬 Antworten / kommentieren</label>
+        <textarea id="qa-${qi}" class="q-area q-replyarea" rows="2" placeholder="Antwort oder Folgefrage schreiben…"></textarea>
+        <div class="q-replybar">
+          <label class="qfile" title="Bild oder Datei anhängen">📎 Bild/Datei<input type="file" id="qafile-${qi}" style="display:none" onchange="this.parentElement.classList.toggle('has',!!(this.files&&this.files[0]))"></label>
+          <button class="btn-primary q-sendreply" onclick="answerQuestion(${qi})">Senden</button>
+        </div>
+      </div>
+      <div class="q-quick">${QSTAT.map(s=>`<button class="qq-btn qq-${s[0]}${st===s[0]?' on':''}" onclick="setQuestionStatus(${qi},'${s[0]}')">${s[1]}</button>`).join('')}${canEdit?`<button class="qq-btn" onclick="editQuestion(${qi})">✏️ Bearbeiten</button>`:''}${(isBoard()||q.by===USERNAME)?`<button class="qq-btn" style="color:var(--red)" onclick="delQuestion(${qi})">🗑️ Löschen</button>`:''}</div>
     </div>
-    <div class="q-quick">${QSTAT.map(s=>`<button class="qq-btn qq-${s[0]}${(q.status||'offen')===s[0]?' on':''}" onclick="setQuestionStatus(${qi},'${s[0]}')">${s[1]}</button>`).join('')}</div>
-    ${isBoard()?`<div style="text-align:right;margin-top:6px"><a onclick="delQuestion(${qi})" style="color:var(--red);font-weight:600;font-size:12px">löschen</a></div>`:''}
   </div>`;
+}
+function toggleQ(qi){QOPEN[qi]=!QOPEN[qi];const c=document.querySelector('.qcard[data-qi="'+qi+'"]');if(c)c.classList.toggle('open',!!QOPEN[qi]);}
+function openAndReply(qi){QOPEN[qi]=true;const c=document.querySelector('.qcard[data-qi="'+qi+'"]');if(c){c.classList.add('open');const t=c.querySelector('#qa-'+qi);if(t){t.focus();t.scrollIntoView({block:'center',behavior:'smooth'});}}}
+/* Tag-Picker (Mehrfach-Dropdown + Chips) */
+function tagChip(name){return `<span class="qtag active" data-name="${esc(name)}">@${esc(name)}<b onclick="this.parentElement.remove()" style="cursor:pointer;margin-left:6px">×</b></span>`;}
+function addTagChip(chipsId,sel){const v=sel.value;if(!v)return;const box=document.getElementById(chipsId);if(box&&![...box.querySelectorAll('.qtag')].some(c=>c.dataset.name===v))box.insertAdjacentHTML('beforeend',tagChip(v));sel.value='';}
+function tagPickerHTML(selId,chipsId,selected){
+  const opts=(DATA.contacts||[]).map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  const chips=(selected||[]).map(n=>tagChip(n)).join('');
+  return `<select class="fm-in qtagsel" id="${selId}" onchange="addTagChip('${chipsId}',this)"><option value="">+ Person taggen…</option>${opts}</select><div class="qtag-row" id="${chipsId}">${chips}</div>`;
+}
+function collectTags(chipsId,extraText){const box=document.getElementById(chipsId);let tags=box?[...box.querySelectorAll('.qtag')].map(c=>c.dataset.name):[];
+  if(extraText){const low=(' '+extraText+' ').toLowerCase();(DATA.contacts||[]).forEach(c=>{const nm=c.name.toLowerCase();const first=nm.split(/[ ·]/)[0];if((low.indexOf('@'+nm)>-1||(first.length>2&&low.indexOf('@'+first)>-1))&&tags.indexOf(c.name)<0)tags.push(c.name);});}
+  return tags;}
+function attHTML(o,small){
+  if(o&&o.att&&o.att.url){return o.att.img?`<img class="q-img${small?' sm':''}" src="${esc(o.att.url)}" onclick="window.open('${esc(o.att.url)}','_blank')">`:`<a class="q-fileatt" href="${esc(o.att.url)}" target="_blank" rel="noopener">📎 ${esc(o.att.name||'Datei')}</a>`;}
+  if(o&&o.img){return `<img class="q-img${small?' sm':''}" src="${esc(o.img)}" onclick="window.open('${esc(o.img)}','_blank')">`;}
+  return '';
+}
+function setQFilter(s){QFILTER.status=s;document.querySelectorAll('.qf-btn').forEach(b=>b.classList.toggle('on',b.getAttribute('onclick')==="setQFilter('"+s+"')"));filterQuestions();}
+function filterQuestions(){const qq=(QFILTER.q||'').toLowerCase();document.querySelectorAll('.qcard[data-qi]').forEach(card=>{const txt=(card.getAttribute('data-search')||'').toLowerCase();const stt=card.getAttribute('data-status')||'offen';const okT=!qq||txt.indexOf(qq)>-1;const okS=QFILTER.status==='alle'||stt===QFILTER.status;card.style.display=(okT&&okS)?'':'none';});}
+function editQuestion(qi){const q=(DATA.questions||[])[qi];if(!q)return;
+  const wrap=document.createElement('div');wrap.className='sheet-bg';
+  wrap.innerHTML=`<div class="sheet fm-sheet"><h3>Frage bearbeiten</h3>
+    <div class="fm-body">
+      <div class="fm-row"><label>Überschrift / Thema</label><input class="fm-in" id="eqTitle" type="text" value="${esc(q.title||'')}"></div>
+      <div class="fm-row"><label>Beschreibung</label><textarea class="fm-in" id="eqText" rows="5">${esc(q.text||'')}</textarea></div>
+      <div class="fm-row"><label>Personen taggen (Mehrfachauswahl)</label>${tagPickerHTML('eqTagSel','eqTagChips',q.tags||[])}</div>
+      <div class="fm-row"><label>Status</label><select class="fm-in" id="eqStatus">${QSTAT.map(s=>`<option value="${s[0]}"${(q.status||'offen')===s[0]?' selected':''}>${s[1]}</option>`).join('')}</select></div>
+    </div>
+    <button class="btn-primary" id="eqSave">Speichern</button>
+    <button class="dismiss" id="eqCancel">Abbrechen</button></div>`;
+  wrap.addEventListener('click',e=>{if(e.target===wrap)wrap.remove();});
+  document.body.appendChild(wrap);
+  wrap.querySelector('#eqCancel').addEventListener('click',()=>wrap.remove());
+  wrap.querySelector('#eqSave').addEventListener('click',()=>{
+    const title=wrap.querySelector('#eqTitle').value.trim();const text=wrap.querySelector('#eqText').value.trim();if(!title&&!text)return;
+    q.title=title;q.text=text;q.tags=collectTags('eqTagChips',title+' '+text);q.status=wrap.querySelector('#eqStatus').value;
+    QOPEN[qi]=true;save();render();wrap.remove();
+  });
 }
 function qImgName(el){const n=$("#qImgName");if(n)n.textContent=el.files&&el.files[0]?('📎 '+el.files[0].name):'';}
 function addQuestion(){
-  const t=$("#qText"); const text=(t&&t.value||'').trim();
-  const tags=[...document.querySelectorAll('.qtag.active')].map(b=>b.dataset.name);
-  if(!text&&!tags.length){alert("Bitte eine Frage eingeben.");return;}
-  const fEl=$("#qImg"); const file=fEl&&fEl.files&&fEl.files[0];
+  const title=($("#qTitle")&&$("#qTitle").value||'').trim();
+  const text=($("#qText")&&$("#qText").value||'').trim();
+  if(!title&&!text){alert("Bitte Überschrift oder Beschreibung eingeben.");return;}
+  const tags=collectTags('qTagChips',title+' '+text);
+  const fEl=$("#qFile"); const file=fEl&&fEl.files&&fEl.files[0];
   const who=(typeof USERNAME!=='undefined'&&USERNAME)?USERNAME:(ROLE_LABEL[ROLE]||"");
-  const q={text,by:who,tags,status:"offen",ts:new Date().toISOString(),answers:[]};
+  const q={title,text,by:who,tags,status:"offen",ts:new Date().toISOString(),answers:[]};
   DATA.questions=DATA.questions||[]; DATA.questions.unshift(q); save();
-  if(file&&typeof SUPA!=='undefined'&&SUPA){supaUpload(file).then(url=>{q.img=url;save();render();}).catch(()=>{});}
+  if(file&&typeof SUPA!=='undefined'&&SUPA){supaUpload(file).then(url=>{q.att={url,name:file.name,img:(file.type||'').indexOf('image/')===0};save();render();}).catch(()=>{});}
   render();
 }
 function answerQuestion(qi){
   const q=(DATA.questions||[])[qi]; if(!q)return;
   const t=$("#qa-"+qi); const text=(t&&t.value||'').trim();
-  const fEl=$("#qaimg-"+qi); const file=fEl&&fEl.files&&fEl.files[0];
+  const fEl=$("#qafile-"+qi); const file=fEl&&fEl.files&&fEl.files[0];
   if(!text&&!file)return;
   const who=(typeof USERNAME!=='undefined'&&USERNAME)?USERNAME:(ROLE_LABEL[ROLE]||"");
   const a={by:who,text,ts:new Date().toISOString()};
   q.answers=q.answers||[]; q.answers.push(a); save();
-  if(file&&typeof SUPA!=='undefined'&&SUPA){supaUpload(file).then(url=>{a.img=url;save();render();}).catch(()=>{});}
-  render();
+  QOPEN[qi]=true;
+  if(file&&typeof SUPA!=='undefined'&&SUPA){supaUpload(file).then(url=>{a.att={url,name:file.name,img:(file.type||'').indexOf('image/')===0};save();rerenderKeepScroll();}).catch(()=>{});}
+  rerenderKeepScroll();
 }
-function setQuestionStatus(qi,val){const q=(DATA.questions||[])[qi];if(!q)return;q.status=val;save();render();}
+function setQuestionStatus(qi,val){const q=(DATA.questions||[])[qi];if(!q)return;q.status=val;save();rerenderKeepScroll();}
 function delQuestion(qi){if(confirm("Frage löschen?")){DATA.questions.splice(qi,1);save();render();}}
 
 /* MEDIEN */
@@ -1097,14 +1185,56 @@ function photoTile(ph,i){
   return `<div class="ph" onclick="openPhoto(${i})">${inner}<div class="cap">${esc(ph.cap||"Foto")}</div></div>`;
 }
 
-/* FINANZEN */
+/* FINANZEN – rollenbasierter Rechnungs-Workflow */
+const INVCATS=[['kfw','KfW'],['p35c','§35c'],['foerder','Sonstige Förderung'],['keine','Keine Förderung / Eigenanteil']];
+function invSplitSum(iv){const s=iv.splits||{};return INVCATS.reduce((a,c)=>a+(Number(s[c[0]])||0),0);}
+function invStatusBadge(s){const m={eingereicht:['b-amber','⏳ In Prüfung'],freigegeben:['b-blue','✅ Freigegeben'],bezahlt:['b-green','💸 Überwiesen']}[s]||['b-gray',s||'—'];return `<span class="badge ${m[0]}">${m[1]}</span>`;}
+function splitBadges(iv){const s=iv.splits||{};const parts=INVCATS.filter(c=>Number(s[c[0]])>0).map(c=>`<span class="badge b-blue">${c[1]}: ${euro(Number(s[c[0]]))}</span>`);const sum=invSplitSum(iv),tot=Number(iv.amount)||0;const warn=(sum&&Math.abs(sum-tot)>1)?`<span class="badge b-red">Summe ${euro(sum)} ≠ Betrag ${euro(tot)}</span>`:'';return (parts.length||warn)?`<p style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap">${parts.join('')}${warn}</p>`:'';}
+function invRow(iv,i,opts){opts=opts||{};
+  return `<div class="row">
+    <div class="r-main"><b>${esc(iv.vendor||'Rechnung')}</b>${iv.gewerk?` <span class="badge b-gray" style="font-size:10px">🔧 ${esc(iv.gewerk)}</span>`:''}
+      <p>${esc(iv.ref||'')}${iv.ref?' · ':''}${fdate(iv.date)}${iv.by?' · ⬆ '+esc(iv.by):''}${iv.purpose?' · '+esc(iv.purpose):''}</p>
+      ${splitBadges(iv)}
+      ${iv.url?`<p style="margin-top:4px"><a href="${esc(iv.url)}" target="_blank" rel="noopener" style="font-size:12px">📄 Beleg öffnen</a></p>`:''}
+      ${(opts.note&&iv.reviewNote)?`<p style="margin-top:4px;font-size:12px;color:var(--muted)">📝 ${esc(iv.reviewNote)}</p>`:''}</div>
+    <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${invStatusBadge(iv.status)}</div>${opts.actions||''}</div>
+  </div>`;
+}
 function viewFinanzen(){
-  const inv=DATA.invoices, total=inv.reduce((s,i)=>s+i.amount,0),
-    paid=inv.filter(i=>i.status==="bezahlt").reduce((s,i)=>s+i.amount,0),
-    open=inv.filter(i=>i.status==="offen").reduce((s,i)=>s+i.amount,0),
-    pruef=inv.filter(i=>i.status==="eingereicht").reduce((s,i)=>s+i.amount,0);
-  const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
-  const fundPend=DATA.funding.filter(f=>f.status!=="genehmigt"&&f.status!=="abgelehnt").reduce((s,f)=>s+f.amount,0);
+  if(ROLE==='handwerker') return viewFinanzenHandwerker();
+  if(ROLE==='bauherr') return viewFinanzenBauherr();
+  return viewFinanzenEnergie();
+}
+function viewFinanzenHandwerker(){
+  const mine=DATA.invoices.filter(iv=>iv.by===USERNAME);
+  return `<div class="view">
+    <h2 class="vt">Rechnungen</h2>
+    <p class="vsub">Laden Sie hier Ihre Rechnung hoch. Die Energieberatung prüft sie und gibt sie an den Bauherrn weiter.</p>
+    <div class="card" style="text-align:center">
+      <button class="btn-primary" style="max-width:340px;margin:4px auto 0" onclick="submitInvoice()">📤 Neue Rechnung hochladen</button>
+    </div>
+    <div class="card">
+      <h3>📄 Ihre eingereichten Rechnungen</h3>
+      ${mine.length?mine.map(iv=>invRow(iv,DATA.invoices.indexOf(iv))).join(''):'<div class="empty">Noch keine Rechnung eingereicht.</div>'}
+    </div>
+  </div>`;
+}
+function viewFinanzenBauherr(){
+  const rel=DATA.invoices.filter(iv=>iv.status==='freigegeben'||iv.status==='bezahlt').sort((a,b)=>(a.status==='freigegeben'?0:1)-(b.status==='freigegeben'?0:1));
+  const toPay=rel.filter(iv=>iv.status==='freigegeben').reduce((s,iv)=>s+(Number(iv.amount)||0),0);
+  return `<div class="view">
+    <h2 class="vt">Finanzen</h2>
+    <p class="vsub">Von der Energieberatung freigegebene Rechnungen – das ist zu überweisen.</p>
+    <div class="card"><div class="ck-row" style="border:none"><b>Offen zu überweisen</b><span style="color:var(--amber);font-size:22px;font-weight:800">${euro(toPay)}</span></div></div>
+    <div class="card">
+      <h3>🧾 Freigegebene Rechnungen</h3>
+      ${rel.length?rel.map(iv=>{const i=DATA.invoices.indexOf(iv);return invRow(iv,i,{note:true,actions:iv.status==='freigegeben'?`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'bezahlt')">✓ Überwiesen</button>`:''});}).join(''):'<div class="empty">Aktuell ist nichts zu zahlen.</div>'}
+    </div>
+  </div>`;
+}
+function viewFinanzenEnergie(){
+  const inv=DATA.invoices;
+  const zuPruefen=inv.filter(iv=>iv.status==='eingereicht').length;
   const pays=DATA.payments.slice().sort((a,b)=>new Date(a.due)-new Date(b.due));
   const payB=DATA.payments.filter(p=>p.status==='bezahlt').reduce((s,p)=>s+p.amount,0);
   const payO=DATA.payments.filter(p=>p.status==='offen').reduce((s,p)=>s+p.amount,0);
@@ -1113,54 +1243,63 @@ function viewFinanzen(){
   const months=[];
   for(let mo=4;mo<=11;mo++){const key=`2026-${String(mo+1).padStart(2,'0')}`;let mp=0,mpl=0,mof=0;DATA.payments.forEach(p=>{if((p.due||'').slice(0,7)===key){if(p.status==='bezahlt')mp+=p.amount;else if(p.status==='geplant')mpl+=p.amount;else mof+=p.amount;}});months.push({label:MON[mo],paid:mp,planned:mpl,open:mof});}
   const maxM=Math.max(1,...months.map(m=>m.paid+m.planned+m.open));
+  const fundOK=DATA.funding.filter(f=>f.status==="genehmigt").reduce((s,f)=>s+f.amount,0);
   return `<div class="view">
     <h2 class="vt">Finanzen &amp; Förderungen</h2>
-    <p class="vsub">Überblick oben, darunter die Rechnungen in voller Breite.</p>
-
-    ${finChartsHTML(payB,payO,payG,months,maxM)}
+    <p class="vsub">Rechnungen prüfen, Förderkategorien zuordnen und für den Bauherrn freigeben.</p>
 
     <div class="card">
-        <h3>💶 Rechnungen für Förderungen <span class="c-act" onclick="submitInvoice()">📤 Rechnung hochladen</span></h3>
-        <div class="fin-sum">
-          <div class="fin-box"><b style="color:var(--green)">${euro(paid)}</b><span>Bezahlt</span></div>
-          <div class="fin-box"><b style="color:var(--amber)">${euro(open)}</b><span>Offen</span></div>
-          <div class="fin-box"><b style="color:var(--blue)">${euro(pruef)}</b><span>In Prüfung</span></div>
-        </div>
-        ${foerderBreakdown()}
-        ${inv.map((iv,i)=>`<div class="row">
-          <div class="r-main"><b>${esc(iv.vendor)}</b><p>${esc(iv.ref||'')}${iv.ref?' · ':''}${fdate(iv.date)}${iv.by?' · ⬆ '+esc(iv.by):''}</p>
-            ${iv.purpose?`<p style="margin-top:3px">📌 ${esc(iv.purpose)}</p>`:''}
-            <p style="margin-top:5px">${iv.foerderung?`<span class="badge b-blue">🏦 ${esc(shortFoerder(iv.foerderung))}</span> `:'<span class="badge b-gray">Förderung offen</span> '}${iv.url?`<a href="${esc(iv.url)}" target="_blank" rel="noopener" style="font-size:12px">📄 öffnen</a>`:''}</p></div>
-          <div class="r-right"><div class="amount">${euro(iv.amount)}</div><div style="margin-top:5px">${badge(iv.status)}</div>
-          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceFoerderung(${i})">🏦 Förderung</button><br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="cycleInvoice(${i})">${iv.status==='eingereicht'?'annehmen':(iv.status==='offen'?'als bezahlt':'als offen')}</button>`:''}</div>
-        </div>`).join("")}
+      <h3>🧾 Rechnungs-Workflow ${zuPruefen?`<span class="badge b-amber" style="font-size:11px">${zuPruefen} zu prüfen</span>`:''} <span class="c-act" onclick="submitInvoice()">📤 Rechnung erfassen</span></h3>
+      <p class="vsub" style="margin:-2px 0 8px">Handwerker reicht ein → Sie prüfen & teilen auf → Freigabe an den Bauherrn.</p>
+      ${inv.length?inv.map((iv,i)=>invRow(iv,i,{note:true,actions:`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="reviewInvoice(${i})">✏️ Prüfen / Aufteilen</button>${iv.status==='freigegeben'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'eingereicht')">↩ Freigabe zurück</button>`:(iv.status==='bezahlt'?'':`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'freigegeben')">✓ Freigeben</button>`)}`})).join(''):'<div class="empty">Noch keine Rechnungen eingereicht.</div>'}
     </div>
 
     <div class="two-col fin">
       <div class="card col60">
-        <h3>🏦 Fördermittel ${isAdmin()?'<span class="c-act" onclick="addFunding()">+ Hinzufügen</span>':''}</h3>
+        <h3>🏦 Fördermittel <span class="c-act" onclick="addFunding()">+ Hinzufügen</span></h3>
         <p class="vsub" style="margin:-2px 0 10px">Mit Datum, wann der jeweilige Status erreicht wurde.</p>
-        ${DATA.funding.map((f,i)=>`<div class="row">
+        ${DATA.funding.length?DATA.funding.map((f,i)=>`<div class="row">
           <div class="r-main"><b>${esc(f.program)}</b>${f.note?`<p>${esc(f.note)}</p>`:''}
-            ${(f.dEing||f.dPruef||f.dGen)?`<p class="fund-dates">${f.dEing?`📥 Eingereicht ${fdate(f.dEing)}`:''}${f.dPruef?`${f.dEing?' · ':''}🔎 In Prüfung ${fdate(f.dPruef)}`:''}${f.dGen?`${(f.dEing||f.dPruef)?' · ':''}✅ Genehmigt ${fdate(f.dGen)}`:''}</p>`:''}
-            ${(()=>{const a=DATA.invoices.filter(x=>x.foerderung===f.program).reduce((s,x)=>s+x.amount,0);return a?`<p style="margin-top:4px">📎 Zugeordnete Rechnungen: <b style="color:var(--txt)">${euro(a)}</b></p>`:'';})()}</div>
+            ${(f.dEing||f.dPruef||f.dGen)?`<p class="fund-dates">${f.dEing?`📥 Eingereicht ${fdate(f.dEing)}`:''}${f.dPruef?`${f.dEing?' · ':''}🔎 In Prüfung ${fdate(f.dPruef)}`:''}${f.dGen?`${(f.dEing||f.dPruef)?' · ':''}✅ Genehmigt ${fdate(f.dGen)}`:''}</p>`:''}</div>
           <div class="r-right"><div class="amount">${euro(f.amount)}</div><div style="margin-top:5px">${badge(f.status)}</div>
-          ${isAdmin()?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editFunding(${i})">✏️ Bearbeiten</button>`:""}</div>
-        </div>`).join("")}
+          <br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editFunding(${i})">✏️ Bearbeiten</button></div>
+        </div>`).join(""):'<div class="empty">Noch keine Fördermittel.</div>'}
       </div>
 
       <div class="card col40">
-        <h3>📆 Anstehende Zahlungen <span style="font-weight:400;font-size:11px;color:var(--muted)">Liquiditätsplanung</span> ${isBoard()?'<span class="c-act" onclick="addPayment()">+ Hinzufügen</span>':''}</h3>
-        ${pays.map((pm,i)=>{const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
+        <h3>📆 Anstehende Zahlungen <span style="font-weight:400;font-size:11px;color:var(--muted)">Liquiditätsplanung</span> <span class="c-act" onclick="addPayment()">+ Hinzufügen</span></h3>
+        ${pays.map((pm)=>{const i=DATA.payments.indexOf(pm);const overdue=pm.status==="offen"&&new Date(pm.due)<Date.now();
           return `<div class="row">
             <div class="r-main"><b>${esc(pm.label)}</b><p>fällig ${fdate(pm.due)}${overdue?' · <span style="color:var(--red);font-weight:600">überfällig</span>':''}</p></div>
             <div class="r-right"><div class="amount">${euro(pm.amount)}</div><div style="margin-top:5px">${badge(pm.status)}</div>
-            <br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${DATA.payments.indexOf(pm)})">✏️ Bearbeiten</button>${pm.status!=='bezahlt'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px;color:var(--green)" onclick="markPaid(${DATA.payments.indexOf(pm)})">✓ Überwiesen</button>`:''}</div>
+            <br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editPayment(${i})">✏️ Bearbeiten</button>${pm.status!=='bezahlt'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px;color:var(--green)" onclick="markPaid(${i})">✓ Überwiesen</button>`:''}</div>
           </div>`;}).join("")}
       </div>
     </div>
+
+    ${finChartsHTML(payB,payO,payG,months,maxM)}
   </div>`;
 }
+function reviewInvoice(i){const iv=DATA.invoices[i]; if(!iv) return; const s=iv.splits||{};
+  const hw=DATA.contacts.filter(c=>{const a=accountForContact(c);return a&&USERS[a]&&USERS[a].role==='handwerker';});
+  showForm("Rechnung prüfen & aufteilen",[
+    {key:"vendor",label:"Firma / Aussteller",type:"text",value:iv.vendor||''},
+    {key:"gewerk",label:"Gewerk",type:"select",value:iv.gewerk||'',options:[{value:'',label:'— wählen —'}].concat(hw.map(c=>({value:c.name,label:c.name})))},
+    {key:"amount",label:"Rechnungsbetrag gesamt (€)",type:"number",value:iv.amount},
+    {key:"purpose",label:"Wofür / Leistung",type:"text",value:iv.purpose||''},
+    {key:"kfw",label:"davon KfW (€)",type:"number",value:s.kfw||0},
+    {key:"p35c",label:"davon §35c (€)",type:"number",value:s.p35c||0},
+    {key:"foerder",label:"davon sonstige Förderung (€)",type:"number",value:s.foerder||0},
+    {key:"keine",label:"Keine Förderung / Eigenanteil (€)",type:"number",value:s.keine||0},
+    {key:"reviewNote",label:"Notiz für den Bauherrn (optional)",type:"textarea",value:iv.reviewNote||''}
+  ],v=>{
+    iv.vendor=v.vendor;iv.gewerk=v.gewerk;iv.amount=num(v.amount);iv.purpose=v.purpose;
+    iv.splits={kfw:num(v.kfw),p35c:num(v.p35c),foerder:num(v.foerder),keine:num(v.keine)};
+    iv.reviewNote=v.reviewNote;save();render();
+  },{onDelete:()=>{DATA.invoices.splice(i,1);save();render();}});
+}
+function setInvoiceStatus(i,st){const iv=DATA.invoices[i];if(!iv)return;iv.status=st;save();render();
+  if(st==='freigegeben')toast('Für Bauherr freigegeben ✓'); if(st==='bezahlt')toast('Als überwiesen markiert ✓');}
 function kfmt(v){return v>=1000?(Math.round(v/100)/10).toLocaleString('de-DE')+'k':String(v||0);}
 function finChartsHTML(payB,payO,payG,months,maxM){
   const segs=[['Überwiesen',payB,'#1f9d6b'],['Offen / überfällig',payO,'#e0972a'],['Geplant',payG,'#2d6fb8']];
@@ -1390,14 +1529,14 @@ function supaUpload(file){return new Promise((res,rej)=>{
 });}
 function submitInvoice(){
   showForm("Rechnung einreichen",[
-    {key:"vendor",label:"Ihr Name / Firma (Gewerk)",type:"text"},
+    {key:"vendor",label:"Ihr Name / Firma (Gewerk)",type:"text",value:USERNAME||""},
     {key:"ref",label:"Rechnungsnummer",type:"text",placeholder:"RE-…"},
     {key:"amount",label:"Rechnungsbetrag (€)",type:"number",value:0},
     {key:"purpose",label:"Wofür ist die Rechnung?",type:"text",placeholder:"z. B. Wärmepumpe, Fenster, Elektro …"},
-    {key:"file",label:"Rechnung als PDF / Foto (optional)",type:"file",accept:"application/pdf,image/*"}
+    {key:"file",label:"Rechnung als PDF / Foto",type:"file",accept:"application/pdf,image/*"}
   ],(v,ctx)=>{
     if(!v.vendor)return false;
-    const inv={vendor:v.vendor,ref:v.ref,amount:num(v.amount),status:"eingereicht",date:TODAY(),foerderung:"",purpose:v.purpose,by:USERNAME};
+    const inv={vendor:v.vendor,ref:v.ref,amount:num(v.amount),status:"eingereicht",date:TODAY(),gewerk:"",splits:{},purpose:v.purpose,by:USERNAME};
     DATA.invoices.push(inv);save();render();
     const f=ctx.files.file; if(f) supaUpload(f).then(url=>{inv.url=url;save();render();}).catch(()=>{});
   });
