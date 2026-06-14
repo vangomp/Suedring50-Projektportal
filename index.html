@@ -429,6 +429,8 @@ h2.vt{font-size:20px;margin:4px 0 2px}
 .fm-in{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;background:#fafbfc;font-size:15px;font-family:inherit}
 .fm-in:focus{outline:none;border-color:var(--navy);background:#fff}
 textarea.fm-in{resize:vertical;min-height:66px}
+.fm-money{font-variant-numeric:tabular-nums;letter-spacing:.3px}
+.money-prev{display:block;margin-top:6px;font-size:13px;font-weight:700;color:var(--green)}
 .fm-hide{display:none}
 .adminbar{background:var(--gold-2);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:6px}
 hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
@@ -594,7 +596,7 @@ const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content
 let DATA=load(), ROLE=null, USERNAME="", TAB="status", deferredInstall=null, saveTimer=null;
 
 /* ===== Auto-Update: erkennt neue deployte Version und zeigt Pop-up ===== */
-const APP_VERSION="2026-06-13.5"; // bei jedem Deploy hochzählen
+const APP_VERSION="2026-06-13.6"; // bei jedem Deploy hochzählen
 function showUpdatePopup(){
   if(document.getElementById('updPop'))return;
   const d=document.createElement('div');d.id='updPop';d.className='upd-pop';
@@ -657,7 +659,9 @@ function dataURLtoBlob(dataUrl){
 const isAdmin=()=>ROLE==="energie";              /* volle Bearbeitung */
 const isBoard=()=>ROLE==="energie"||ROLE==="handwerker"; /* darf Daten erfassen */
 const $=s=>document.querySelector(s);
-const euro=n=>"€"+Number(n).toLocaleString("de-DE",{maximumFractionDigits:0});
+const euro=n=>"€"+Number(n||0).toLocaleString("de-DE",{minimumFractionDigits:Number.isInteger(Number(n))?0:2,maximumFractionDigits:2});
+function eurFmt(n){n=Number(n)||0;return n.toLocaleString("de-DE",{minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2});}
+function moneyPreview(el){const r=el.closest('.fm-row');if(!r)return;const s=r.querySelector('.money-prev');if(s)s.textContent=el.value.trim()?('= '+euro(num(el.value))):'';}
 function fdate(iso){if(!iso)return"–";const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"short",year:"numeric"});}
 function fdateShort(iso){if(!iso)return"–";const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit"});}
 function ftime(iso){const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString("de-DE",{day:"2-digit",month:"short"})+" · "+d.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}
@@ -1241,7 +1245,7 @@ function editOwnInvoice(i){const iv=DATA.invoices[i];if(!iv)return;if(iv.by!==US
   showForm("Rechnung bearbeiten",[
     {key:"vendor",label:"Ihr Name / Firma",type:"text",value:iv.vendor||''},
     {key:"ref",label:"Rechnungsnummer",type:"text",value:iv.ref||''},
-    {key:"amount",label:"Rechnungsbetrag (€)",type:"number",value:iv.amount},
+    {key:"amount",label:"Rechnungsbetrag (€)",type:"money",value:iv.amount},
     {key:"purpose",label:"Wofür ist die Rechnung?",type:"text",value:iv.purpose||''},
     {key:"file",label:"Beleg ersetzen (optional)",type:"file",accept:"application/pdf,image/*"}
   ],(v,ctx)=>{
@@ -1316,12 +1320,12 @@ function reviewInvoice(i){const iv=DATA.invoices[i]; if(!iv) return; const s=iv.
   showForm("Rechnung prüfen & aufteilen",[
     {key:"vendor",label:"Firma / Aussteller",type:"text",value:iv.vendor||''},
     {key:"gewerk",label:"Gewerk",type:"select",value:iv.gewerk||'',options:[{value:'',label:'— wählen —'}].concat(hw.map(c=>({value:c.name,label:c.name})))},
-    {key:"amount",label:"Rechnungsbetrag gesamt (€)",type:"number",value:iv.amount},
+    {key:"amount",label:"Rechnungsbetrag gesamt (€)",type:"money",value:iv.amount},
     {key:"purpose",label:"Wofür / Leistung",type:"text",value:iv.purpose||''},
-    {key:"kfw",label:"davon KfW (€)",type:"number",value:s.kfw||0},
-    {key:"p35c",label:"davon §35c (€)",type:"number",value:s.p35c||0},
-    {key:"foerder",label:"davon sonstige Förderung (€)",type:"number",value:s.foerder||0},
-    {key:"keine",label:"Keine Förderung / Eigenanteil (€)",type:"number",value:s.keine||0},
+    {key:"kfw",label:"davon KfW (€)",type:"money",value:s.kfw||0},
+    {key:"p35c",label:"davon §35c (€)",type:"money",value:s.p35c||0},
+    {key:"foerder",label:"davon sonstige Förderung (€)",type:"money",value:s.foerder||0},
+    {key:"keine",label:"Keine Förderung / Eigenanteil (€)",type:"money",value:s.keine||0},
     {key:"reviewNote",label:"Notiz für den Bauherrn (optional)",type:"textarea",value:iv.reviewNote||''}
   ],v=>{
     iv.vendor=v.vendor;iv.gewerk=v.gewerk;iv.amount=num(v.amount);iv.purpose=v.purpose;
@@ -1428,6 +1432,7 @@ function showForm(title, fields, onSubmit, opts){
     if(f.type==='textarea') return `<textarea class="fm-in" data-k="${f.key}" rows="3" placeholder="${esc(f.placeholder||'')}">${esc(f.value||'')}</textarea>`;
     if(f.type==='select') return `<select class="fm-in" data-k="${f.key}">${(f.options||[]).map(o=>`<option value="${esc(o.value)}"${String(o.value)===String(f.value||'')?' selected':''}>${esc(o.label)}</option>`).join('')}</select>`;
     if(f.type==='file') return `<input class="fm-in" data-k="${f.key}" type="file"${f.accept?` accept="${f.accept}"`:''}>`;
+    if(f.type==='money') return `<input class="fm-in fm-money" data-k="${f.key}" type="text" inputmode="decimal" value="${esc((f.value!=null&&f.value!==''&&Number(f.value)!==0)?eurFmt(f.value):'')}" placeholder="${esc(f.placeholder||'z. B. 5.000,50')}" oninput="moneyPreview(this)"><span class="money-prev"></span>`;
     const t=f.type==='datetime'?'datetime-local':(f.type||'text');
     return `<input class="fm-in" data-k="${f.key}" type="${t}" value="${esc(f.value==null?'':String(f.value))}" placeholder="${esc(f.placeholder||'')}">`;
   };
@@ -1451,10 +1456,11 @@ function showForm(title, fields, onSubmit, opts){
     const run=()=>fields.__onChange(collect(),{setRowShow});
     wrap.querySelectorAll('.fm-in').forEach(el=>el.addEventListener('change',run)); run();
   }
+  wrap.querySelectorAll('.fm-money').forEach(moneyPreview);
   const first=wrap.querySelector('.fm-in'); if(first) setTimeout(()=>first.focus(),60);
 }
 const TODAY=()=>new Date().toISOString().slice(0,10);
-function num(v){const n=parseInt(String(v).replace(/[^\d-]/g,''));return isNaN(n)?0:n;}
+function num(v){if(typeof v==='number')return v;let s=String(v).trim().replace(/[€\s]/g,'');if(!s)return 0;if(s.indexOf(',')>-1){s=s.replace(/\./g,'').replace(',','.');}else{s=s.replace(/\./g,'');}const n=parseFloat(s.replace(/[^0-9.\-]/g,''));return isNaN(n)?0:Math.round(n*100)/100;}
 function foerderSelect(){return [{value:"",label:"— Keine —"}].concat(foerderOptions().map(o=>({value:o,label:o})));}
 const TONES=["#173a5e","#1f9d6b","#c9912b","#3a8f8f","#7d5ba6","#b9784a","#2d6fb8","#d6493b"];
 /* Verantwortlich-Auswahl anhand der Kontaktliste (letzter Tab) */
@@ -1562,7 +1568,7 @@ function submitInvoice(){
   showForm("Rechnung einreichen",[
     {key:"vendor",label:"Ihr Name / Firma (Gewerk)",type:"text",value:USERNAME||""},
     {key:"ref",label:"Rechnungsnummer",type:"text",placeholder:"RE-…"},
-    {key:"amount",label:"Rechnungsbetrag (€)",type:"number",value:0},
+    {key:"amount",label:"Rechnungsbetrag (€)",type:"money",value:0},
     {key:"purpose",label:"Wofür ist die Rechnung?",type:"text",placeholder:"z. B. Wärmepumpe, Fenster, Elektro …"},
     {key:"file",label:"Rechnung als PDF / Foto",type:"file",accept:"application/pdf,image/*"}
   ],(v,ctx)=>{
@@ -1578,7 +1584,7 @@ function cyclePayment(i){const p=DATA.payments[i];const idx=PAY_FLOW.indexOf(p.s
 function addPayment(){
   showForm("Zahlung (Liquiditätsplanung)",[
     {key:"label",label:"Bezeichnung",type:"text",placeholder:"z. B. Abschlag Wärmepumpe"},
-    {key:"amount",label:"Betrag (€)",type:"number",value:0},
+    {key:"amount",label:"Betrag (€)",type:"money",value:0},
     {key:"due",label:"Fällig am",type:"date",value:TODAY()},
     {key:"status",label:"Status",type:"select",value:"geplant",options:[{value:"geplant",label:"Geplant"},{value:"offen",label:"Offen"},{value:"bezahlt",label:"Bezahlt"}]}
   ],v=>{if(!v.label)return false;DATA.payments.push({label:v.label,amount:num(v.amount),due:v.due,status:v.status});save();render();});
@@ -1586,7 +1592,7 @@ function addPayment(){
 function editPayment(i){const p=DATA.payments[i]; if(!p) return;
   showForm("Zahlung bearbeiten",[
     {key:"label",label:"Bezeichnung",type:"text",value:p.label},
-    {key:"amount",label:"Betrag (€)",type:"number",value:p.amount},
+    {key:"amount",label:"Betrag (€)",type:"money",value:p.amount},
     {key:"due",label:"Fällig am",type:"date",value:p.due},
     {key:"status",label:"Status",type:"select",value:p.status,options:[{value:"geplant",label:"Geplant"},{value:"offen",label:"Offen"},{value:"bezahlt",label:"Bezahlt"}]}
   ],v=>{if(!v.label)return false;p.label=v.label;p.amount=num(v.amount);p.due=v.due;p.status=v.status;save();render();},
@@ -1600,7 +1606,7 @@ function cycleFunding(i){const f=DATA.funding[i];if(f.status==="abgelehnt"){f.st
 function addFunding(){
   showForm("Neue Förderung",[
     {key:"program",label:"Förderprogramm",type:"text",placeholder:"z. B. BAFA Heizungsförderung (Wärmepumpe)"},
-    {key:"amount",label:"Fördersumme (€)",type:"number",value:0},
+    {key:"amount",label:"Fördersumme (€)",type:"money",value:0},
     {key:"status",label:"Aktueller Status",type:"select",value:"eingereicht",options:[{value:"eingereicht",label:"Eingereicht"},{value:"pruefung",label:"In Prüfung"},{value:"genehmigt",label:"Genehmigt"},{value:"abgelehnt",label:"Abgelehnt"}]},
     {key:"dEing",label:"Eingereicht am",type:"date",value:TODAY()},
     {key:"dPruef",label:"In Prüfung seit",type:"date",value:""},
@@ -1611,7 +1617,7 @@ function addFunding(){
 function editFunding(i){const f=DATA.funding[i]; if(!f) return;
   showForm("Förderung bearbeiten",[
     {key:"program",label:"Förderprogramm",type:"text",value:f.program},
-    {key:"amount",label:"Fördersumme (€)",type:"number",value:f.amount},
+    {key:"amount",label:"Fördersumme (€)",type:"money",value:f.amount},
     {key:"status",label:"Aktueller Status",type:"select",value:f.status,options:[{value:"eingereicht",label:"Eingereicht"},{value:"pruefung",label:"In Prüfung"},{value:"genehmigt",label:"Genehmigt"},{value:"abgelehnt",label:"Abgelehnt"}]},
     {key:"dEing",label:"Eingereicht am",type:"date",value:f.dEing||""},
     {key:"dPruef",label:"In Prüfung seit",type:"date",value:f.dPruef||""},
