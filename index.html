@@ -594,7 +594,7 @@ const SUPA_HEAD = {apikey:SUPA_KEY, "Authorization":"Bearer "+SUPA_KEY, "Content
 let DATA=load(), ROLE=null, USERNAME="", TAB="status", deferredInstall=null, saveTimer=null;
 
 /* ===== Auto-Update: erkennt neue deployte Version und zeigt Pop-up ===== */
-const APP_VERSION="2026-06-13.3"; // bei jedem Deploy hochzählen
+const APP_VERSION="2026-06-13.5"; // bei jedem Deploy hochzählen
 function showUpdatePopup(){
   if(document.getElementById('updPop'))return;
   const d=document.createElement('div');d.id='updPop';d.className='upd-pop';
@@ -1188,7 +1188,7 @@ function photoTile(ph,i){
 /* FINANZEN – rollenbasierter Rechnungs-Workflow */
 const INVCATS=[['kfw','KfW'],['p35c','§35c'],['foerder','Sonstige Förderung'],['keine','Keine Förderung / Eigenanteil']];
 function invSplitSum(iv){const s=iv.splits||{};return INVCATS.reduce((a,c)=>a+(Number(s[c[0]])||0),0);}
-function invStatusBadge(s){const m={eingereicht:['b-amber','⏳ In Prüfung'],freigegeben:['b-blue','✅ Freigegeben'],bezahlt:['b-green','💸 Überwiesen']}[s]||['b-gray',s||'—'];return `<span class="badge ${m[0]}">${m[1]}</span>`;}
+function invStatusBadge(s){const m={eingereicht:['b-amber','⏳ In Prüfung'],frozen:['b-gray','🔒 Eingefroren'],freigegeben:['b-blue','✅ Freigegeben'],bezahlt:['b-green','💸 Überwiesen']}[s]||['b-gray',s||'—'];return `<span class="badge ${m[0]}">${m[1]}</span>`;}
 function splitBadges(iv){const s=iv.splits||{};const parts=INVCATS.filter(c=>Number(s[c[0]])>0).map(c=>`<span class="badge b-blue">${c[1]}: ${euro(Number(s[c[0]]))}</span>`);const sum=invSplitSum(iv),tot=Number(iv.amount)||0;const warn=(sum&&Math.abs(sum-tot)>1)?`<span class="badge b-red">Summe ${euro(sum)} ≠ Betrag ${euro(tot)}</span>`:'';return (parts.length||warn)?`<p style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap">${parts.join('')}${warn}</p>`:'';}
 function invRow(iv,i,opts){opts=opts||{};
   return `<div class="row">
@@ -1208,24 +1208,47 @@ function invActions(iv,i){
   let a='';
   if(isAdmin()){
     a+=`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="reviewInvoice(${i})">✏️ Prüfen / Aufteilen</button>`;
-    if(iv.status!=='bezahlt') a+= iv.status==='freigegeben'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'eingereicht')">↩ Freigabe zurück</button>`:`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'freigegeben')">✓ Freigeben</button>`;
+    if(iv.status==='eingereicht'){
+      a+=`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'frozen')">🔒 Einfrieren</button>`;
+      a+=`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'freigegeben')">✓ Freigeben</button>`;
+    } else if(iv.status==='frozen'){
+      a+=`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'eingereicht')">↩ Auftauen</button>`;
+      a+=`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'freigegeben')">✓ Freigeben</button>`;
+    } else if(iv.status==='freigegeben'){
+      a+=`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="setInvoiceStatus(${i},'eingereicht')">↩ Freigabe zurück</button>`;
+    }
   }
   if(iv.status==='freigegeben') a+=`<br><button class="btn-sm btn-primary" style="margin-top:6px" onclick="setInvoiceStatus(${i},'bezahlt')">✓ Überwiesen</button>`;
   return a;
 }
 function viewFinanzenHandwerker(){
-  const mine=DATA.invoices.filter(iv=>iv.by===USERNAME);
+  const mine=DATA.invoices.filter(iv=>iv.by===USERNAME).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const cnt=s=>mine.filter(iv=>iv.status===s).length;
   return `<div class="view">
-    <h2 class="vt">Rechnungen</h2>
-    <p class="vsub">Laden Sie hier Ihre Rechnung hoch. Die Energieberatung prüft sie und gibt sie an den Bauherrn weiter.</p>
+    <h2 class="vt">Meine Rechnungen</h2>
+    <p class="vsub">Rechnung hochladen, eigene Einreichungen sehen und den Status verfolgen (eingereicht → freigegeben → überwiesen). Solange „in Prüfung", können Sie korrigieren oder löschen.</p>
     <div class="card" style="text-align:center">
       <button class="btn-primary" style="max-width:340px;margin:4px auto 0" onclick="submitInvoice()">📤 Neue Rechnung hochladen</button>
     </div>
     <div class="card">
       <h3>📄 Ihre eingereichten Rechnungen</h3>
-      ${mine.length?mine.map(iv=>invRow(iv,DATA.invoices.indexOf(iv))).join(''):'<div class="empty">Noch keine Rechnung eingereicht.</div>'}
+      <div class="ck-stats"><span class="b-amber">${cnt('eingereicht')} in Prüfung</span>${cnt('frozen')?`<span class="b-gray">${cnt('frozen')} eingefroren</span>`:''}<span class="b-blue">${cnt('freigegeben')} freigegeben</span><span class="b-green">${cnt('bezahlt')} überwiesen</span></div>
+      ${mine.length?mine.map(iv=>{const i=DATA.invoices.indexOf(iv);return invRow(iv,i,{actions:iv.status==='eingereicht'?`<br><button class="btn-sm btn-ghost" style="margin-top:6px" onclick="editOwnInvoice(${i})">✏️ Bearbeiten / Löschen</button>`:''});}).join(''):'<div class="empty">Noch keine Rechnung eingereicht.</div>'}
     </div>
   </div>`;
+}
+function editOwnInvoice(i){const iv=DATA.invoices[i];if(!iv)return;if(iv.by!==USERNAME&&!isAdmin())return;
+  showForm("Rechnung bearbeiten",[
+    {key:"vendor",label:"Ihr Name / Firma",type:"text",value:iv.vendor||''},
+    {key:"ref",label:"Rechnungsnummer",type:"text",value:iv.ref||''},
+    {key:"amount",label:"Rechnungsbetrag (€)",type:"number",value:iv.amount},
+    {key:"purpose",label:"Wofür ist die Rechnung?",type:"text",value:iv.purpose||''},
+    {key:"file",label:"Beleg ersetzen (optional)",type:"file",accept:"application/pdf,image/*"}
+  ],(v,ctx)=>{
+    if(!v.vendor)return false;
+    iv.vendor=v.vendor;iv.ref=v.ref;iv.amount=num(v.amount);iv.purpose=v.purpose;save();render();
+    const f=ctx.files.file; if(f) supaUpload(f).then(url=>{iv.url=url;save();render();}).catch(()=>{});
+  },{onDelete:()=>{DATA.invoices.splice(i,1);save();render();}});
 }
 function viewFinanzenBauherr(){
   const rel=DATA.invoices.filter(iv=>iv.status==='freigegeben'||iv.status==='bezahlt').sort((a,b)=>(a.status==='freigegeben'?0:1)-(b.status==='freigegeben'?0:1));
@@ -1307,7 +1330,7 @@ function reviewInvoice(i){const iv=DATA.invoices[i]; if(!iv) return; const s=iv.
   },{onDelete:()=>{DATA.invoices.splice(i,1);save();render();}});
 }
 function setInvoiceStatus(i,st){const iv=DATA.invoices[i];if(!iv)return;iv.status=st;save();render();
-  if(st==='freigegeben')toast('Für Bauherr freigegeben ✓'); if(st==='bezahlt')toast('Als überwiesen markiert ✓');}
+  if(st==='frozen')toast('Eingefroren (Vorstufe) 🔒'); if(st==='freigegeben')toast('Für Bauherr freigegeben ✓'); if(st==='bezahlt')toast('Als überwiesen markiert ✓');}
 function kfmt(v){return v>=1000?(Math.round(v/100)/10).toLocaleString('de-DE')+'k':String(v||0);}
 function finChartsHTML(payB,payO,payG,months,maxM){
   const segs=[['Überwiesen',payB,'#1f9d6b'],['Offen / überfällig',payO,'#e0972a'],['Geplant',payG,'#2d6fb8']];
